@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import './App.css'
+import LoginSignup from './pages/Auth/LoginSignup'
+import Login from './pages/Auth/Login'
 
 function App() {
   return (
-    <div className='text-amber-400'>
-      Moneyantra 2
+    <div>
+      {/* <LoginSignup /> */}
+      <Login />
     </div>
   )
 }
