@@ -20,7 +20,7 @@ function Login() {
                 <button onClick={()=> {setLoginPage(!loginPage)}} className='border-3 rounded-4xl border-white pt-2 pb-2 pl-6 pr-6 hover:bg-white hover:text-[#33658a]'>{loginPage ? "Sign Up":"Sign In"}</button>
             </div>
             {/* Right Panel */}
-            <div className='flex items-center justify-center flex-col gap-10 w-3/5 h-100% quicksand text-[#33658a]'>
+            <div className='flex items-center justify-center flex-col gap-2 w-3/5 h-100% quicksand text-[#33658a]'>
                 <h1 className='text-5xl mb-4'>{loginPage ? "Sign In to Moneyantra":"Create Account"}</h1>
                 <form className='mt-4'>
                     {!loginPage && (
@@ -45,7 +45,7 @@ function Login() {
                             onChange={(event) => setEmail(event.target.value)}
                         />
                     </div>
-                    <div className='flex flex-row items-center justify-center border-2 border-black rounded-sm p-1'>
+                    <div className='flex flex-row items-center justify-center border-2 border-black rounded-sm p-1 mb-4'>
                         <TbLockPassword className='text-3xl text-black'/>
                         <input 
                             type="password" 
@@ -56,10 +56,10 @@ function Login() {
                         />
                     </div>
 
-                    {loginPage && <p className='text-center mt-4 mb-1'>Forgot your password ?</p>}
+                    {loginPage && <p className='text-center mt-4 mb-4'>Forgot your password ?</p>}
 
                     <div className='flex justify-center'>
-                        <button type='submit' className='text-lg mt-12 text-white bg-[#33658a] border-2 border-[#33658a] rounded-4xl pt-2 pb-2 pl-6 pr-6 hover:cursor-pointer'>{loginPage ? "SIGN IN":"SIGN UP"}</button>
+                        <button type='submit' className='text-lg mt-8 text-white bg-[#33658a] border-2 border-[#33658a] rounded-4xl pt-2 pb-2 pl-6 pr-6 hover:cursor-pointer'>{loginPage ? "SIGN IN":"SIGN UP"}</button>
                     </div>
                 </form>
             </div>

@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import './App.css'
-import Homepage from './pages/landing_page/home/Homepage.jsx'
+import Homepage from './pages/landing_page/Homepage.jsx'
 import LoginSignup from './pages/Auth/LoginSignup'
 import Login from './pages/Auth/Login'
+import {Routes, Route} from 'react-router-dom';
 
 function App() {
   return (
     <div>
-      {/* You can toggle between components or show based on auth state */}
-      {/* <LoginSignup /> */}
-      {/* <Login /> */}
-      <Homepage />
+      <Routes>
+        <Route path='/' element = {<Homepage />} />
+        <Route path='/login' element = {<Login />} />
+      </Routes>
     </div>
   )
 }
