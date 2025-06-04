@@ -1,5 +1,4 @@
 #root {
-
   margin: 0;
   padding: 0;
 }
@@ -65,7 +64,6 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-
 }
 
 .links {
@@ -75,23 +73,23 @@
   margin-right: 2rem;
 }
 
-.links span:hover{
-text-decoration: underline;
-cursor: pointer;
+.links span:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.name{
+.name {
   display: flex;
 }
 
-.image{
+.image {
   height: 2rem;
   width: 2rem;
   border-radius: 50%;
   margin-right: 1rem;
 }
 
-.overlay{
+.overlay {
   position: absolute;
   top: 60%;
   left: 60%;
@@ -102,17 +100,17 @@ cursor: pointer;
   font-weight: bold;
 }
 
-.overlay p{
+.overlay p {
   font-size: 27px;
 }
 
-.overlay h1{
+.overlay h1 {
   font-size: 3rem;
 }
 
 @media (max-width: 600px) {
   .overlay {
-     top: 40%;
+    top: 40%;
   }
 
   .overlay p {
@@ -132,26 +130,26 @@ cursor: pointer;
   color: #888;
 }
 
-.about-1{
+.about-1 {
   padding: 2rem;
 }
 
-.about{
+.about {
   padding: 2rem;
   display: flex;
 }
 
-.about img{
+.about img {
   margin-left: -4rem;
   height: 25rem;
-  width:40rem;
+  width: 40rem;
 }
 
-.text h1{
+.text h1 {
   text-decoration: underline #f26419;
 }
 
-.data{
+.data {
   display: flex;
   align-items: center;
   justify-content: center;
