@@ -6,6 +6,9 @@ import { TbLockPassword } from "react-icons/tb";
 function Login() {
 
     const [loginPage, setLoginPage] = useState(true)
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
@@ -27,6 +30,8 @@ function Login() {
                                 type="text" 
                                 placeholder='Enter your name'
                                 className='pl-2 w-[360px] outline-none text-black'
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
                             />
                         </div>
                     )}
@@ -36,6 +41,8 @@ function Login() {
                             type="email" 
                             placeholder='Enter your email'
                             className='pl-2 w-[360px] outline-none text-black'
+                            value={email}
+                            onChange={(event) => setEmail(event.target.value)}
                         />
                     </div>
                     <div className='flex flex-row items-center justify-center border-2 border-black rounded-sm p-1'>
@@ -44,6 +51,8 @@ function Login() {
                             type="password" 
                             placeholder='Enter your password'
                             className='pl-2 w-[360px] outline-none text-black' 
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
                         />
                     </div>
 
