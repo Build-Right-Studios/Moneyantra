@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { MdAbc } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
+import '../../App.css'
 
 function Login() {
 
@@ -14,13 +15,13 @@ function Login() {
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
         <div className='flex flex-row bg-white shadow-md w-3/4 h-[575px] border rounded-2xl border-transparent'>
             {/* Left Panel */}
-            <div className='flex items-center justify-center w-2/5 h-100% quicksand text-white bg-[#33658a] rounded-tl-2xl rounded-bl-2xl flex-col gap-10'>
+            <div className='flex items-center justify-center w-2/5 h-[100%] quicksand text-white bg-[#33658a] rounded-tl-2xl rounded-bl-2xl flex-col gap-10'>
                 <h1 className='mb-4 text-5xl'>{loginPage ? "Hello, User!":"Welcome Back!"}</h1>
-                <p className='pr-16 pl-16 mb-11 text-2xl text-center'>{loginPage ? "Enter your details and get started with us.":"Let’s pick up where you left off!"}</p>
-                <button onClick={()=> {setLoginPage(!loginPage)}} className='border-3 rounded-4xl border-white pt-2 pb-2 pl-6 pr-6 hover:bg-white hover:text-[#33658a]'>{loginPage ? "Sign Up":"Sign In"}</button>
+                <p className='para mb-11 text-2xl'>{loginPage ? "Enter your details and get started with us.":"Let’s pick up where you left off!"}</p>
+                <button onClick={()=> {setLoginPage(!loginPage)}} className='border-2 rounded-3xl border-white btn hover:bg-white hover:text-[#33658a]'>{loginPage ? "Sign Up":"Sign In"}</button>
             </div>
             {/* Right Panel */}
-            <div className='flex items-center justify-center flex-col gap-2 w-3/5 h-100% quicksand text-[#33658a]'>
+            <div className='flex items-center justify-center flex-col gap-2 w-3/5 h-[100%] quicksand text-[#33658a]'>
                 <h1 className='text-5xl mb-4'>{loginPage ? "Sign In to Moneyantra":"Create Account"}</h1>
                 <form className='mt-4'>
                     {!loginPage && (
@@ -59,7 +60,7 @@ function Login() {
                     {loginPage && <p className='text-center mt-4 mb-4'>Forgot your password ?</p>}
 
                     <div className='flex justify-center'>
-                        <button type='submit' className='text-lg mt-8 text-white bg-[#33658a] border-2 border-[#33658a] rounded-4xl pt-2 pb-2 pl-6 pr-6 hover:cursor-pointer'>{loginPage ? "SIGN IN":"SIGN UP"}</button>
+                        <button type='submit' className='primary-btn'>{loginPage ? "SIGN IN":"SIGN UP"}</button>
                     </div>
                 </form>
             </div>
