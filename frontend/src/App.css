@@ -12,7 +12,7 @@ body {
 
 #root {
   margin: 0;
-  padding: 0;
+  padding: 0; 
 }
 
 .logo {
@@ -34,7 +34,6 @@ body {
   from {
     transform: rotate(0deg);
   }
-
   to {
     transform: rotate(360deg);
   }
@@ -113,9 +112,10 @@ body {
   color: #888;
 }
 
-/* .about-1 {
+.about-1 {
   padding: 2rem;
-} */
+  background-color: #f7f6f2;
+}
 
 .about {
   display: flex;
@@ -147,7 +147,8 @@ body {
 }
 
 @media (max-width: 800px) {
-  .flex-item-right, .flex-item-left {
+  .flex-item-right,
+  .flex-item-left {
     flex: 100%;
     justify-content: center;
     align-items: center;
