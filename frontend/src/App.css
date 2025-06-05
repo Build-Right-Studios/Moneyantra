@@ -4,9 +4,10 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
-  overflow-x: hidden; /* ✅ Prevents horizontal scroll */
+  overflow-x: hidden;
 }
 
 #root {
@@ -43,16 +44,6 @@ html, body {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
-}
-
-.img {
-  position: fixed;
-  top: -2rem;
-  width: 100%;
-  height: 60vh;
-  object-fit: cover;
-  left: 0;
-  right: 0;
 }
 
 .first {
@@ -100,28 +91,9 @@ html, body {
   margin-right: 1rem;
 }
 
-.overlay {
-  position: absolute;
-  top: 60%;
-  left: 60%;
-  transform: translate(-50%, -50%);
-  color: black;
-  padding: 10px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.overlay p {
-  font-size: 27px;
-}
-
-.overlay h1 {
-  font-size: 3rem;
-}
-
 @media (max-width: 600px) {
   .overlay {
-    top: 40%;
+    align-items: center;
   }
 
   .overlay p {
@@ -141,19 +113,19 @@ html, body {
   color: #888;
 }
 
-.about-1 {
+/* .about-1 {
   padding: 2rem;
-}
+} */
 
 .about {
-  padding: 2rem;
   display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
 }
 
 .about img {
-  margin-left: -4rem;
-  height: 25rem;
-  width: 40rem;
+  height: auto;
+  width: auto;
 }
 
 .text h1 {
@@ -164,4 +136,20 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.flex-item-left {
+  flex: 50%;
+}
+
+.flex-item-right {
+  flex: 50%;
+}
+
+@media (max-width: 800px) {
+  .flex-item-right, .flex-item-left {
+    flex: 100%;
+    justify-content: center;
+    align-items: center;
+  }
 }
