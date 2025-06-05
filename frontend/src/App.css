@@ -11,7 +11,7 @@ html, body {
 
 #root {
   margin: 0;
-  padding: 0;
+  padding: 0; 
 }
 
 .logo {
@@ -143,6 +143,7 @@ html, body {
 
 .about-1 {
   padding: 2rem;
+  background-color: #f7f6f2;
 }
 
 .about {
