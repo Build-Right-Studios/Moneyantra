@@ -7,10 +7,13 @@ import About from "../../components/About.jsx";
 function Homepage() {
     return (
         <>
-        <Navbar />
-        <Image />
-        <About />
-        <Footer />
+            <div className="parent">
+                <Navbar />
+                <Image />
+                <About />
+                <Footer />
+            </div>
+
             {/* <Navbar />
             <About />
             <Footer /> */}

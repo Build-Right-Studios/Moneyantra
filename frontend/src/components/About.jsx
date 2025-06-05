@@ -8,10 +8,10 @@ function About() {
                 <h1>ABOUT US</h1>
             </div>
             <div className="about">
-                <div>
-                    <img src='media/images/about.png' alt="image"></img>
+                <div className='flex-item-left'>
+                    <img src='media/images/about.png' alt="image" className='about_img'></img>
                 </div>
-                <div>
+                <div className='flex-item-right'>
                     <h2>Passionate for your Financial</h2>
                     <h2>Support Here</h2>
                     <br></br>
@@ -33,7 +33,6 @@ function About() {
                             <p>Pay Bills On Time Without Missing A Beat</p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

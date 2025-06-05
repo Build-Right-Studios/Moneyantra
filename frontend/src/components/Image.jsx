@@ -3,9 +3,9 @@ import img1 from '../images/img.png';
 
 function Image() {
     return (
-        <div className="w-screen h-screen relative">
-            <img src={img1} alt="background" className="w-full h-[95%] object-cover" />
-            <div className="absolute top-0 left-10">
+        <div className="w-screen h-screen relative img-container">
+            <img src={img1} alt="background" className="w-full h-[100%] object-cover img" />
+            <div className="absolute top-30 left-30 overlay">
                 <h1 className="text-[#33658A]">MONEY<span className="text-[#F26419]">ANTRA</span></h1>
                 <p>Earn More To Spend More</p>
             </div>        
