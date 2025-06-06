@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const authenticationToken = require('./utilities.js')
+const loginuser = require('./loginuser.js')
+const signupuser = require('./signupuser.js') 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,24 +18,20 @@ app.post("/login", async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "Email and password are required." });
         }
+        
+        const result = await loginuser({email, password})
 
-        const user = { email: "test@example.com", password: await bcrypt.hash("password123", 10) };
-
-        if (email !== user.email) {
-            return res.status(404).json({ message: "User not found." });
+        if (result.success) {
+            return res.status(201).json({
+            message: "User registered successfully.",
+            user: result.user,
+            authToken: result.authToken
+            });
+        } else {
+            return res.status(result.message === "Email not found." ? 409 : 500).json({
+            message: result.message
+            });
         }
-
-        const match = await bcrypt.compare(password, user.password);
-
-        if (!match) {
-            return res.status(401).json({ message: "Invalid password." });
-        }
-
-        const accessToken = jwt.sign({user}, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: "30m"
-        })
-
-        res.status(200).json({ message: "Login successful", user, accessToken });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "An error occurred." });
@@ -48,20 +46,19 @@ app.post("/signup", async (req, res) => {
             return res.status(400).json({ message: "Name, email, and password are required." });
         }
 
-        const existingUser = email === "test@example.com";
+        const result = await signupuser({ name, email, password });
 
-        if (existingUser) {
-            return res.status(409).json({ message: "Email is already in use." });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10); 
-        const user = { name, email, password: hashedPassword };
-
-        const authToken = jwt.sign({user}, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: "30m"
-        })
-
-        res.status(201).json({ message: "User registered successfully.", user, authToken});
+        if (result.success) {
+            return res.status(201).json({
+            message: "User registered successfully.",
+            user: result.user,
+            authToken: result.authToken
+            });
+        } else {
+            return res.status(result.message === "Email already in use." ? 409 : 500).json({
+            message: result.message
+            });
+        }     
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "An error occurred." });
