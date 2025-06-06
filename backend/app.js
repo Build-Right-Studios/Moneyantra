@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+const authenticationToken = require('./utilities.js')
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+dotenv.config();
 
 app.post("/login", async (req, res) => {
     try {
@@ -25,7 +29,11 @@ app.post("/login", async (req, res) => {
             return res.status(401).json({ message: "Invalid password." });
         }
 
-        res.status(200).json({ message: "Login successful", user });
+        const accessToken = jwt.sign({user}, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: "30m"
+        })
+
+        res.status(200).json({ message: "Login successful", user, accessToken });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "An error occurred." });
@@ -49,7 +57,11 @@ app.post("/signup", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10); 
         const user = { name, email, password: hashedPassword };
 
-        res.status(201).json({ message: "User registered successfully.", user });
+        const authToken = jwt.sign({user}, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: "30m"
+        })
+
+        res.status(201).json({ message: "User registered successfully.", user, authToken});
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "An error occurred." });
