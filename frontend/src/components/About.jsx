@@ -12,27 +12,30 @@ function About() {
                     <img src='media/images/about.png' alt="image" className='about_img'></img>
                 </div>
                 <div className='flex-item-right'>
-                    <h2>Passionate for your Financial</h2>
-                    <h2>Support Here</h2>
-                    <br></br>
                     <div>
-                        <div className="data" >
-                            <IoMdCheckmarkCircleOutline size={40} />
-                            <p>Pay Bills On Time Without Missing A Beat</p>
-                        </div>
-                        <div className="data" >
-                            <IoMdCheckmarkCircleOutline size={40} />
-                            <p>Pay Bills On Time Without Missing A Beat</p>
-                        </div>
-                        <div className="data" >
-                            <IoMdCheckmarkCircleOutline size={40} />
-                            <p>Pay Bills On Time Without Missing A Beat</p>
-                        </div>
-                        <div className="data" >
-                            <IoMdCheckmarkCircleOutline size={40} />
-                            <p>Pay Bills On Time Without Missing A Beat</p>
+                        <h2>Passionate for your Financial</h2>
+                        <h2>Support Here</h2>
+                        <br></br>
+                        <div className="gap">
+                            <div className="data" >
+                                <IoMdCheckmarkCircleOutline size={40} />
+                                <span>Pay Bills On Time Without Missing A Beat</span>
+                            </div><br></br>
+                            <div className="data" >
+                                <IoMdCheckmarkCircleOutline size={40} />
+                                <span>Pay Bills On Time Without Missing A Beat</span>
+                            </div><br></br>
+                            <div className="data" >
+                                <IoMdCheckmarkCircleOutline size={40} />
+                                <span>Pay Bills On Time Without Missing A Beat</span>
+                            </div><br></br>
+                            <div className="data" >
+                                <IoMdCheckmarkCircleOutline size={40} />
+                                <span>Pay Bills On Time Without Missing A Beat</span>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
