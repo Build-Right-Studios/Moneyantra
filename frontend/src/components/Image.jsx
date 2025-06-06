@@ -9,10 +9,10 @@ function Image() {
                 <h1>
                     <span className="text-[#33658A]">MONEY</span>
                     <span className="text-[#F26419]">ANTRA</span>
-                </h1>
-                <p className="font-bold text-center">Earn More To Spend More</p>
-            </div>
-        </div>
+               </h1>
+               <p className="font-bold text-center">Earn More To Spend More </p>
+           </div>
+       </div>
     );
 }
 
