@@ -13,7 +13,6 @@ function Navbar() {
             </div>
 
             <div className="links">
-                <span>ABOUT</span>
                 <NavLink to="/login">
                     <span>LOGIN</span>
                 </NavLink>

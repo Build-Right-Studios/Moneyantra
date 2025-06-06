@@ -66,7 +66,7 @@ function Getintouch() {
                             <button type="submit" class="submit-button">Submit</button>
                         </div>
                         <div class="map-section">
-                            <img src="https://via.placeholder.com/400x500/E0E0E0/808080?text=Map+Placeholder" alt="Map" class="map-placeholder"></img>
+                            <img src="/public/media/images/git.png" alt="img" class="map-placeholder"></img>
                         </div>
                     </div>
                 </div>
