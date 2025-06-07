@@ -21,26 +21,27 @@ app.post("/login", async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "Email and password are required." });
         }
-        
-        const result = await loginuser({email, password})
+
+        const result = await loginuser({ email, password });
 
         if (result.success) {
             return res.status(201).json({
-            message: "User logged in successfully.",
-            user: result.user,
-            authToken: result.authToken
+                message: "User logged in successfully.",
+                user: result.user,
+                authToken: result.authToken
             });
         } else {
-            return res.status(result.message === "Email not found." ? 409 : 500).json({
-            message: result.message
-            });
+            return res.status(
+                result.message === "Email not found." || result.message === "Incorrect password."
+                    ? 401
+                    : 500
+            ).json({ message: result.message });
         }
     } catch (error) {
-        console.error(error);
+        console.error("Server error:", error);
         res.status(500).json({ message: "An error occurred." });
     }
 });
-
 app.post("/signup", async (req, res) => {
     try {
         const { name, email, password } = req.body;
