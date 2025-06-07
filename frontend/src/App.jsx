@@ -4,6 +4,7 @@ import Homepage from './pages/landing_page/Homepage.jsx'
 import LoginSignup from './pages/Auth/LoginSignup'
 import Login from './pages/Auth/Login'
 import {Routes, Route} from 'react-router-dom';
+import Dashboard from './pages/Dashboard.jsx'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path='/' element = {<Homepage />} />
         <Route path='/login' element = {<Login />} />
+        <Route path='/dashboard' element = {<Dashboard />} />
       </Routes>
     </div>
   )

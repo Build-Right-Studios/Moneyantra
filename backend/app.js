@@ -3,6 +3,7 @@ const app = express();
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const authenticationToken = require('./utilities.js')
 const loginuser = require('./loginuser.js')
 const signupuser = require('./signupuser.js') 
@@ -10,6 +11,8 @@ const signupuser = require('./signupuser.js')
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 dotenv.config();
+app.use(cors({origin: "*"}));
+
 
 app.post("/login", async (req, res) => {
     try {
@@ -23,7 +26,7 @@ app.post("/login", async (req, res) => {
 
         if (result.success) {
             return res.status(201).json({
-            message: "User registered successfully.",
+            message: "User logged in successfully.",
             user: result.user,
             authToken: result.authToken
             });

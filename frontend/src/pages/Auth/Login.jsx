@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import {Link, useNavigate} from 'react-router-dom'
 import { MdAbc } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
 import '../../App.css'
+import axiosInstance from '../../utils/axiosInstance';
 
 function Login() {
 
@@ -10,6 +12,71 @@ function Login() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        if(!loginPage) {
+            if(!name) {
+                setError("Name is required.");
+                return;
+            }
+        }
+
+        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            setError("Email is required.");
+            return;
+        } 
+        // else if (!emailRegex.test(email)) {
+        //     setError("Please enter a valid email address.");
+        //     return;
+        // }
+
+        if (!password) {
+            setError("Password is required.");
+            return;
+        }
+
+        if(loginPage){
+            try {
+                const response = await axiosInstance.post('/login', {
+                    email: email,
+                    password: password
+                })
+
+                if(response.data && response.data.authToken){
+                    localStorage.setItem("token", response.data.authToken)
+                    navigate('/dashboard')
+                }         
+            } catch (error) {
+                if(error.response && error.response.data && error.response.data.message)
+                    setError(error.response.data.message)
+                else
+                    setError("Please try after some time.")
+            }                
+        }
+        else {
+            try {
+                const response = await axiosInstance.post('/signup', {
+                    name : name, 
+                    email: email, 
+                    password: password
+                })
+                if(response.data && response.data.authToken){
+                    localStorage.setItem("token", response.data.authToken)
+                    navigate('/dashboard')
+                }
+            } catch (error) {
+                if(error.response && error.response.data && error.response.data.message)
+                    setError(error.response.data.message)
+                else
+                    setError("Please try after some time.")
+            }
+        }
+}
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
@@ -60,7 +127,7 @@ function Login() {
                     {loginPage && <p className='text-center mt-4 mb-4'>Forgot your password ?</p>}
 
                     <div className='flex justify-center'>
-                        <button type='submit' className='primary-btn'>{loginPage ? "SIGN IN":"SIGN UP"}</button>
+                        <button type='submit' className='primary-btn' onClick={handleLogin}>{loginPage ? "SIGN IN":"SIGN UP"}</button>
                     </div>
                 </form>
             </div>
