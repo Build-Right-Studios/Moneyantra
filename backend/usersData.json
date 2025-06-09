@@ -5,23 +5,18 @@
     "password": "654321"
   },
   {
-    "name": "Aryesh",
-    "email": "aryesh@mail2",
-    "password": "$2b$10$jJ8MbN1ss0Euq3dGWqvlGeVbDKXoJVVN5H0evcz1BsnBcq3pn2HKK"
-  },
-  {
     "name": "BRS",
     "email": "team@meet",
     "password": "$2b$10$9Ix7nMw1QfR9jkHN.bu2EepgIsqGX.BaOhsLez97l1wd5GKPl7/ui"
   },
   {
-    "name": "Aryansh",
-    "email": "aryansh@meet.com",
-    "password": "$2b$10$iHT.8SEigeAgGopptV2WqeyHRRAT8EInshyDhpzw3kqgt5xb8Srje"
-  },
-  {
     "name": "BRS NEW",
     "email": "brs@meet.com",
     "password": "$2b$10$Hrbe5MQ3Qs1Fon1/hh2q8.RXm7AloUsmka2h8cEtBRVgzzem.3kHC"
+  },
+  {
+    "name": "Aryansh",
+    "email": "aryanshchauhan77@gmail.com",
+    "password": "$2b$10$bFsUVMdbTQkBleOE8md/.OmmV69D7C/slMT9MnUcVDE4gchLECXQy"
   }
 ]

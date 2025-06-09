@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { IoMailOutline } from "react-icons/io5";
+import axiosInstance from '../utils/axiosInstance';
 
 function ForgotPassword() {
 
@@ -12,6 +13,16 @@ function ForgotPassword() {
         if(!email) {
             setError("Please Enter your email.");
             return;
+        }
+        try {
+            const response = await axiosInstance.post('/forgot-password', {
+                email: email
+            })
+            if (response.data && response.data.success) {
+                localStorage.setItem("token", response.data.authToken);
+            }
+        } catch (error) {
+            console.error("Login error:", error);
         }
     }
 
