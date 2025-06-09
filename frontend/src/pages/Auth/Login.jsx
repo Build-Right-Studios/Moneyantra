@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdAbc } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
@@ -118,7 +118,7 @@ function Login() {
 
             {error && <p className='text-red-600 text-center mb-4'>{error}</p>}
 
-            {loginPage && <p className='text-center mt-2 mb-4'>Forgot your password?</p>}
+            {loginPage && <Link to='/forgot-password'><p className='text-center mt-2 mb-4'>Forgot your password?</p></Link>}
 
             <div className='flex justify-center'>
               <button type='submit' className='primary-btn'>
