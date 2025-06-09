@@ -5,6 +5,7 @@ import LoginSignup from './pages/Auth/LoginSignup'
 import Login from './pages/Auth/Login'
 import {Routes, Route} from 'react-router-dom';
 import Dashboard from './pages/Dashboard.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path='/' element = {<Homepage />} />
         <Route path='/login' element = {<Login />} />
         <Route path='/dashboard' element = {<Dashboard />} />
+        <Route path='/forgot-password' element = {<ForgotPassword />} />
       </Routes>
     </div>
   )
