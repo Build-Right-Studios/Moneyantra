@@ -27,22 +27,22 @@ function ForgotPassword() {
     }
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
-        <div className='flex flex-col bg-white shadow-md w-2/5 h-[450px] border rounded-2xl border-transparent'>
+    <div className='flex items-center justify-center min-h-screen bg-gray-100 p-4'>
+        <div className='flex flex-col bg-white shadow-md w-auto sm:w-3/5  h-[450px]  border rounded-2xl border-transparent'>
             {/* Top Panel */}
-            <div className='flex items-center justify-center w-full h-1/2 quicksand text-white bg-[#33658a] rounded-tl-2xl rounded-tr-2xl flex-col'>
-                <h1 className='tex-5xl'>Forgot your Password</h1>
-                <p className='text-xl text-center'>We will send you an email with instructions on how to reset your password.</p>
+            <div className='flex items-center justify-center w-auto h-1/2 p-4 quicksand text-white bg-[#33658a] rounded-tl-2xl rounded-tr-2xl flex-col'>
+                <h1 className='tex-2xl sm:text-4xl text-center'>Forgot your Password</h1>
+                <p className='text-sm sm:text-xl text-center mt-3'>We will send you an email with instructions on how to reset your password.</p>
             </div>
             {/* Down Panel */}
-            <div className='flex flex-col items-center justify-center w-full h-1/2 quicksand text-[#33658a]'>
+            <div className='flex flex-col items-center justify-center w-auto h-1/2 quicksand text-[#33658a]'>
                 <form onSubmit={handleforgotpassword}>
                     <div className='flex items-center mb-2 border-2 border-black rounded-sm p-1'>
                         <IoMailOutline className='text-3xl text-black' />
                         <input
                             type="email"
                             placeholder='Enter your email'
-                            className='pl-2 w-[360px] outline-none text-black'
+                            className='pl-2 w-[auto] sm:w-[380px] outline-none text-black'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
