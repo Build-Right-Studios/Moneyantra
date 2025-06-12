@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import cas1 from '../components/images/CAS1.png'
 import cas2 from '../components/images/CAS2.png'
 import { IoCloudUploadOutline } from "react-icons/io5";
