@@ -4,6 +4,7 @@ import cas2 from '../components/images/CAS2.png'
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
 import Footer from '../components/Footer';
+import axiosInstance from '../utils/axiosInstance';
 
 function ParseCAS() {
 
@@ -11,6 +12,7 @@ function ParseCAS() {
     const [status, setStatus] = useState('');
     const [password, setPassword] = useState('');
     const [isChecked, setIsChecked] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleFileChange = (e) => {
         const selected = e.target.files[0];
@@ -24,104 +26,147 @@ function ParseCAS() {
     };
 
     const handleUpload = async () => {
-        if (!file) return alert('Please select a file first.');
-        if(!password) return alert('Please Enter Password.')
-        if ( file) return alert("File Uploaded Successfully.") 
+        if (!file) {
+            alert('Please select a file first.');
+            return;
+        }
+        if (!password) {
+            alert('Please Enter Password.');
+            return;
+        }
+        if (!isChecked) {
+            alert('Please accept the disclaimer to proceed.');
+            return;
+        }
+
+        setIsLoading(true); 
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('pdf', file);
+        formData.append('password', password); 
 
-        // try {
-        //     const res = await fetch('http://localhost:5000/upload', {
-        //         method: 'POST',
-        //         body: formData,
-        //     });
+        try {
+            const response = await axiosInstance.post('/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
 
-        //     const data = await res.json();
-        //     if (res.ok) {
-        //         setStatus(`✅ Uploaded: ${data.originalname}`);
-        //     } else {
-        //         setStatus(`❌ ${data.message}`);
-        //     }
-        // } catch (err) {
-        //     console.error(err);
-        //     setStatus('❌ Upload failed');
-        // }
-  };
+            if (response.status === 201) {
+                console.log("File uploaded and password-protected successfully:", response.data.message);
+                console.log("File ID:", response.data.fileId);
+                console.log("Protected File Name:", response.data.fileName); 
+                setStatus(`✅ ${response.data.message} File ID: ${response.data.fileId}`);
+                alert("File uploaded and password-protected successfully!");
+                setFile(null);
+                setPassword('');
+                setIsChecked(false);
+            } else {
+                console.error("File upload failed with status:", response.status, response.data.message);
+                setStatus(`❌ Upload failed: ${response.data.message || 'Unknown error'}`);
+                alert("File upload failed. Please check console for details.");
+            }
+        } catch (error) {
+            console.error("File upload error:", error);
+            let errorMessage = "An unexpected error occurred during file upload.";
+            if (error.response) {
+                console.error("Error response data:", error.response.data);
+                console.error("Error status:", error.response.status);
+                if (error.response.data && error.response.data.message) {
+                    errorMessage = `Upload failed: ${error.response.data.message}`;
+                }
+            } else if (error.request) {
+                errorMessage = "No response received from server. Please check your network connection.";
+            } else {
+                errorMessage = `Error setting up request: ${error.message}`;
+            }
+            setStatus(`❌ ${errorMessage}`);
+            alert(errorMessage);
+        } finally {
+            setIsLoading(false); 
+        }
+    };
 
-  return (
-    <div>
-        <div className='text-[#6f779d] text-4xl open-sans-moneyantra text-center'>Upload CAS</div>
-        <div className='text-[#00b3be] text-2xl mt-3 text-center lg:text-4xl underline'>Instructions to download CAS</div>
-        <div className='text-black font-semibold px-4'>
-            <ul className='list-disc space-y-2 mt-4 lg:text-3xl'>
-                <li className='roboto-condensed-moneyantra'>
-                    Go to - <a href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">CAMS</a>
-                </li>
-                <li className='roboto-condensed-moneyantra'>Select Statement Type - Detailed</li>
-                <li className='roboto-condensed-moneyantra'>Select Period - Put start date and end date as the period from when you started investing to current date</li>
-                <li className='roboto-condensed-moneyantra'>Select Folio Listing as - Transacted folios and folios with Balances</li>
-                <li className='roboto-condensed-moneyantra'>Enter your email address and a password (this would be used to open and parse the CAS)</li>
-                <li className='roboto-condensed-moneyantra'>You will receive CAS over email in PDF format, upload that file on this page.</li>
-            </ul>
-        </div>
-        <div className='w-full px-4'>
-            <img src={cas1} alt="" />
-        </div>
-        <div className='w-full px-4'>
-            <img src={cas2} alt="" />
-        </div>
-        <br />
-        <div className='w-full px-4 flex flex-col'>
-            <label className="cursor-pointer">
-                <input
-                    type="file"
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                    className="hidden"
-                />
-                <div className="border-dashed border-[#38b6ff] border-2 rounded-xl flex items-center justify-center flex-col py-4 hover:bg-blue-50 transition">
-                    <IoCloudUploadOutline size={40} className="text-[#33658a]" />
-                    <p className="text-[#33658a] font-medium mt-2 text-2xl">Upload PDF</p>
+    return (
+        <div className='item-center justify-center'>
+            <div className='text-[#6f779d] text-4xl open-sans-moneyantra text-center'>Upload CAS</div>
+            <div className='text-[#00b3be] text-2xl mt-3 text-center lg:text-4xl underline'>Instructions to download CAS</div>
+            <div className='text-black px-4'>
+                <ul className='list-disc space-y-2 mt-4 lg:text-xl'>
+                    <li className='roboto-condensed-moneyantra'>
+                        Go to - <a href="[https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement](https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement)" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">CAMS</a>
+                    </li>
+                    <li className='roboto-condensed-moneyantra'>Select Statement Type - Detailed</li>
+                    <li className='roboto-condensed-moneyantra'>Select Period - Put start date and end date as the period from when you started investing to current date</li>
+                    <li className='roboto-condensed-moneyantra'>Select Folio Listing as - Transacted folios and folios with Balances</li>
+                    <li className='roboto-condensed-moneyantra'>Enter your email address and a password (this would be used to open and parse the CAS)</li>
+                    <li className='roboto-condensed-moneyantra'>You will receive CAS over email in PDF format, upload that file on this page.</li>
+                </ul>
+            </div>
+            <div className='w-full px-4'>
+                <img src={cas1} alt="" />
+            </div>
+            <div className='w-full px-4'>
+                <img src={cas2} alt="" />
+            </div>
+            <br />
+            <div className='mx-auto justify-center md:w-[80%] px-4 flex flex-col'>
+                <label className="cursor-pointer shadow-2xl rounded-2xl ">
+                    <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={handleFileChange}
+                        className="hidden"
+                    />
+                    <div className="md:h-[250px] border-dashed border-[#38b6ff] border-2 rounded-xl flex items-center justify-center flex-col py-4 hover:bg-blue-50 transition">
+                        <IoCloudUploadOutline size={40} className="text-[#33658a]" />
+                        <p className="text-[#33658a] font-medium mt-2 text-2xl">Upload PDF</p>
+                    </div>
+                </label>
+
+                {status && <p className="mt-4 text-sm text-gray-700">{status}</p>}
+                <br />
+                <br></br>
+                <div className='text-3xl flex flex-row items-center justify-center'>
+                    <TbLockPassword size={30} />
+                    <div>Password</div>
                 </div>
-            </label>
+                <div className='cursor-pointer flex flex-row items-center justify-center gap-4'>
 
-            {status && <p className="mt-4 text-sm text-gray-700">{status}</p>}
-            <br />
-            <div className='text-3xl flex flex-row items-center justify-center'>
-                <TbLockPassword size={30}/>
-                <div>Password</div>
-            </div>
-            <div className='cursor-pointer flex flex-row items-center justify-center gap-4'>
-                
-                <input 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)}
-                    className='border-2 border-amber-500 w-3/4 rounded-lg px-2 h-[40px] text-center'
-                />
-            </div>
-            <br />
-            <br />
-            <div className='flex flex-col lg:flex-row lg:gap-5'>
-                <input 
-                    type="checkbox" 
-                    className='border border-black h-7 w-7' 
-                    checked={isChecked} 
-                    onChange={(e) => setIsChecked(e.target.checked)}
-                />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className='border-2 border-[#f26419] w-2/4 rounded-lg px-2 h-[40px] text-center'
+                    />
+                </div>
+                <br />
+                <br />
+                <div className='flex flex-col lg:flex-row lg:gap-5'>
+                    <input
+                        type="checkbox"
+                        className='border border-black h-7 w-7'
+                        checked={isChecked}
+                        onChange={(e) => setIsChecked(e.target.checked)}
+                    />
 
-                <div>Disclaimer: By uploading your CAS, you are allowing the file to be stored temporarily in a secured manner on our servers for parsing and running the calculations. This data would not be shared with any other party and would not be used for any other purpose apart from using to run the calculations and analyzing the data. Please click accept to proceed with the process.</div>
-            </div>
+                    <div>Disclaimer: By uploading your CAS, you are allowing the file to be stored temporarily in a secured manner on our servers for parsing and running the calculations. This data would not be shared with any other party and would not be used for any other purpose apart from using to run the calculations and analyzing the data. Please click accept to proceed with the process.</div>
+                </div>
 
-            <button onClick={handleUpload} disabled={!isChecked} className={`mt-4 px-4 py-2 rounded text-white 
-              ${isChecked ? 'bg-[#38b6ff] hover:bg-[#2ea4e0]' : 'bg-gray-400 cursor-not-allowed'}`}>Upload</button>
+                <button
+                    onClick={handleUpload}
+                    disabled={!isChecked || isLoading} // Disable button when not checked or loading
+                    className={`mt-4 px-4 py-2 rounded text-white
+                    ${isChecked && !isLoading ? 'bg-[#33658a] hover:bg-[#33658a]' : 'bg-gray-400 cursor-not-allowed'}`}
+                >
+                    {isLoading ? 'Uploading & Protecting...' : 'Upload'}
+                </button>
+            </div>
+            <br />
+            <br />
+            <Footer />
         </div>
-        <br />
-        <br />
-        <Footer />
-    </div>
-  )
+    )
 }
 
 export default ParseCAS
