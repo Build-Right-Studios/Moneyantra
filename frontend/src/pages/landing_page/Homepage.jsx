@@ -4,6 +4,7 @@ import Image from "../../components/Image.jsx";
 import Footer from "../../components/Footer.jsx";
 import About from "../../components/About.jsx";
 import Getintouch from "../../components/getintouch.jsx";
+import Uploadpdf from "../Uploadpdf.jsx";
 
 function Homepage() {
     return (
@@ -14,6 +15,7 @@ function Homepage() {
                 <About />
                 <Getintouch/>
                 <Footer />
+                <Uploadpdf />
             </div>
 
             {/* <Navbar />

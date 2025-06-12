@@ -6,14 +6,75 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const authenticationToken = require('./utilities.js')
 const loginuser = require('./loginuser.js')
-const signupuser = require('./signupuser.js') 
+const signupuser = require('./signupuser.js')
 const forgotpassword = require('./forgotpassword.js')
 const resetpassword = require('./resetpassword.js')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 dotenv.config();
-app.use(cors({origin: "*"}));
+app.use(cors({ origin: "*" }));
+
+
+const fs = require('fs')
+const multer = require('multer');
+const path = require('path');
+const { google } = require('googleapis');
+const { MIMEType } = require('util');
+const { file } = require('googleapis/build/src/apis/file/index.js');
+
+
+
+const upload = multer({ dest: 'uploads/' });
+
+const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'
+
+
+async function uploadToDrive(filePath, fileName) {
+    const auth = new google.auth.GoogleAuth({
+        keyFile: './creda.json',
+        scopes: ['https://www.googleapis.com/auth/drive']
+    });
+
+    const authClient = await auth.getClient();
+    const drive = google.drive({ version: 'v3', auth: authClient });
+
+    const fileMetadata = {
+        name: fileName,
+        parents: [google_api_folder]
+    };
+
+    const media = {
+        mimeType: 'application/pdf',
+        body: fs.createReadStream(filePath)
+    };
+
+    const response = await drive.files.create({
+        resource: fileMetadata,
+        media: media,
+        fields: 'id'
+    });
+
+    return response.data.id;
+}
+
+// POST endpoint to receive PDF and upload to Drive
+app.post('/upload', upload.single('pdf'), async (req, res) => {
+    try {
+        const filePath = req.file.path;
+        const fileName = req.file.originalname;
+
+        const fileId = await uploadToDrive(filePath, fileName);
+
+        fs.unlinkSync(filePath);
+
+        res.json({ success: true, fileId });
+    } catch (err) {
+        console.error('Upload failed:', err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 
 
 app.post("/login", async (req, res) => {
@@ -56,15 +117,15 @@ app.post("/signup", async (req, res) => {
 
         if (result.success) {
             return res.status(201).json({
-            message: "User registered successfully.",
-            user: result.user,
-            authToken: result.authToken
+                message: "User registered successfully.",
+                user: result.user,
+                authToken: result.authToken
             });
         } else {
             return res.status(result.message === "Email already in use." ? 409 : 500).json({
-            message: result.message
+                message: result.message
             });
-        }     
+        }
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "An error occurred." });
@@ -73,49 +134,49 @@ app.post("/signup", async (req, res) => {
 
 app.post('/forgot-password', async (req, res) => {
     try {
-        const {email} = req.body;
+        const { email } = req.body;
 
-        if(!email)
+        if (!email)
             return res.status(400).json({ message: "Name, email, and password are required." });
 
-        const result = await forgotpassword({email});
+        const result = await forgotpassword({ email });
         if (result.success) {
             return res.status(201).json({
-            message: "Mail sent.",
-            authToken: result.authToken
+                message: "Mail sent.",
+                authToken: result.authToken
             });
         } else {
             return res.status(500).json({
-            message: result.message
+                message: result.message
             });
-        }  
+        }
 
 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "An error occurred." });
     }
-} )
+})
 
 app.post('/reset-password/:name/:token', async (req, res) => {
-    const {name, token} = req.params;
-    const {newPassword} = req.body;
+    const { name, token } = req.params;
+    const { newPassword } = req.body;
 
     try {
-    // const decoded = await verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
+        // const decoded = await verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const result = await resetpassword({ name, hashedPassword });
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const result = await resetpassword({ name, hashedPassword });
 
-    if (result.success) {
-      return res.status(200).json({ success: true, message: "Password reset successful" });
-    } else {
-      return res.status(500).json({ success: false, message: "Could not reset password" });
+        if (result.success) {
+            return res.status(200).json({ success: true, message: "Password reset successful" });
+        } else {
+            return res.status(500).json({ success: false, message: "Could not reset password" });
+        }
+
+    } catch (err) {
+        return res.status(400).json({ success: false, message: "Invalid or expired token" });
     }
-
-  } catch (err) {
-    return res.status(400).json({ success: false, message: "Invalid or expired token" });
-  }
 })
 
 app.get("/", (req, res) => {
