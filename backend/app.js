@@ -32,7 +32,7 @@ const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'
 
 async function uploadToDrive(filePath, fileName) {
     const auth = new google.auth.GoogleAuth({
-        keyFile: './cred.json',
+        keyFile: './creda.json',
         scopes: ['https://www.googleapis.com/auth/drive']
     });
 
@@ -65,7 +65,7 @@ app.post('/upload', upload.single('pdf'), async (req, res) => {
         const fileName = req.file.originalname;
 
         const fileId = await uploadToDrive(filePath, fileName);
-        
+
         fs.unlinkSync(filePath);
 
         res.json({ success: true, fileId });
