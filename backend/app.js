@@ -16,21 +16,19 @@ dotenv.config();
 app.use(cors({ origin: "*" }));
 
 
-const fs = require('fs')
+const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
+const stream = require('stream');
 const { google } = require('googleapis');
-const { MIMEType } = require('util');
-const { file } = require('googleapis/build/src/apis/file/index.js');
+const { PDFDocument } = require('pdf-lib');
 
 
+const upload = multer(); // In-memory upload
+const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'; // Replace with your folder ID
 
-const upload = multer({ dest: 'uploads/' });
-
-const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'
-
-
-async function uploadToDrive(filePath, fileName) {
+// Upload buffer to Google Drive
+async function uploadToDrive(buffer, fileName) {
     const auth = new google.auth.GoogleAuth({
         keyFile: './creda.json',
         scopes: ['https://www.googleapis.com/auth/drive']
@@ -39,43 +37,61 @@ async function uploadToDrive(filePath, fileName) {
     const authClient = await auth.getClient();
     const drive = google.drive({ version: 'v3', auth: authClient });
 
-    const fileMetadata = {
-        name: fileName,
-        parents: [google_api_folder]
-    };
-
-    const media = {
-        mimeType: 'application/pdf',
-        body: fs.createReadStream(filePath)
-    };
+    const bufferStream = new stream.PassThrough();
+    bufferStream.end(buffer);
 
     const response = await drive.files.create({
-        resource: fileMetadata,
-        media: media,
-        fields: 'id'
+        resource: {
+            name: fileName,
+            parents: [google_api_folder],
+        },
+        media: {
+            mimeType: 'application/pdf',
+            body: bufferStream,
+        },
+        fields: 'id',
     });
 
     return response.data.id;
 }
 
-// POST endpoint to receive PDF and upload to Drive
+// Main upload route
 app.post('/upload', upload.single('pdf'), async (req, res) => {
     try {
-        const filePath = req.file.path;
-        const fileName = req.file.originalname;
+        if (!req.file || !req.file.buffer) {
+            return res.status(400).json({ message: "No PDF uploaded." });
+        }
 
-        const fileId = await uploadToDrive(filePath, fileName);
+        const userPassword = req.body.password;
+        if (!userPassword) {
+            return res.status(400).json({ message: "Password is required for PDF protection." });
+        }
 
-        fs.unlinkSync(filePath);
+        // Load and protect PDF from buffer
+        const pdfDoc = await PDFDocument.load(req.file.buffer);
+        const protectedPdfBytes = await pdfDoc.save({
+            userPassword: userPassword,
+            ownerPassword: userPassword,
+        });
 
-        res.json({ success: true, fileId });
-    } catch (err) {
-        console.error('Upload failed:', err);
-        res.status(500).json({ success: false, error: err.message });
+        const protectedFileName = `Protected_${req.file.originalname}`;
+
+        // Upload to Drive
+        const fileId = await uploadToDrive(protectedPdfBytes, protectedFileName);
+
+        return res.status(201).json({
+            message: "File uploaded and password-protected successfully.",
+            fileId: fileId,
+            fileName: protectedFileName
+        });
+
+    } catch (error) {
+        console.error("❌ Upload error:", error);
+        return res.status(500).json({
+            message: "File upload and protection failed. Please try again."
+        });
     }
 });
-
-
 
 app.post("/login", async (req, res) => {
     try {
