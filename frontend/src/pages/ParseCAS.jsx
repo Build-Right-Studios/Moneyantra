@@ -5,6 +5,7 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
 import Footer from '../components/Footer';
 import axiosInstance from '../utils/axiosInstance';
+import NavbarLogin from '../components/Navbarlogin'; 
 
 function ParseCAS() {
     const [file, setFile] = useState(null);
@@ -100,7 +101,8 @@ function ParseCAS() {
 
     return (
         <div className='item-center justify-center'>
-            <div className='text-[#6f779d] text-4xl open-sans-moneyantra text-center'>Upload CAS</div>
+            <NavbarLogin/>
+            <div className='text-[#6f779d] text-4xl mt-4 open-sans-moneyantra text-center'>Upload CAS</div>
             <div className='text-[#00b3be] text-2xl mt-3 text-center lg:text-4xl underline'>Instructions to download CAS</div>
             <div className='text-black px-4'>
                 <ul className='list-disc space-y-2 mt-4 lg:text-xl'>

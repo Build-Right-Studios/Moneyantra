@@ -72,9 +72,9 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
         }
 
         const userPassword = req.body.password;
-        const { user } = req.user; 
+        const user = "abcd" ; 
 
-        if (userPassword) {
+        if (!userPassword) {
             return res.status(400).json({ message: "Authentication failed or password missing." });
         }
 
