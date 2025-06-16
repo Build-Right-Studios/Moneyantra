@@ -23,62 +23,109 @@ const stream = require('stream');
 const { google } = require('googleapis');
 const { PDFDocument } = require('pdf-lib');
 
+const upload = multer();
+const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'; 
 
-const upload = multer(); // In-memory upload
-const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'; // Replace with your folder ID
-
-// Upload buffer to Google Drive
 async function uploadToDrive(buffer, fileName) {
-    const auth = new google.auth.GoogleAuth({
-        keyFile: './creda.json',
-        scopes: ['https://www.googleapis.com/auth/drive']
-    });
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: './creda.json', 
+            scopes: ['https://www.googleapis.com/auth/drive'] 
+        });
 
-    const authClient = await auth.getClient();
-    const drive = google.drive({ version: 'v3', auth: authClient });
+        console.log("Attempting to get Google Auth client...");
+        const authClient = await auth.getClient(); 
+        console.log("Google Auth client obtained.");
 
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(buffer);
+        const drive = google.drive({ version: 'v3', auth: authClient });
+        console.log("Google Drive API client initialized.");
 
-    const response = await drive.files.create({
-        resource: {
-            name: fileName,
-            parents: [google_api_folder],
-        },
-        media: {
-            mimeType: 'application/pdf',
-            body: bufferStream,
-        },
-        fields: 'id',
-    });
+        const bufferStream = new stream.PassThrough();
+        bufferStream.end(buffer); 
 
-    return response.data.id;
+        console.log(`Attempting to upload file '${fileName}' to Drive folder '${google_api_folder}'...`);
+        const response = await drive.files.create({
+            resource: {
+                name: fileName,
+                parents: [google_api_folder], 
+            },
+            media: {
+                mimeType: 'application/pdf',
+                body: bufferStream, 
+            },
+            fields: 'id', 
+        });
+        console.log("File uploaded to Google Drive successfully.");
+        return response.data.id; 
+    } catch (error) {
+        console.error("Error in uploadToDrive function:");
+        if (error.response) {
+            console.error("Google API Error Status:", error.response.status);
+            console.error("Google API Error Data:", error.response.data);
+        } else if (error.code === 'ENOENT') {
+            console.error("File Not Found Error:", error.message);
+            console.error("Likely 'creda.json' path is incorrect or file is missing.");
+        } else {
+            console.error("General Error:", error);
+        }
+        throw error; 
+    }
 }
 
 // Main upload route
-app.post('/upload', upload.single('pdf'), async (req, res) => {
+app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) => {
     try {
+        console.log("Received upload request.");
+
         if (!req.file || !req.file.buffer) {
+            console.warn("No PDF uploaded or buffer is empty.");
             return res.status(400).json({ message: "No PDF uploaded." });
         }
 
-        const userPassword = req.body.password;
+        console.log("File buffer received. Original filename:", req.file.originalname);
+
+        // **Removed the logic related to req.user and signupuser**
+        // If 'user' variable is no longer needed, you can remove 'const { user } = req.user;'
+        // However, if your authenticationToken still sets req.user for other purposes, keep the middleware.
+
+        const userPassword = req.body.password; // Get password from request body
+
         if (!userPassword) {
+            console.warn("Password is required for PDF protection but not provided.");
             return res.status(400).json({ message: "Password is required for PDF protection." });
         }
 
-        // Load and protect PDF from buffer
-        const pdfDoc = await PDFDocument.load(req.file.buffer);
-        const protectedPdfBytes = await pdfDoc.save({
-            userPassword: userPassword,
-            ownerPassword: userPassword,
-        });
+        // --- Step 1: Load and Protect PDF ---
+        let protectedPdfBytes;
+        try {
+            console.log("Loading PDF from buffer for protection...");
+            const pdfDoc = await PDFDocument.load(req.file.buffer);
+            console.log("PDF loaded. Applying password protection...");
+            protectedPdfBytes = await pdfDoc.save({
+                userPassword: userPassword,
+                ownerPassword: userPassword,
+            });
+            console.log("PDF protected successfully.");
+        } catch (pdfLibError) {
+            console.error("❌ Error during PDF loading or protection (pdf-lib):", pdfLibError);
+            return res.status(500).json({ message: "Failed to protect PDF. Invalid PDF or internal PDF processing error." });
+        }
 
         const protectedFileName = `Protected_${req.file.originalname}`;
+        console.log("Protected filename generated:", protectedFileName);
 
-        // Upload to Drive
-        const fileId = await uploadToDrive(protectedPdfBytes, protectedFileName);
+        // --- Step 2: Upload to Drive ---
+        let fileId;
+        try {
+            console.log("Initiating upload to Google Drive...");
+            fileId = await uploadToDrive(protectedPdfBytes, protectedFileName);
+            console.log("File uploaded to Drive. File ID:", fileId);
+        } catch (driveUploadError) {
+            console.error("❌ Error during Google Drive upload:", driveUploadError);
+            return res.status(500).json({ message: "Failed to upload protected PDF to Google Drive." });
+        }
 
+        // --- All steps successful ---
         return res.status(201).json({
             message: "File uploaded and password-protected successfully.",
             fileId: fileId,
@@ -86,9 +133,17 @@ app.post('/upload', upload.single('pdf'), async (req, res) => {
         });
 
     } catch (error) {
-        console.error("❌ Upload error:", error);
+        // This is a catch-all for any unhandled errors that might still slip through
+        console.error("❌ Unhandled general upload error in main try/catch block:");
+        console.error("   Error Name:", error.name);
+        console.error("   Error Message:", error.message);
+        console.error("   Error Stack:", error.stack); // Important for tracing
+        if (error.response) { // For Axios errors from an internal API call if any
+            console.error("   Response Data:", error.response.data);
+            console.error("   Response Status:", error.response.status);
+        }
         return res.status(500).json({
-            message: "File upload and protection failed. Please try again."
+            message: "File upload and protection failed. Please try again." // Generic message for frontend
         });
     }
 });
