@@ -7,13 +7,15 @@ import Footer from '../components/Footer';
 import axiosInstance from '../utils/axiosInstance';
 
 function ParseCAS() {
-
     const [file, setFile] = useState(null);
     const [status, setStatus] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState(''); // State for the password input
     const [isChecked, setIsChecked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // Ensure currentUser is robustly set.
+    // Consider how 'loggedInUser' is stored in localStorage.
+    // It should be a string (username, user ID). If it's not set, 'defaultUser' will be used.
     const handleFileChange = (e) => {
         const selected = e.target.files[0];
         if (selected && selected.type === "application/pdf") {
@@ -21,7 +23,7 @@ function ParseCAS() {
             setStatus(`Selected: ${selected.name}`);
         } else {
             setFile(null);
-            setStatus('❌ Please upload a valid PDF');
+            setStatus('Please upload a valid PDF');
         }
     };
 
@@ -30,6 +32,7 @@ function ParseCAS() {
             alert('Please select a file first.');
             return;
         }
+        // This alert is good and should prevent proceeding if 'password' state is empty.
         if (!password) {
             alert('Please Enter Password.');
             return;
@@ -39,31 +42,39 @@ function ParseCAS() {
             return;
         }
 
-        setIsLoading(true); 
+        setIsLoading(true);
 
         const formData = new FormData();
         formData.append('pdf', file);
-        formData.append('password', password); 
+        formData.append('password', password); // Correctly appending the password
+
+        // --- NEW DEBUGGING LOGS BEFORE SENDING ---
+        console.log("Frontend Debug: File selected:", file ? file.name : "No file");
+        console.log("Frontend Debug: Password state value:", password); // Log the actual value of password
+        // console.log("Frontend Debug: Current user value:", currentUser);
+        // console.log("Frontend Debug: Disclaimer checked:", isChecked);
+        // --- END NEW DEBUGGING LOGS ---
 
         try {
             const response = await axiosInstance.post('/upload', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data' // Important for FormData
                 }
             });
 
             if (response.status === 201) {
                 console.log("File uploaded and password-protected successfully:", response.data.message);
                 console.log("File ID:", response.data.fileId);
-                console.log("Protected File Name:", response.data.fileName); 
-                setStatus(`✅ ${response.data.message} File ID: ${response.data.fileId}`);
+                console.log("Protected File Name:", response.data.fileName);
+                setStatus(`${response.data.message} File ID: ${response.data.fileId}`);
                 alert("File uploaded and password-protected successfully!");
+                // Clear form fields on success
                 setFile(null);
                 setPassword('');
                 setIsChecked(false);
             } else {
                 console.error("File upload failed with status:", response.status, response.data.message);
-                setStatus(`❌ Upload failed: ${response.data.message || 'Unknown error'}`);
+                setStatus(`Upload failed: ${response.data.message || 'Unknown error'}`);
                 alert("File upload failed. Please check console for details.");
             }
         } catch (error) {
@@ -80,10 +91,10 @@ function ParseCAS() {
             } else {
                 errorMessage = `Error setting up request: ${error.message}`;
             }
-            setStatus(`❌ ${errorMessage}`);
+            setStatus(`${errorMessage}`);
             alert(errorMessage);
         } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     };
 
@@ -94,7 +105,7 @@ function ParseCAS() {
             <div className='text-black px-4'>
                 <ul className='list-disc space-y-2 mt-4 lg:text-xl'>
                     <li className='roboto-condensed-moneyantra'>
-                        Go to - <a href="[https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement](https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement)" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">CAMS</a>
+                        Go to - <a href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">CAMS</a>
                     </li>
                     <li className='roboto-condensed-moneyantra'>Select Statement Type - Detailed</li>
                     <li className='roboto-condensed-moneyantra'>Select Period - Put start date and end date as the period from when you started investing to current date</li>
@@ -135,8 +146,8 @@ function ParseCAS() {
 
                     <input
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={password} // Crucial: ensure this is bound to the state
+                        onChange={(e) => setPassword(e.target.value)} // Crucial: ensure state updates
                         className='border-2 border-[#f26419] w-2/4 rounded-lg px-2 h-[40px] text-center'
                     />
                 </div>
@@ -169,4 +180,4 @@ function ParseCAS() {
     )
 }
 
-export default ParseCAS
+export default ParseCAS;
