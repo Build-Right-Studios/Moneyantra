@@ -23,70 +23,122 @@ const stream = require('stream');
 const { google } = require('googleapis');
 const { PDFDocument } = require('pdf-lib');
 
+const upload = multer();
+const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
 
-const upload = multer(); // In-memory upload
-const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m'; // Replace with your folder ID
-
-// Upload buffer to Google Drive
 async function uploadToDrive(buffer, fileName) {
-    const auth = new google.auth.GoogleAuth({
-        keyFile: './creda.json',
-        scopes: ['https://www.googleapis.com/auth/drive']
-    });
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: './creda.json',
+            scopes: ['https://www.googleapis.com/auth/drive']
+        });
 
-    const authClient = await auth.getClient();
-    const drive = google.drive({ version: 'v3', auth: authClient });
+        const authClient = await auth.getClient();
+        const drive = google.drive({ version: 'v3', auth: authClient });
 
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(buffer);
+        const bufferStream = new stream.PassThrough();
+        bufferStream.end(buffer);
 
-    const response = await drive.files.create({
-        resource: {
-            name: fileName,
-            parents: [google_api_folder],
-        },
-        media: {
-            mimeType: 'application/pdf',
-            body: bufferStream,
-        },
-        fields: 'id',
-    });
-
-    return response.data.id;
+        const response = await drive.files.create({
+            resource: {
+                name: fileName,
+                parents: [google_api_folder],
+            },
+            media: {
+                mimeType: 'application/pdf',
+                body: bufferStream,
+            },
+            fields: 'id',
+        });
+        return response.data.id;
+    } catch (error) {
+        if (error.response) {
+            console.error("Google API Error Status:", error.response.status);
+            console.error("Google API Error Data:", error.response.data);
+        } else if (error.code === 'ENOENT') {
+            console.error("File Not Found Error:", error.message);
+        } else {
+            console.error("General Error:", error);
+        }
+        throw error;
+    }
 }
 
-// Main upload route
-app.post('/upload', upload.single('pdf'), async (req, res) => {
+// Assuming 'app' is your Express app instance
+app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) => {
     try {
         if (!req.file || !req.file.buffer) {
             return res.status(400).json({ message: "No PDF uploaded." });
         }
 
         const userPassword = req.body.password;
-        if (!userPassword) {
-            return res.status(400).json({ message: "Password is required for PDF protection." });
+        const { user } = req.user; 
+
+        if (userPassword) {
+            return res.status(400).json({ message: "Authentication failed or password missing." });
         }
 
-        // Load and protect PDF from buffer
-        const pdfDoc = await PDFDocument.load(req.file.buffer);
-        const protectedPdfBytes = await pdfDoc.save({
-            userPassword: userPassword,
-            ownerPassword: userPassword,
-        });
+        const adduser = async ({ user, userPassword }) => {
+            try {
+                let users = [];
+                try {
+                    const existingData = await fs.readFile('./UserFileData.json', 'utf-8');
+                    users = JSON.parse(existingData);
+                } catch (readError) {
+                    console.warn("User data file not found or empty, initializing new list.");
+                }
+
+                const existingUser = users.find(u => u.user === user);
+                if (existingUser) {
+                    existingUser.userPassword = userPassword;
+                } else {
+                    const newUser = { user, userPassword };
+                    users.push(newUser);
+                }
+
+                await fs.writeFile('./UserFileData.json', JSON.stringify(users, null, 2), 'utf-8');
+            } catch (error) {
+                console.error("Error while adding user:", error);
+            }
+        };
+
+        await adduser({ user, userPassword });
+
+        let protectedPdfBytes;
+        try {
+            const pdfDoc = await PDFDocument.load(req.file.buffer);
+            pdfDoc.setPassword(userPassword);
+            protectedPdfBytes = await pdfDoc.save();
+        } catch (pdfLibError) {
+            console.error("Error during PDF loading or protection:", pdfLibError);
+            return res.status(500).json({ message: "Failed to protect PDF. Invalid PDF or internal processing error." });
+        }
 
         const protectedFileName = `Protected_${req.file.originalname}`;
 
-        // Upload to Drive
-        const fileId = await uploadToDrive(protectedPdfBytes, protectedFileName);
+        let fileId;
+        try {
+            fileId = await uploadToDrive(protectedPdfBytes, protectedFileName);
+        } catch (driveUploadError) {
+            console.error("Error during Google Drive upload:", driveUploadError);
+            return res.status(500).json({ message: "Failed to upload protected PDF to Google Drive." });
+        }
 
         return res.status(201).json({
             message: "File uploaded and password-protected successfully.",
-            fileId: fileId,
+            fileId,
             fileName: protectedFileName
         });
 
     } catch (error) {
-        console.error("❌ Upload error:", error);
+        console.error("Unhandled general upload error:");
+        console.error("Error Name:", error.name);
+        console.error("Error Message:", error.message);
+        console.error("Error Stack:", error.stack);
+        if (error.response) {
+            console.error("Response Data:", error.response.data);
+            console.error("Response Status:", error.response.status);
+        }
         return res.status(500).json({
             message: "File upload and protection failed. Please try again."
         });
