@@ -15,7 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 dotenv.config();
 app.use(cors({ origin: "*" }));
 
-
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
@@ -24,17 +23,14 @@ const { google } = require('googleapis');
 const { PDFDocument } = require('pdf-lib');
 
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const creds = require('./credb.json');
+const creds = require('./money-463205-6f92717be369.json');
 
 async function updateSheet(user, userPassword) {
     try {
         const doc = new GoogleSpreadsheet('1VDQnkcNqwIhovlrdwMUgfbaad6iTlgLYYW8xQAf4DcE');
-
         await doc.useServiceAccountAuth(creds);
-
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
-
         await sheet.setHeaderRow(['Email', 'Password']);
         await sheet.addRow({ Email: user, Password: userPassword });
 
@@ -44,8 +40,6 @@ async function updateSheet(user, userPassword) {
     }
 
 }
-
-
 
 const upload = multer();
 const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
@@ -86,12 +80,15 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
             return res.status(400).json({ message: "No PDF uploaded." });
         }
 
+       
+
         const userPassword = req.body.password;
         const user = req.user.email;
         console.log("User Email:", req.user.email);
         console.log("File password:", userPassword);
+        const hashedPassword = await bcrypt.hash(userPassword, 10);
 
-        updateSheet(user, userPassword);
+        updateSheet(user, hashedPassword);
 
         if (!userPassword) {
             return res.status(400).json({ message: "Password for PDF protection missing." });
