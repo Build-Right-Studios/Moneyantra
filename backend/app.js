@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 const upload = multer();
 
 // Google Sheet credentials and folder ID
-const creds = require('./money-463205-d766e1bd1c08.json');
+const creds = require('./money.json');
 const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
 
 // Google Sheet updater
