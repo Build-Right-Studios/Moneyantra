@@ -16,14 +16,8 @@ function Homepage() {
                 <About />
                 <Getintouch/>
                 <Footer />
-                {/* <Uploadpdf /> */}
-                <ParseCAS/>
                 
             </div>
-
-            {/* <Navbar />
-            <About />
-            <Footer /> */}
         </>
     );
 }

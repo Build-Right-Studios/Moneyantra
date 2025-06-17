@@ -5,17 +5,15 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
 import Footer from '../components/Footer';
 import axiosInstance from '../utils/axiosInstance';
+import NavbarLogin from '../components/Navbarlogin'; 
 
 function ParseCAS() {
     const [file, setFile] = useState(null);
     const [status, setStatus] = useState('');
-    const [password, setPassword] = useState(''); // State for the password input
+    const [password, setPassword] = useState(''); 
     const [isChecked, setIsChecked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Ensure currentUser is robustly set.
-    // Consider how 'loggedInUser' is stored in localStorage.
-    // It should be a string (username, user ID). If it's not set, 'defaultUser' will be used.
     const handleFileChange = (e) => {
         const selected = e.target.files[0];
         if (selected && selected.type === "application/pdf") {
@@ -32,7 +30,6 @@ function ParseCAS() {
             alert('Please select a file first.');
             return;
         }
-        // This alert is good and should prevent proceeding if 'password' state is empty.
         if (!password) {
             alert('Please Enter Password.');
             return;
@@ -46,19 +43,15 @@ function ParseCAS() {
 
         const formData = new FormData();
         formData.append('pdf', file);
-        formData.append('password', password); // Correctly appending the password
+        formData.append('password', password);
 
-        // --- NEW DEBUGGING LOGS BEFORE SENDING ---
         console.log("Frontend Debug: File selected:", file ? file.name : "No file");
-        console.log("Frontend Debug: Password state value:", password); // Log the actual value of password
-        // console.log("Frontend Debug: Current user value:", currentUser);
-        // console.log("Frontend Debug: Disclaimer checked:", isChecked);
-        // --- END NEW DEBUGGING LOGS ---
+        console.log("Frontend Debug: Password state value:", password); 
 
         try {
             const response = await axiosInstance.post('/upload', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data' // Important for FormData
+                    'Content-Type': 'multipart/form-data' 
                 }
             });
 
@@ -68,7 +61,6 @@ function ParseCAS() {
                 console.log("Protected File Name:", response.data.fileName);
                 setStatus(`${response.data.message} File ID: ${response.data.fileId}`);
                 alert("File uploaded and password-protected successfully!");
-                // Clear form fields on success
                 setFile(null);
                 setPassword('');
                 setIsChecked(false);
@@ -100,7 +92,8 @@ function ParseCAS() {
 
     return (
         <div className='item-center justify-center'>
-            <div className='text-[#6f779d] text-4xl open-sans-moneyantra text-center'>Upload CAS</div>
+            <NavbarLogin/>
+            <div className='text-[#6f779d] text-4xl mt-4 open-sans-moneyantra text-center'>Upload CAS</div>
             <div className='text-[#00b3be] text-2xl mt-3 text-center lg:text-4xl underline'>Instructions to download CAS</div>
             <div className='text-black px-4'>
                 <ul className='list-disc space-y-2 mt-4 lg:text-xl'>
