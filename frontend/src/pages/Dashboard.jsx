@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import NavbarLogin from '../components/Navbarlogin'; 
 
 function Dashboard() {
   return (
-    <div>Dashboard</div>
-  )
+    <div>
+      <NavbarLogin/> 
+      <>Dashboard</>
+    </div>
+  );
 }
 
-export default Dashboard
+export default Dashboard;
