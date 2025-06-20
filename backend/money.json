@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "money-463205",
+  "private_key_id": "d766e1bd1c089996dee998714e57d12163cfb65b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuuIOlCnhI90ti\no6LAd+uc8lL2qa4eLWvh+S4jGNqv8G4WvQ+zzRWtCfEogHWVOya4ZFfusnG2SnDG\nDLCfGFMty4jRSVEXgrKlH00JwTilmUHulZmihgqBbm58bzpe3kZwVVjCXAJHqRfw\nEGM9vfL/MhbfMQAFQrPh3/FvmNniFmQjtl81oDH9P/GJfMmgOs7Dodaoj9ok/dpQ\nihfqQ8FQI5YyrTPAIZWLZyzDzUsEX4A7xfOl8XU5tJIWzt5uRbV5t/8pnEqwicHF\n/bRNC4Zv79paOD3lgBNq3YsCm26RV3IupXGeXxfDaAqkzgJzLGpbk3XQDeLnOxmi\n3YquifjHAgMBAAECggEAN+2rgkCkOWMjt/r+hZK9kptFMF0nddR/VLIRcT2q/ye8\n7b1uUdVjy2TD0/2u5eqt3deNCEUJvlr814DHZt3//khJTwkjkp2NNusam3VE/0lc\nQBWWPN6gbUceyelG64hGTv4a7/hI6Ix5s6hjRCfSKZtsk9xZD9YGw9aOL/VjRYny\n3+YIz5Vktc6Ks9MoP6Ietuhiv+mRMYSq2dSp6S4Q8Ysed7ElhTtYfpu85YmIMTvG\nScoIB0Z3rZ7d/vWGXFTYCViKPrgd0C9MO/VmgSy8iMJKrC0AK86jx4ZgehOfQNKB\nWWhfGXC2jC42C2g1CT/E08AxjfdxoIuyA0IIFof9fQKBgQDa/n2itG5NCVZUUFx8\nhh19PILvyL1Rlsh6yYKOv/I4vBaRDt0ViUgyeM6eGeC9qLDNpUQ+rmdaPck3HNx1\npq50Zb02tMYu8PBRNPwGN2cQxQRnPUSOfp56Hp5GPrObWkKAwBgENbyztd5kKbs/\nLpZbQu0kbHHeG+Qh4Sv05FSzDQKBgQDMPstHfSvpS2q+8QuBpPrVsRXjVoEuWBDL\n3Y3uJZPyWKJDI671wC1Kt1Cbx1JlNpX2QKrFqbifqnbHa4/56txsGOifuD9MLzf1\nECp8uP0J158PVf4YnkRIfm4RJbLu8OStohnoar3cIBOzI9AZQCWL8dNfqJSloSsd\nn3z8cMP2IwKBgH9Naxk3C9uKbv3KTUkx6ViQ4YikR7FzFo2SMGvtFtB2PiQK4OgR\nCsAUS//KCUQXGNgilz5cwcXKnvqDs4BM6aLONaTkh0RoWTrLsyml8SrlbH7bNcwj\nvNo+jEFHV78aRAh2Ij/oQQ6yzVmqjKfY3BynFhWTWMoFqqMrMxND3BzNAoGAIGCP\n7uw7ysbGzC//5/RUQw3Ib3pmDget2fNsLWVNl6xPRJ9ie9iUFXUL1TX6rMrDaP8F\nU0I9XyoxnBlEAJUnjgdA0RjvB8+waiu+4HievDGvKEo0doiYQHmyTwuP2urbBV9e\nBgbtw/hdxxcVRPtzOEUEgfSCY+Mxp4eB0664kcsCgYEAsJeQuZygezCBIdhj5v/C\neXCsVQ9gewD1ufNLcffdur/Ks4xyvCMsa1BRAhyqQEqOieI1XzbM8qVmCSTo1YIT\nzRX02Rnrj/OJNQlqm7lmFDiUiCwSO2RM050uJGkIuBhnYgiME+swGr644UxLIDYY\nIuds5mWIZyoOtgNSRWnh1Mc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "moneyantra@money-463205.iam.gserviceaccount.com",
+  "client_id": "105368517901003918864",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/moneyantra%40money-463205.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
