@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import Homepage from './pages/landing_page/Homepage.jsx'
 import LoginSignup from './pages/Auth/LoginSignup'
@@ -20,6 +19,7 @@ function App() {
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/reset-password/:name/:token' element={<ResetPassword />} />
         <Route path='/parse-cas' element={<ParseCAS />} />
+        <Route path='/display-cas'  element={<DisplayCAs/>} />
       </Routes>
     </div>
   )
