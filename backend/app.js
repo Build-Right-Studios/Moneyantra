@@ -25,16 +25,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const upload = multer();
 
-<<<<<<< HEAD
+
 // Google Sheet credentials and folder ID
 const creds = require('./money.json');
 
 // Google credentials
 
-=======
-const GOOGLE_CREDS_PATH = path.join(__dirname, 'money-463205-d766e1bd1c08.json');
-const creds = require(GOOGLE_CREDS_PATH);
->>>>>>> 98e7fffe65eeffa4572cbf7303b3514dcc1d6ed9
+
 const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
 
 async function updateSheet(user, userPassword) {

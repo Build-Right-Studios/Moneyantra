@@ -1,30 +1,7 @@
 [
   {
-    "name": "Aryesh",
-    "email": "aryesh@mail",
-    "password": "654321"
-  },
-  {
-    "name": "BRS",
-    "email": "team@meet",
-    "password": "$2b$10$9Ix7nMw1QfR9jkHN.bu2EepgIsqGX.BaOhsLez97l1wd5GKPl7/ui"
-  },
-  {
-    "name": "BRS NEW",
-    "email": "brs@meet.com",
-    "password": "$2b$10$Hrbe5MQ3Qs1Fon1/hh2q8.RXm7AloUsmka2h8cEtBRVgzzem.3kHC"
-  },
-  {
     "name": "Aryansh",
     "email": "aryanshchauhan77@gmail.com",
-<<<<<<< HEAD
-    "password": "$2b$10$RF.ZCTR0gemsh9ALo8MkUOUi.bUIms4pvOvjU2WCmyR6G/lueGAn2"
-  },
-  {
-    "name": "Aryesh",
-    "email": "aryeshsrivastava@gmail.com",
-    "password": "$2b$10$5l9FXBKQvAobyY3s0oeU4eKq8OuRgVmtUt6YTkSPgnEmT076lwPUW"
-=======
     "password": "$2b$10$RF.ZCTR0gemsh9ALo8MkUOUi.bUIms4pvOvjU2WCmyR6G/lueGAn2",
     "cas": {
       "hashedPdfPassword": "123456",
@@ -153,6 +130,25 @@
         "file_type": "CAMS"
       }
     }
->>>>>>> 98e7fffe65eeffa4572cbf7303b3514dcc1d6ed9
+  },
+  {
+    "name": "Aryesh",
+    "email": "aryesh@mail",
+    "password": "654321"
+  },
+  {
+    "name": "Aryesh",
+    "email": "aryeshsrivastava@gmail.com",
+    "password": "$2b$10$5l9FXBKQvAobyY3s0oeU4eKq8OuRgVmtUt6YTkSPgnEmT076lwPUW"
+  },
+  {
+    "name": "BRS",
+    "email": "team@meet",
+    "password": "$2b$10$9Ix7nMw1QfR9jkHN.bu2EepgIsqGX.BaOhsLez97l1wd5GKPl7/ui"
+  },
+  {
+    "name": "BRS NEW",
+    "email": "brs@meet.com",
+    "password": "$2b$10$Hrbe5MQ3Qs1Fon1/hh2q8.RXm7AloUsmka2h8cEtBRVgzzem.3kHC"
   }
 ]
