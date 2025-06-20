@@ -10,26 +10,25 @@ const path = require('path');
 const stream = require('stream');
 const { google } = require('googleapis');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
+const { execFile } = require("child_process");
 
-// Custom modules
 const authenticationToken = require('./utilities.js');
 const loginuser = require('./loginuser.js');
 const signupuser = require('./signupuser.js');
 const forgotpassword = require('./forgotpassword.js');
 const resetpassword = require('./resetpassword.js');
+const { saveCasDataForUser } = require('./uploads/CasStore');
 
-// Config and middleware
 dotenv.config();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const upload = multer();
 
-// Google credentials
-const creds = require('./money-463205-d766e1bd1c08.json');
+const GOOGLE_CREDS_PATH = path.join(__dirname, 'money-463205-d766e1bd1c08.json');
+const creds = require(GOOGLE_CREDS_PATH);
 const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
 
-// Update Google Sheet
 async function updateSheet(user, userPassword) {
     try {
         const doc = new GoogleSpreadsheet('1VDQnkcNqwIhovlrdwMUgfbaad6iTlgLYYW8xQAf4DcE');
@@ -38,13 +37,12 @@ async function updateSheet(user, userPassword) {
         const sheet = doc.sheetsByIndex[0];
         await sheet.setHeaderRow(['Email', 'Password']);
         await sheet.addRow({ Email: user, Password: userPassword });
-        console.log("Google Sheet updated successfully.");
+        console.log("Google Sheet updated successfully for user:", user);
     } catch (err) {
         console.error("Google Sheet error:", err);
     }
 }
 
-// Upload to Google Drive
 async function uploadToDrive(buffer, fileName) {
     try {
         const auth = new google.auth.GoogleAuth({
@@ -70,6 +68,7 @@ async function uploadToDrive(buffer, fileName) {
             fields: 'id',
         });
 
+        console.log(`File uploaded to Google Drive: ${fileName} with ID: ${response.data.id}`);
         return response.data.id;
     } catch (error) {
         console.error("Drive upload error:", error);
@@ -77,9 +76,45 @@ async function uploadToDrive(buffer, fileName) {
     }
 }
 
+app.get('/get-cas', authenticationToken, (req, res) => {
+    try {
+        const userDataPath = path.join(__dirname, 'usersData.json');
+
+        if (!fs.existsSync(userDataPath)) {
+            console.log("userData.json not found at:", userDataPath);
+            return res.status(404).json({ message: "No CAS data file found on server." });
+        }
+
+        const data = fs.readFileSync(userDataPath, 'utf8');
+        let json;
+        try {
+            json = JSON.parse(data);
+        } catch (parseErr) {
+            console.error("Error parsing userData.json:", parseErr);
+            return res.status(500).json({ message: "Corrupted CAS data file on server." });
+        }
+
+        const userEmail = req.user.email;
+        const userObj = json.find(u => u.email === userEmail);
+
+        if (!userObj || !userObj.cas) {
+            console.log(`No CAS data found for user: ${userEmail}`);
+            return res.status(404).json({ message: "No CAS data found for this user." });
+        }
+
+        res.status(200).json({ casData: userObj.cas });
+
+    } catch (err) {
+        console.error("Server error when fetching CAS data:", err);
+        res.status(500).json({ message: "Failed to fetch CAS data due to a server error." });
+    }
+});
+
+
 app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) => {
     try {
         if (!req.file || !req.file.buffer) {
+            console.error("Upload Error: No PDF file or buffer found.");
             return res.status(400).json({ message: "No PDF uploaded." });
         }
 
@@ -87,44 +122,73 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
         const user = req.user.email;
 
         if (!userPassword) {
+            console.error("Upload Error: PDF password missing.");
             return res.status(400).json({ message: "Password for PDF missing." });
         }
 
-        const hashedPassword = await bcrypt.hash(userPassword, 10);
-        updateSheet(user, hashedPassword);
+        bcrypt.hash(userPassword, 10)
+            .then(hashedPassword => updateSheet(user, hashedPassword))
+            .catch(err => console.error("Error hashing password for sheet update:", err));
 
-        const fileName = `${user}_uploaded.pdf`;
-        const tempFilePath = path.join(__dirname, fileName);
+        const fileName = `${user}_uploaded_${Date.now()}.pdf`;
+        const tempFilePath = path.join(__dirname, 'temp_uploads', fileName);
+
+        const tempUploadsDir = path.join(__dirname, 'temp_uploads');
+        if (!fs.existsSync(tempUploadsDir)) {
+            fs.mkdirSync(tempUploadsDir, { recursive: true });
+        }
 
         fs.writeFileSync(tempFilePath, req.file.buffer);
+        console.log(`Temporary PDF saved to: ${tempFilePath}`);
 
-        const { execFile } = require("child_process");
-        execFile("python", ["cas_parser.py", tempFilePath, userPassword], async (err, stdout, stderr) => {
-            fs.unlinkSync(tempFilePath);
+        execFile("python", [path.join(__dirname, "cas_parser.py"), tempFilePath, userPassword], async (err, stdout, stderr) => {
+            try {
+                fs.unlinkSync(tempFilePath);
+                console.log(`Temporary file deleted: ${tempFilePath}`);
+            } catch (unlinkErr) {
+                console.error("Error deleting temporary file:", unlinkErr);
+            }
 
             if (err) {
-                console.error("Python error:", stderr);
-                return res.status(500).json({ message: "Failed to parse CAS PDF." });
+                console.error("Python script execution error:", err);
+                console.error("Python stderr:", stderr);
+                return res.status(500).json({ message: "Failed to parse CAS PDF. Check server logs for details." });
+            }
+
+            if (stderr) {
+                 console.warn("Python script output to stderr (warnings/non-fatal errors):", stderr);
             }
 
             let jsonData;
             try {
                 jsonData = JSON.parse(stdout);
+                console.log("CAS data parsed successfully by Python script.");
             } catch (parseErr) {
-                console.error("JSON parse error:", parseErr);
-                return res.status(500).json({ message: "Invalid JSON from parser." });
+                console.error("JSON parse error from Python script stdout:", parseErr);
+                console.error("Python stdout (raw):", stdout);
+                return res.status(500).json({ message: "Invalid JSON received from PDF parser. Please try again or check PDF format." });
             }
 
-            // Upload to Google Drive
             let fileId;
             try {
                 fileId = await uploadToDrive(req.file.buffer, fileName);
-            } catch (uploadErr) {
-                return res.status(500).json({ message: "Failed to upload PDF to Google Drive." });
+                console.log("PDF successfully uploaded to Google Drive.");
+            }catch (uploadErr) {
+    console.error("Google Drive upload error:", uploadErr.response?.data || uploadErr.message || uploadErr);
+    return res.status(500).json({ message: "Failed to upload PDF to Google Drive." });
+}
+
+
+            try {
+                saveCasDataForUser(user, jsonData, userPassword);
+                console.log("CAS data saved for user in CasStore.");
+            } catch (saveErr) {
+                console.error("Error saving CAS data to CasStore:", saveErr);
+                return res.status(500).json({ message: "Parsed, but failed to save CAS data internally." });
             }
 
             return res.status(201).json({
-                message: "File uploaded",
+                message: "File uploaded and parsed successfully!",
                 fileId,
                 fileName,
                 casData: jsonData
@@ -132,12 +196,11 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
         });
 
     } catch (err) {
-        console.error("Upload failed:", err);
-        return res.status(500).json({ message: "File upload failed. Please try again." });
+        console.error("Overall upload route error:", err);
+        return res.status(500).json({ message: "File upload failed due to an unexpected server error. Please try again." });
     }
 });
 
-// Login
 app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -148,7 +211,7 @@ app.post("/login", async (req, res) => {
         const result = await loginuser({ email, password });
 
         if (result.success) {
-            return res.status(201).json({
+            return res.status(200).json({
                 message: "User logged in successfully.",
                 user: result.user,
                 authToken: result.authToken
@@ -157,12 +220,11 @@ app.post("/login", async (req, res) => {
             return res.status(result.message === "Email not found." || result.message === "Incorrect password." ? 401 : 500).json({ message: result.message });
         }
     } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).json({ message: "An error occurred." });
+        console.error("Login server error:", error);
+        res.status(500).json({ message: "An internal server error occurred during login." });
     }
 });
 
-// Signup
 app.post("/signup", async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -182,12 +244,11 @@ app.post("/signup", async (req, res) => {
             return res.status(result.message === "Email already in use." ? 409 : 500).json({ message: result.message });
         }
     } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ message: "An error occurred." });
+        console.error("Signup server error:", error);
+        res.status(500).json({ message: "An internal server error occurred during signup." });
     }
 });
 
-// Forgot password
 app.post('/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
@@ -197,44 +258,47 @@ app.post('/forgot-password', async (req, res) => {
 
         const result = await forgotpassword({ email });
         if (result.success) {
-            return res.status(201).json({
-                message: "Mail sent.",
+            return res.status(200).json({
+                message: "Password reset email sent successfully.",
                 authToken: result.authToken
             });
         } else {
-            return res.status(500).json({ message: result.message });
+            return res.status(500).json({ message: result.message || "Failed to send password reset email." });
         }
     } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ message: "An error occurred." });
+        console.error("Forgot password server error:", error);
+        res.status(500).json({ message: "An internal server error occurred during forgot password request." });
     }
 });
 
-// Reset password
 app.post('/reset-password/:name/:token', async (req, res) => {
     const { name, token } = req.params;
     const { newPassword } = req.body;
 
     try {
+        if (!newPassword) {
+            return res.status(400).json({ success: false, message: "New password is required." });
+        }
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         const result = await resetpassword({ name, hashedPassword });
 
         if (result.success) {
-            return res.status(200).json({ success: true, message: "Password reset successful" });
+            return res.status(200).json({ success: true, message: "Password reset successful." });
         } else {
-            return res.status(500).json({ success: false, message: "Could not reset password" });
+            return res.status(500).json({ success: false, message: result.message || "Could not reset password." });
         }
     } catch (err) {
-        return res.status(400).json({ success: false, message: "Invalid or expired token" });
+        console.error("Reset password server error:", err);
+        return res.status(400).json({ success: false, message: "Invalid or expired token, or server error during password reset." });
     }
 });
 
-// Root
 app.get("/", (req, res) => {
-    res.send("hello");
+    res.send("hello from server!");
 });
 
-// Start server
-app.listen(8080, () => {
-    console.log("Server is listening on port 8080");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
 });
