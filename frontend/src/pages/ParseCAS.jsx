@@ -77,28 +77,29 @@ function ParseCAS() {
 
       <div
         onClick={toggleInstructions}
-        className="cursor-pointer text-[#00b3be] text-2xl m-4 text-center lg:text-2xl underline"
+        className="cursor-pointer text-[#00b3be] text-2xl  text-center lg:text-2xl underline"
       >
         Instructions to download CAS
       </div>
 
       {showInstructions && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto md:p-4"
           onClick={toggleInstructions}
         >
           <div
-            className="bg-white p-4 rounded-lg w-11/12 md:w-2/3 relative"
+            className="bg-white p-4 max-md:p-0 rounded-lg w-11/12 md:w-2/3 relative"
             onClick={(e) => e.stopPropagation()}
           >
+
 
             <button
               onClick={toggleInstructions}
               className="absolute top-20 right-10 text-9xl text-gray-700 hover:text-black"
             >
-             X
+              X
             </button>
-            <div className="p-4 m-4">
+            <div className="p-4 m-4 max-sm:p-0 max-sm:m-0 ">
               <h2 className="text-[#33658a] text-2xl mb-4 text-center font-semibold">
                 How to Download Your CAS
               </h2>
