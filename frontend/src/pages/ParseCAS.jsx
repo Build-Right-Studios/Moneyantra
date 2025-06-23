@@ -92,7 +92,6 @@ function ParseCAS() {
             onClick={(e) => e.stopPropagation()}
           >
 
-
             <button
               onClick={toggleInstructions}
               className="absolute top-20 right-10 text-9xl text-gray-700 hover:text-black"
