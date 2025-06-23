@@ -73,7 +73,7 @@ function ParseCAS() {
       <div className="text-[#6f779d] text-4xl mt-4 open-sans-moneyantra text-center">
         Upload CAS
       </div>
-      
+
 
       <div
         onClick={toggleInstructions}
@@ -84,51 +84,55 @@ function ParseCAS() {
 
       {showInstructions && (
         <div
-          className="fixed p-4 inset-0 z-50  rounded-2xl flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto p-4"
           onClick={toggleInstructions}
         >
           <div
             className="bg-white p-4 rounded-lg w-11/12 md:w-2/3 relative"
             onClick={(e) => e.stopPropagation()}
           >
+
             <button
               onClick={toggleInstructions}
-              className="absolute top-2 right-4 text-xl text-gray-700 hover:text-black"
+              className="absolute top-20 right-10 text-9xl text-gray-700 hover:text-black"
             >
-              &times;
+             X
             </button>
-            <h2 className="text-[#33658a] text-2xl mb-4 text-center font-semibold">
-              How to Download Your CAS
-            </h2>
-            <ul className="list-disc space-y-2 px-4 text-black text-base md:text-lg">
-              <li>
-                Go to{" "}
-                <a
-                  href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline"
-                >
-                  CAMS
-                </a>
-              </li>
-              <li>Select Statement Type – Detailed</li>
-              <li>Select Period – Start date to current date</li>
-              <li>
-                Select Folio Listing as – Transacted folios and folios with
-                Balances
-              </li>
-              <li>Enter your email and password</li>
-              <li>
-                You will receive CAS over email in PDF format. Upload it below.
-              </li>
-            </ul>
-            <div className="w-full px-4">
-              <img src={cas1} alt="CAS sample 1" />
+            <div className="p-4 m-4">
+              <h2 className="text-[#33658a] text-2xl mb-4 text-center font-semibold">
+                How to Download Your CAS
+              </h2>
+              <ul className="list-disc space-y-2 px-4 text-black text-base md:text-lg">
+                <li>
+                  Go to{" "}
+                  <a
+                    href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    CAMS
+                  </a>
+                </li>
+                <li>Select Statement Type – Detailed</li>
+                <li>Select Period – Start date to current date</li>
+                <li>
+                  Select Folio Listing as – Transacted folios and folios with
+                  Balances
+                </li>
+                <li>Enter your email and password</li>
+                <li>
+                  You will receive CAS over email in PDF format. Upload it below.
+                </li>
+              </ul>
+              <div className="w-full px-4">
+                <img src={cas1} alt="CAS sample 1" />
+              </div>
+              <div className="w-full px-4">
+                <img src={cas2} alt="CAS sample 2" />
+              </div>
             </div>
-            <div className="w-full px-4">
-              <img src={cas2} alt="CAS sample 2" />
-            </div>
+
 
           </div>
         </div>
