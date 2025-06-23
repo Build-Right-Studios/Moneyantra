@@ -84,11 +84,11 @@ function ParseCAS() {
 
       {showInstructions && (
         <div
-          className="fixed inset-0 z-50  rounded-2xl flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed p-4 inset-0 z-50  rounded-2xl flex items-center justify-center bg-black bg-opacity-50"
           onClick={toggleInstructions}
         >
           <div
-            className="bg-white rounded-lg w-11/12 md:w-2/3 p-6 relative"
+            className="bg-white p-4 rounded-lg w-11/12 md:w-2/3 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
