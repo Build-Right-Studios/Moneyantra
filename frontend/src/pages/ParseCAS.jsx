@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import cas1 from "../components/images/CAS1.png";
 import cas2 from "../components/images/CAS2.png";
@@ -14,23 +14,8 @@ function ParseCAS() {
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchCAS = async () => {
-//       try {
-//         const res = await axiosInstance.get('/get-cas');
-//         console.log(res.data.message);
-//         if (res.data.casData) {
-//           localStorage.setItem("casData", JSON.stringify(res.data.casData));
-//           navigate("/display-cas");
-//         }
-//       } catch (err) {
-//         console.log("No existing CAS found for user.");
-//       }
-//     };
-//     fetchCAS();
-//   }, [navigate]);
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -77,51 +62,82 @@ function ParseCAS() {
     }
   };
 
+  const toggleInstructions = () => {
+    setShowInstructions(!showInstructions);
+  };
+
+
   return (
     <div className="item-center justify-center">
       <NavbarLogin />
       <div className="text-[#6f779d] text-4xl mt-4 open-sans-moneyantra text-center">
         Upload CAS
       </div>
-      <div className="text-[#00b3be] text-2xl mt-3 text-center lg:text-4xl underline">
+      
+
+      <div
+        onClick={toggleInstructions}
+        className="cursor-pointer text-[#00b3be] text-2xl m-4 text-center lg:text-2xl underline"
+      >
         Instructions to download CAS
       </div>
 
-      {/* instructions */}
-      <div className="text-black px-4">
-        <ul className="list-disc space-y-2 mt-4 lg:text-xl">
-          <li>
-            Go to{" "}
-            <a
-              href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline"
+      {showInstructions && (
+        <div
+          className="fixed inset-0 z-50  rounded-2xl flex items-center justify-center bg-black bg-opacity-50"
+          onClick={toggleInstructions}
+        >
+          <div
+            className="bg-white rounded-lg w-11/12 md:w-2/3 p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={toggleInstructions}
+              className="absolute top-2 right-4 text-xl text-gray-700 hover:text-black"
             >
-              CAMS
-            </a>
-          </li>
-          <li>Select Statement Type – Detailed</li>
-          <li>Select Period – Start date to current date</li>
-          <li>
-            Select Folio Listing as – Transacted folios and folios with Balances
-          </li>
-          <li>Enter your email and password</li>
-          <li>You will receive CAS over email in PDF format. Upload it below.</li>
-        </ul>
-      </div>
+              &times;
+            </button>
+            <h2 className="text-[#33658a] text-2xl mb-4 text-center font-semibold">
+              How to Download Your CAS
+            </h2>
+            <ul className="list-disc space-y-2 px-4 text-black text-base md:text-lg">
+              <li>
+                Go to{" "}
+                <a
+                  href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  CAMS
+                </a>
+              </li>
+              <li>Select Statement Type – Detailed</li>
+              <li>Select Period – Start date to current date</li>
+              <li>
+                Select Folio Listing as – Transacted folios and folios with
+                Balances
+              </li>
+              <li>Enter your email and password</li>
+              <li>
+                You will receive CAS over email in PDF format. Upload it below.
+              </li>
+            </ul>
+            <div className="w-full px-4">
+              <img src={cas1} alt="CAS sample 1" />
+            </div>
+            <div className="w-full px-4">
+              <img src={cas2} alt="CAS sample 2" />
+            </div>
 
-      {/* sample images */}
-      <div className="w-full px-4">
-        <img src={cas1} alt="CAS sample 1" />
-      </div>
-      <div className="w-full px-4">
-        <img src={cas2} alt="CAS sample 2" />
-      </div>
+          </div>
+        </div>
+      )}
 
-      {/* upload card */}
+
+
       <div className="mx-auto justify-center md:w-[80%] px-4 flex flex-col mt-8">
-        <label className="cursor-pointer shadow-2xl rounded-2xl">
+        <label className="cursor-pointer shadow-2xl mb-4 rounded-2xl">
           <input
             type="file"
             accept="application/pdf"
@@ -138,7 +154,6 @@ function ParseCAS() {
 
         {status && <p className="mt-4 text-sm text-gray-700">{status}</p>}
 
-        {/* password */}
         <div className="text-3xl flex flex-row items-center justify-center mt-6 gap-2">
           <TbLockPassword size={30} />
           <span>Password</span>
@@ -152,7 +167,6 @@ function ParseCAS() {
           />
         </div>
 
-        {/* disclaimer */}
         <div className="flex flex-col lg:flex-row lg:gap-5 mt-6">
           <input
             type="checkbox"
@@ -167,15 +181,13 @@ function ParseCAS() {
           </p>
         </div>
 
-        {/* upload button */}
         <button
           onClick={handleUpload}
           disabled={!isChecked || isLoading}
-          className={`m-4 px-4 py-2 rounded text-white ${
-            isChecked && !isLoading
-              ? "bg-[#33658a] hover:bg-[#33658a]"
-              : "bg-gray-400 cursor-not-allowed"
-          }`}
+          className={`m-4 px-4 py-2 rounded text-white ${isChecked && !isLoading
+            ? "bg-[#33658a] hover:bg-[#33658a]"
+            : "bg-gray-400 cursor-not-allowed"
+            }`}
         >
           {isLoading ? "Uploading & Parsing..." : "Upload"}
         </button>
