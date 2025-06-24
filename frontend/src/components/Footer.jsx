@@ -8,7 +8,7 @@ function Footer() {
         <footer class="moneyantra-footer">
             <div class="footer-top">
                 <div class="footer-logo-section">
-                    <img src='media/images/moneyantra.ico' alt="image"></img>
+                    <img src='media/images/moneyantra.ico' className="h-40 w-40 md:h-full md:w-full " alt="image"></img>
                 </div>
 
                 <div class="footer-links-group">
