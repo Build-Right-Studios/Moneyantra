@@ -77,7 +77,7 @@ function ParseCAS() {
 
       <div
         onClick={toggleInstructions}
-        className="cursor-pointer text-[#00b3be] text-2xl  text-center lg:text-2xl underline"
+        className="cursor-pointer text-[#00b3be] text-2xl m-4 text-center lg:text-2xl underline"
       >
         Instructions to download CAS
       </div>
