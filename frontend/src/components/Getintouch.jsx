@@ -71,7 +71,7 @@ function Getintouch() {
                             <textarea id="message" rows="8" placeholder=" " className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
                         </div>
 
-                        <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+                        <button type="submit" className="bg-[#33658A] text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
                             Submit
                         </button>
                     </div>

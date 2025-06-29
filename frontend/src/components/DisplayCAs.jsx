@@ -76,7 +76,7 @@ export default function DisplayCAs() {
                             <h2 className="text-3xl font-semibold m-4 text-blue-900">
                                 {schemeName}
                             </h2>
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto p-4 m-4 max-sm:p-0 max-sm:m-0">
                                 <table className="min-w-full border-collapse">
                                     <thead className="bg-blue-900 text-white">
                                         <tr>
