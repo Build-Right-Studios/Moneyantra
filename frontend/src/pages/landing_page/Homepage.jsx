@@ -15,7 +15,6 @@ function Homepage() {
                 <Navbar />
 
                 <PortfolioSection />
-
                 <StatsSection />
                 <Tax />
                 <Reviews/>
