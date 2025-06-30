@@ -32,7 +32,7 @@ export default function Reviews() {
   };
 
   return (
-    <div className="bg-[#2b4b5a] text-white h-[400px] text-center py-12 p-4">
+    <div className="bg-[#2b4b5a] text-white md:h-[400px] h-auto  text-center py-12 p-4">
       <div className="text-center mb-10 m-4">
         <h2 className="text-2xl md:text-3xl font-bold">Trusted by Tax Professionals & Investors</h2>
         <p className="mt-2 text-blue-200">
