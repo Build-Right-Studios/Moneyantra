@@ -13,9 +13,9 @@ function Homepage() {
         <>
             <div className="parent">
                 <Navbar />
-                <div className="pt-4">
-                    <PortfolioSection />
-                </div>
+
+                <PortfolioSection />
+
                 <StatsSection />
                 <Tax />
                 <Reviews/>
