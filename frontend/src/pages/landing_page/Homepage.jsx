@@ -1,9 +1,11 @@
 import Navbar from "../../components/Navbar.jsx";
-import Image from "../../components/Image.jsx";
+import PortfolioSection from "../../components/Homepage/PortfolioSection.jsx";
 import Footer from "../../components/Footer.jsx";
 import About from "../../components/About.jsx";
 import Getintouch from "../../components/getintouch.jsx";
 import Tax from "../../components/Homepage/Tax.jsx";
+import StatsSection from "../../components/Homepage/StatsSection.jsx";
+import Reviews from "../../components/Homepage/Reviews.jsx";
 
 
 function Homepage() {
@@ -11,12 +13,16 @@ function Homepage() {
         <>
             <div className="parent">
                 <Navbar />
-                <Image />
-                <Tax/>
+                <div className="pt-4">
+                    <PortfolioSection />
+                </div>
+                <StatsSection />
+                <Tax />
+                <Reviews/>
                 <About />
-                <Getintouch/>
+                <Getintouch />
                 <Footer />
-                
+
             </div>
         </>
     );
