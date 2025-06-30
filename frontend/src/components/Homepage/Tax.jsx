@@ -38,7 +38,7 @@ const DeviceTabletIcon = () => (
 
 const FeatureCard = ({ icon, bgColor, title, description }) => {
   return (
-    <div className=" bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+    <div className="  bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
       
       <div className={`w-16 h-16 rounded-lg flex items-center justify-center ${bgColor} mb-4 mx-3 mt-3`}>
         {icon} 
