@@ -1,20 +1,20 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import portImage from './port.png';
+import { GoArrowRight } from "react-icons/go";
 
 function PortfolioSection() {
     const ref = useRef(null);
-   
+
     const inView = useInView(ref, { once: true, amount: 0.5 });
 
-    // Variants for staggered animation
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.1, // Delay between animating each child
-                delayChildren: 0.2 // Delay before the first child animates
+                staggerChildren: 0.1,
+                delayChildren: 0.2
             }
         }
     };
@@ -35,69 +35,62 @@ function PortfolioSection() {
             ref={ref}
             className="mt-4 p-4"
             initial="hidden"
-            animate={inView ? "visible" : "hidden"} // Animate based on inView status
-            variants={containerVariants} // Apply container variants for staggering
+            animate={inView ? "visible" : "hidden"}
+            variants={containerVariants}
         >
-            <section className="pt-5 flex flex-col md:flex-row items-center justify-center gap-8"> {/* Added gap and changed flex-row to flex-col for smaller screens */}
-                {/* Text Section */}
+            <section className="pt-5 flex flex-col md:flex-row items-center justify-center gap-8">
                 <motion.section
-    className="w-full md:w-1/2 bg-white p-4 rounded-lg max-w-3xl mx-auto" // Adjusted width for responsiveness
-    variants={containerVariants} // Apply variants to this section as well if you want its children to stagger
->
-    <motion.div variants={itemVariants} className="mt-10 mb-3 ">
-        <span className="bg-blue-100 text-blue-800 text-lg font-semibold px-3 py-1 rounded-2xl">
-            India&apos;s Most Trusted Tax Calculator
-        </span>
-    </motion.div> 
-    <motion.h2 variants={itemVariants}> {/* Responsive text size */}
-        <span className='text-[#33658a] text-6xl font-bold'>Calculate Your</span><br />
-        <span className="text-[#f26419] text-6xl font-bold">Investment Tax</span><br />
-        <span className='text-[#33658a] text-6xl font-bold'>Accurately </span>
-    </motion.h2> <br />
+                    className="w-full md:w-1/2 bg-white p-4 rounded-lg max-w-3xl mx-auto"
+                    variants={containerVariants}
+                >
+                    <motion.div variants={itemVariants} className="mt-10 mb-3 ">
+                        <span className="bg-blue-100 text-blue-800 text-lg font-semibold px-3 py-1 rounded-2xl">
+                            India’s Most Trusted Mutual Fund Tooling Platform
+                        </span>
+                    </motion.div>
+                    <motion.h2 variants={itemVariants}> {/* Responsive text size */}
+                        <span className="text-[#f26419] text-6xl font-bold">Portfolio Insights  </span><br />
+                        <span className='text-[#33658a] text-6xl font-bold'>to Help You Reach Your Dreams</span><br />
 
-    <motion.p variants={itemVariants} className="text-lg my-6 font-medium">
-        <div className="text-gray-700 mt-10">
-                        Smart tax calculations for your investment returns. Get precise tax liability, optimize your portfolio,
-                        and maximize your after-tax returns with Moneyantra.
-        </div>
+                    </motion.h2> <br />
+
+                    <motion.p variants={itemVariants} className="text-lg my-6 font-medium">
+                        <div className="text-gray-700 mt-10">
+                            Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
+                            change your funds? Are you getting good returns? Moneyantra can help you know.
+                        </div>
                     </motion.p> <br />
-    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 mb-6"> {/* Increased gap to 'gap-5' */}
-        <motion.button
-            whileHover={{ scale: 1.05 }} // Scale up on hover
-            whileTap={{ scale: 0.95 }} // Scale down on tap
-            // 2. Made button fully round: "rounded-full" (was rounded-2xl)
-            // Increased horizontal padding for a fuller look: "px-8" (was px-6)
-            // Increased vertical padding slightly: "py-3" (was py-2)
-            className="bg-orange-500 text-white px-4 py-3 rounded-full hover:bg-orange-600 transition font-semibold"
-        >
-            Calculate Tax Now
-        </motion.button>
-        <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            // 2. Made button fully round: "rounded-full" (was rounded-md)
-            // Increased horizontal padding for a fuller look: "px-8" (was px-6)
-            // Increased vertical padding slightly: "py-3" (was py-2)
-            className="border border-gray-300 text-gray-800 px-4 py-3 rounded-full hover:bg-gray-100 transition font-semibold"
-        >
-            View Demo
-        </motion.button>
-    </motion.div> <br />
-    <motion.div variants={itemVariants} className="flex flex-wrap mt-4 gap-6 text-gray-600"> {/* Added flex-wrap for smaller screens */}
-        <div className="flex items-center gap-2">
-            <span className="text-green-600">✔</span>
-            <span>100% Accurate</span>
-        </div>
-        <div className="flex items-center gap-2">
-            <span className="text-blue-600">🔒</span>
-            <span>Secure & Private</span>
-        </div>
-        <div className="flex items-center gap-2">
-            <span className="text-yellow-500">📊</span>
-            <span>Detailed Reports</span>
-        </div>
-    </motion.div>
-</motion.section>
+                    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 mb-6"> {/* Increased gap to 'gap-5' */}
+                        <motion.button
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-orange-500 text-white flex flex-row items-center justify-center gap-2 px-4 py-3 rounded-full hover:bg-orange-600 transition font-semibold"
+                        >
+                            Review Now <GoArrowRight/>
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="border border-gray-300 text-gray-800 px-4 py-3 rounded-full hover:bg-gray-100 transition font-semibold"
+                        >
+                            View Demo
+                        </motion.button>
+                    </motion.div> <br />
+                    <motion.div variants={itemVariants} className="flex flex-wrap mt-4 gap-6 text-gray-600"> {/* Added flex-wrap for smaller screens */}
+                        <div className="flex items-center gap-2">
+                            <span className="text-green-600">✔</span>
+                            <span>100% Accurate</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-blue-600">🔒</span>
+                            <span>Secure & Private</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-yellow-500">📊</span>
+                            <span>Detailed Reports</span>
+                        </div>
+                    </motion.div>
+                </motion.section>
 
                 {/* Image Section */}
                 <motion.section

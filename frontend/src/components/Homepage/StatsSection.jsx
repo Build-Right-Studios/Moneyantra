@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion'; // Import motion and useInView
 
-/**
- *
- * @param {object} props - The component props.
- * @param {string} props.finalValue - The final string value to animate to (e.g., "25,000+", "99.8%").
- * @param {boolean} props.shouldAnimate - A boolean to trigger the animation.
- */
 const AnimatedStat = ({ finalValue, shouldAnimate }) => {
     // State to hold the current number being displayed during the animation.
     const [count, setCount] = useState(0);
@@ -81,10 +75,10 @@ const AnimatedStat = ({ finalValue, shouldAnimate }) => {
  */
 function StatsSection() {
     const stats = [
-        { value: "25,000+", label: "Happy Users" },
-        { value: "150,000+", label: "Tax Calculations" },
-        { value: "45%", label: "Avg. Tax Savings" },
-        { value: "99.8%", label: "Accuracy Rate" },
+        { value: "1,000+", label: "Happy Users" },
+        { value: "5,000+", label: "Portfolio Reviews" },
+        { value: "10,000+", label: "Funds Supported" },
+        { value: "45+", label: "AMCs" },
     ];
 
     return (
@@ -104,7 +98,7 @@ function StatsSection() {
                             ref={ref} // Attach the ref to the motion.div
                             initial={{ opacity: 0, y: 50 }} // Start slightly below and invisible
                             animate={inView ? { opacity: 1, y: 0 } : {}} // Animate to fully visible and in place when in view
-                            transition={{ duration: 0.8, delay: idx * 0.1 }} // Stagger the animation of each stat
+                            transition={{ duration: 1.0, delay: idx * 0.1 }} // Stagger the animation of each stat
                         >
                             {/* Pass shouldAnimate prop to trigger the count animation */}
                             <AnimatedStat finalValue={stat.value} shouldAnimate={inView} />
