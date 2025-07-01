@@ -1,54 +1,49 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-// import portImage from './port.png'; // Remove this import as it's no longer needed
-// import PortfolioOverview from './PortfolioOverview'; // This import caused the error, embedding the component below
 
-// Embedded PortfolioOverview component for self-containment
 function PortfolioOverview() {
-  return (
-    <div className="p-6 bg-gray-50"> {/* Removed min-h-screen as it's a sub-component */}
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Portfolio Overview</h1>
-        {/* Changed to a general growth/chart icon */}
-        <div className="bg-green-100 p-2 rounded-full">
-          <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M18 14v4h-4M4 18h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-          </svg>
+    return (
+        <div className="p-6 ">
+            <div className="flex items-center justify-between mb-8">
+                <h1 className="text-3xl font-bold text-gray-800">Portfolio Overview</h1>
+                <div className="bg-green-100 p-2 rounded-full">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M18 14v4h-4M4 18h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+            </div> <br />
+
+            {/* Cards Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3 mx-3">
+                {/* Total Value Card */}
+                <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-4  rounded-lg shadow-md flex flex-col justify-between">
+                    <p className="text-purple-700 text-lg font-semibold mb-3">Total Value</p>
+                    <p className="text-purple-900 text-2xl font-extrabold">₹50,00,000 </p>
+                </div>
+
+                {/* Returns Card */}
+                <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-lg shadow-md flex flex-col justify-between">
+                    <p className="text-green-700 text-lg font-semibold mb-3">Returns</p>
+                    <p className="text-green-900 text-2xl font-extrabold">15.35% XIRR </p>
+                </div>
+            </div> <br />
+
+            {/* Progress Bar Section */}
+            <div className="w-full bg-gray-200 rounded-full h-3">
+                {/* The inner progress bar with a gradient */}
+                <div
+                    className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full"
+                    style={{ width: '70%' }} // Example width, you can make this dynamic
+                ></div>
+            </div>
         </div>
-      </div> <br />
-
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3 mx-3">
-        {/* Total Value Card */}
-        <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-4  rounded-lg shadow-md flex flex-col justify-between">
-          <p className="text-purple-700 text-lg font-semibold mb-3">Total Value</p>
-          <p className="text-purple-900 text-4xl font-extrabold">₹12,45,890</p>
-        </div> 
-
-        {/* Returns Card */}
-        <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-lg shadow-md flex flex-col justify-between">
-          <p className="text-green-700 text-lg font-semibold mb-3">Returns</p>
-          <p className="text-green-900 text-4xl font-extrabold">+₹2,34,567</p>
-        </div>
-      </div> <br />
-
-      {/* Progress Bar Section */}
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        {/* The inner progress bar with a gradient */}
-        <div 
-          className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full" 
-          style={{ width: '70%' }} // Example width, you can make this dynamic
-        ></div>
-      </div>
-    </div>
-  );
+    );
 }
 // End of embedded PortfolioOverview component
 
 function PortfolioSection() {
     const ref = useRef(null);
-    
+
     const inView = useInView(ref, { once: true, amount: 0.5 });
 
     // Variants for staggered animation
@@ -90,38 +85,31 @@ function PortfolioSection() {
                 >
                     <motion.div variants={itemVariants} className="mt-10 mb-3 ">
                         <span className="bg-blue-100 text-blue-800 text-lg font-semibold px-3 py-1 rounded-2xl">
-                            India&apos;s Most Trusted Tax Calculator
+                            India’s Most Trusted Mutual Fund Tooling Platform
                         </span>
-                    </motion.div> 
+                    </motion.div>
                     <motion.h2 variants={itemVariants}> {/* Responsive text size */}
-                        <span className='text-[#33658a] text-6xl font-bold'>Calculate Your</span><br />
-                        <span className="text-[#f26419] text-6xl font-bold">Investment Tax</span><br />
-                        <span className='text-[#33658a] text-6xl font-bold'>Accurately </span>
+                        <span className="text-[#f26419] text-6xl font-bold">Portfolio Insights</span><br />
+                        <span className='text-[#33658a] text-6xl font-bold'> to Help You Reach Your Dreams </span>
                     </motion.h2> <br />
 
                     <motion.p variants={itemVariants} className="text-lg my-6 font-medium">
                         <div className="text-gray-700 mt-10">
-                                    Smart tax calculations for your investment returns. Get precise tax liability, optimize your portfolio,
-                                    and maximize your after-tax returns with Moneyantra.
+                            Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
+                            change your funds? Are you getting good returns? Moneyantra can help you know.
                         </div>
                     </motion.p> <br />
                     <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 mb-6"> {/* Increased gap to 'gap-5' */}
                         <motion.button
-                            whileHover={{ scale: 1.05 }} // Scale up on hover
-                            whileTap={{ scale: 0.95 }} // Scale down on tap
-                            // 2. Made button fully round: "rounded-full" (was rounded-2xl)
-                            // Increased horizontal padding for a fuller look: "px-8" (was px-6)
-                            // Increased vertical padding slightly: "py-3" (was py-2)
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }} 
                             className="bg-orange-500 text-white px-4 py-3 rounded-full hover:bg-orange-600 transition font-semibold"
                         >
-                            Calculate Tax Now
+                            Review Now
                         </motion.button>
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            // 2. Made button fully round: "rounded-full" (was rounded-md)
-                            // Increased horizontal padding for a fuller look: "px-8" (was px-6)
-                            // Increased vertical padding slightly: "py-3" (was py-2)
                             className="border border-gray-300 text-gray-800 px-4 py-3 rounded-full hover:bg-gray-100 transition font-semibold"
                         >
                             View Demo
@@ -143,12 +131,11 @@ function PortfolioSection() {
                     </motion.div>
                 </motion.section>
 
-                {/* Image Section - Replaced with PortfolioOverview component */}
                 <motion.section
                     className="w-full md:w-1/2 flex justify-center items-center mt-8 md:mt-0" // Adjusted width and margin for responsiveness
                     variants={imageVariants} // Apply image specific variants to the container of PortfolioOverview
                 >
-                    <PortfolioOverview /> {/* Render the PortfolioOverview component here */}
+                    <PortfolioOverview /> 
                 </motion.section>
             </section>
         </motion.div>

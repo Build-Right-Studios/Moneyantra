@@ -5,46 +5,58 @@ import { FaSquareInstagram } from "react-icons/fa6";
 
 function Footer() {
     return (
-        <footer class="moneyantra-footer">
-            <div class="footer-top">
-                <div class="footer-logo-section">
-                    <img src='media/images/moneyantra.ico' className="h-40 w-40 md:h-full md:w-full " alt="image"></img>
+        <footer className="moneyantra-footer">
+            <div className="footer-top">
+                <div className="footer-logo-section gap-0">
+                    <img src='media/images/moneyantra.ico' className="h-40 w-40 " alt="image"></img>
+                    <div className="text-justify flex flex-col">
+                        <span>India’s most trusted MF Portfolio</span>
+                        <span>tooling platform. Helping investors and</span>
+                        <span>advisors manage MF portfolios using</span>
+                        <span> our expert guidance and tool sets.</span>
+                    </div>
+
+
                 </div>
 
-                <div class="footer-links-group">
-                    <h4 class="footer-heading">Quick Links <span class="underline"></span></h4>
+                <div className="footer-links-group">
+                    <h4 className="footer-heading">Tax Tools<span className="underline"></span></h4>
                     <ul>
-                        <li><a href="#">Terms & Condition</a></li>
-                        <li><a href="#">Blog & News</a></li>
-                        <li><a href="#">Get in Touch</a></li>
-                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Tax Calculator</a></li>
+                        <li><a href="#">Tax Simulator </a></li>
+                        <li><a href="#">Tax harvesting</a></li>
+                        <li><a href="#">Portfolio Review</a></li>
+                        <li><a href="#">Portfolio Rebalancing</a></li>
                     </ul>
                 </div>
 
-                <div class="footer-links-group">
-                    <h4 class="footer-heading">Our Services <span class="underline"></span></h4>
+                <div className="footer-links-group">
+                    <h4 className="footer-heading">Company<span className="underline"></span></h4>
                     <ul>
-                        <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Tax Calculation</a></li>
-                        <li><a href="#">CSV Report</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Tax Experts</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
                     </ul>
                 </div>
 
-                <div class="footer-address">
-                    <h4 class="footer-heading">Address <span class="underline"></span></h4>
-                    <p>City XX234</p>
+                <div className="footer-links-group">
+                    <h4 className="footer-heading">Support<span className="underline"></span></h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Tax FAQ</a></li>
+                        <li><a href="#">Live Chat</a></li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="footer-bottom">
-                <div class="footer-social">
-                    <span>Follow us :  </span>
-                    <FaFacebook />
-                    <FaSquareXTwitter />
-                    <FaSquareInstagram />
-
-                </div>
-                <p class="footer-copyright">All rights reserved | @2025 Moneyantra</p>
+            <div className="footer-bottom">
+                <p className="text-sm text-gray-300">
+                    © 2025 All rights reserved. Made with
+                    <span className="text-red-500 px-1">❤️</span>
+                    for Indian Investors.
+                </p>
             </div>
         </footer>
     );

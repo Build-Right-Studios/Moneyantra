@@ -83,9 +83,10 @@ export default function Reviews() {
   return (
     <div className="bg-[#2b4b5a] text-white md:h-[400px] h-auto text-center py-12 p-4">
       <div className="text-center mb-10 m-4">
-        <h2 className="text-2xl md:text-3xl font-bold">Trusted by Tax Professionals & Investors</h2>
+        <h2 className="text-2xl md:text-3xl font-bold">Trusted by Investors and Advisor Professionals</h2>
         <p className="mt-2 text-blue-200">
-          Join thousands of investors and tax professionals who rely on Moneyantra for accurate tax calculations and optimization strategies.
+          Join thousands of investors and advisor professionals who rely on Moneyantra for portfolio
+          insights and tax calculations
         </p>
       </div>
 
@@ -129,9 +130,8 @@ export default function Reviews() {
           <span
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full cursor-pointer ${
-              index === currentIndex ? 'bg-blue-500' : 'bg-gray-400'
-            }`}
+            className={`w-2 h-2 rounded-full cursor-pointer ${index === currentIndex ? 'bg-blue-500' : 'bg-gray-400'
+              }`}
           ></span>
         ))}
       </div>
