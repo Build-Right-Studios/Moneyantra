@@ -11,16 +11,19 @@ import Optimizer from "../../components/Homepage/Optimizer.jsx";
 function Homepage() {
     return (
         <>
-            <div className="parent">
+            <div className="parent bg-gray-100 ">
                 <Navbar />
+                <div className="bg-white">
+                    <PortfolioSection />
+                    <StatsSection />
+                     <Tax />
+                </div>
 
-                <PortfolioSection />
-                <br />
-                <StatsSection />
-                <Tax />
-                <br />
-                <Reviews/>
-                <Optimizer/>
+
+               
+
+                <Reviews />
+                <Optimizer />
                 <Getintouch />
                 <Footer />
 

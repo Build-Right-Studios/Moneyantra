@@ -16,7 +16,7 @@ const testimonials = [
         image: "https://randomuser.me/api/portraits/women/45.jpg",
         rating: 3,
         quote:
-            "Moneyantra has simplified tax calculations for all me and my family members.",
+            "The precision of Moneyantra's tax calculations is unmatched. It's an indispensable tool for anyone serious about optimizing their investment portfolio.",
     },
     // Added two new testimonials below
     {
@@ -81,9 +81,10 @@ export default function Reviews() {
     };
 
     return (
-        // Mobile-first: h-auto by default, md:h-[400px] for medium screens and up
-        <div className="bg-[#2b4b5a] text-white h-auto md:h-[400px] text-center py-12 p-4 ">
-            <div className="text-center mb-10 m-4">
+        // Added flex, flex-col, items-center, and justify-center to the main container
+        // to vertically center its content. Removed 'm-4' from inner divs.
+        <div className="bg-[#2b4b5a] text-white min-h-[350px] md:h-[400px] flex flex-col items-center justify-center py-12 px-4 md:px-8 lg:px-12">
+            <div className="text-center mb-10"> {/* Removed m-4 */}
                 {/* Mobile-first: text-2xl by default, md:text-3xl for medium screens and up */}
                 <h2 className="text-2xl md:text-3xl font-bold">Trusted by Investors and Advisor Professionals</h2>
                 <p className="mt-2 text-blue-200">
@@ -94,24 +95,30 @@ export default function Reviews() {
 
             <div className="flex justify-center">
                 <div className="relative bg-white text-black p-2 rounded-lg shadow-lg max-w-2xl w-full">
-                    <div className="mb-4 flex gap-1 text-yellow-500">
-                        {Array(testimonials[currentIndex].rating).fill().map((_, i) => (
-                            <StarIcon key={i} /> // Using inline SVG StarIcon
-                        ))}
-                    </div>
-                    <p className="mb-6 text-lg">"{testimonials[currentIndex].quote}"</p>
-                    <div className="flex items-center gap-4">
-                        <img
-                            className="w-12 h-12 rounded-full"
-                            src={testimonials[currentIndex].image}
-                            alt={testimonials[currentIndex].name}
-                            onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/cccccc/000000?text=User" }} // Fallback image
-                        />
-                        <div>
-                            <p className="font-semibold">{testimonials[currentIndex].name}</p>
-                            <p className="text-sm text-gray-600">{testimonials[currentIndex].title}</p>
+                    {/* New div to contain and align name/image to left and stars to right */}
+                    <div className="flex justify-between items-center mb-4">
+                        {/* Name and Image on the left */}
+                        <div className="flex items-center gap-4">
+                            <img
+                                className="w-12 h-12 rounded-full"
+                                src={testimonials[currentIndex].image}
+                                alt={testimonials[currentIndex].name}
+                                onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/cccccc/000000?text=User" }} // Fallback image
+                            />
+                            <div>
+                                <p className="font-semibold">{testimonials[currentIndex].name}</p>
+                                <p className="text-sm text-gray-600">{testimonials[currentIndex].title}</p>
+                            </div>
+                        </div>
+                        {/* Stars on the right */}
+                        <div className="flex gap-1 text-yellow-500">
+                            {Array(testimonials[currentIndex].rating).fill().map((_, i) => (
+                                <StarIcon key={i} /> // Using inline SVG StarIcon
+                            ))}
                         </div>
                     </div>
+
+                    <p className="mb-6 text-lg">"{testimonials[currentIndex].quote}"</p>
 
                     {/* Hide on mobile, show on large screens */}
                     <button
@@ -130,7 +137,7 @@ export default function Reviews() {
                 </div>
             </div>
 
-            <div className="flex justify-center m-4 space-x-2">
+            <div className="flex justify-center mt-4 space-x-2"> {/* Changed m-4 to mt-4 */}
                 {testimonials.map((_, index) => (
                     <span
                         key={index}
