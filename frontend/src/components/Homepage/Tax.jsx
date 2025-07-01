@@ -92,7 +92,7 @@ export default function Tax() {
   ];
 
   return (
-    <div className="bg-slate-50 min-h-screen font-inter">
+    <div className="bg-white min-h-screen font-inter">
       <div className="container mx-auto px-4 py-16 sm:py-24">
 
         {/* Header Section */}
