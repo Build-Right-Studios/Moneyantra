@@ -15,8 +15,10 @@ function Homepage() {
                 <Navbar />
 
                 <PortfolioSection />
+                <br />
                 <StatsSection />
                 <Tax />
+                <br />
                 <Reviews/>
                 <Optimizer/>
                 <Getintouch />

@@ -83,7 +83,7 @@ function StatsSection() {
 
     return (
         // Main container for the stats section with original styling.
-        <div className="bg-[#2f4858] p-4">
+        <div className="bg-[#2f4858] p-3 h-51 lg:h-28">
             {/* Grid layout with original height and gap. */}
             <div className="h-[80px] text-[#fbbf24] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 {stats.map((stat, idx) => {
