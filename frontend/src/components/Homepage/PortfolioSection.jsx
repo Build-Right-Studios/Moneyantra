@@ -93,12 +93,12 @@ function PortfolioSection() {
                         <span className='text-[#33658a] text-6xl font-bold'> to Help You Reach Your Dreams </span>
                     </motion.h2> <br />
 
-                    <motion.p variants={itemVariants} className="text-lg my-6 font-medium">
+                    <motion.div variants={itemVariants} className="text-lg my-6 font-medium">
                         <div className="text-gray-700 mt-10">
                             Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
                             change your funds? Are you getting good returns? Moneyantra can help you know.
                         </div>
-                    </motion.p> <br />
+                    </motion.div> <br />
                     <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 mb-6"> {/* Increased gap to 'gap-5' */}
                         <motion.button
                             whileHover={{ scale: 1.05 }} 

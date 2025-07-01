@@ -18,7 +18,7 @@ const AnimatedStat = ({ finalValue, shouldAnimate }) => {
         }
 
         // The total duration of the animation in milliseconds.
-        const animationDuration = 4000;
+        const animationDuration = 2000;
         let startTime = null;
 
         // The animation loop function, which is called on each frame.

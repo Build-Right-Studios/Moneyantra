@@ -8,7 +8,7 @@ import {
 
 function GetInTouch() {
     return (
-        <div className="min-h-screen bg-gray-100 py-12 px-4">
+        <div className="min-h-screen bg-gray-100 py-12 px-4 mb-5">
             <h1 className="text-3xl p-4 font-semibold text-center mb-8 text-gray-800">
                 Get Expert Guidance
             </h1>
@@ -123,36 +123,39 @@ function GetInTouch() {
                     <p className="text-gray-600 mb-6">
                         Our tax experts are available to help you navigate complex investment tax scenarios.
                         Get personalized guidance from certified professionals.
-                    </p>
+                    </p> <br />
 
-                    <div className="flex items-start mb-5">
-                        <div className="text-white bg-blue-500 p-3 rounded-full mr-4">
+                    <div className="flex items-start mb-4">
+                        <div className="text-white bg-blue-500 p-3 rounded-lg mr-4">
                             <MdEmail size={16} />
                         </div>
-                        <div>
+                        <div className="px-3">
                             <h4 className="text-lg font-medium text-gray-800">Email Support</h4>
                             <p className="text-gray-600">support@moneyantra.com</p>
                         </div>
                     </div>
 
-                    <div className="flex items-start mb-5">
-                        <div className="text-white bg-orange-500 p-3 rounded-full mr-4">
+                    <div className="flex items-start mb-4">
+                        <div className="text-white bg-orange-500 p-3 rounded-lg mr-4">
                             <MdPhone size={16} />
                         </div>
-                        <div>
+                        <div className="px-3">
                             <h4 className="text-lg font-medium text-gray-800">Phone Support</h4>
-                            <p className="text-gray-600"> +91 96547 29997 </p>
-                            <p className="text-gray-600">Monday - Friday, 9AM - 7PM IST</p>
+                            <p className="text-gray-600">+91 965 472 9997
+                                <br />
+                                Monday - Friday, 9AM - 7PM IST
+                            </p>
+                            
                         </div>
                     </div>
 
-                    <div className="flex items-start mb-5">
-                        <div className="text-white bg-sky-500 p-3 rounded-full mr-4">
+                    <div className="flex items-start ">
+                        <div className="text-white bg-sky-500 p-3 rounded-lg mr-4">
                             <MdAccessTime size={16} />
                         </div>
-                        <div>
+                        <div className="px-3">
                             <h4 className="text-lg font-medium text-gray-800">
-                                Expert Consultation Hours
+                                Expert Consultation
                             </h4>
                             <p className="text-gray-600">Book appointment link from arthgyaan </p>
                             <p className="text-gray-600"> or similar for moneyantra</p>
