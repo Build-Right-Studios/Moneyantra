@@ -99,12 +99,12 @@ function PortfolioSection() {
                         <span className='text-[#33658a] text-6xl font-bold'>Accurately </span>
                     </motion.h2> <br />
 
-                    <motion.p variants={itemVariants} className="text-lg my-6 font-medium">
+                    <motion.div variants={itemVariants} className="text-lg my-6 font-medium">
                         <div className="text-gray-700 mt-10">
                                     Smart tax calculations for your investment returns. Get precise tax liability, optimize your portfolio,
                                     and maximize your after-tax returns with Moneyantra.
                         </div>
-                    </motion.p> <br />
+                    </motion.div> <br />
                     <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 mb-6"> {/* Increased gap to 'gap-5' */}
                         <motion.button
                             whileHover={{ scale: 1.05 }} // Scale up on hover
