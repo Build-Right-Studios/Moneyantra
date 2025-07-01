@@ -24,9 +24,9 @@ const ChartBarIcon = () => (
 );
 
 const ShieldCheckIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a11.955 11.955 0 0118-8.618z" />
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a11.955 11.955 0 0118-8.618z" />
+  </svg>
 );
 
 const DeviceTabletIcon = () => (
@@ -39,12 +39,12 @@ const DeviceTabletIcon = () => (
 const FeatureCard = ({ icon, bgColor, title, description }) => {
   return (
     <div className="  bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
-      
+
       <div className={`w-16 h-16 rounded-lg flex items-center justify-center ${bgColor} mb-4 mx-3 mt-3`}>
-        {icon} 
+        {icon}
       </div>
-      <h3 className="text-xl font-bold text-gray-800 mb-2 mx-3">{title}</h3> 
-      <p className="text-gray-500 leading-relaxed mx-3">{description}</p> 
+      <h3 className="text-xl font-bold text-gray-800 mb-2 mx-3">{title}</h3>
+      <p className="text-gray-500 leading-relaxed mx-3">{description}</p>
     </div>
   );
 };
@@ -54,54 +54,56 @@ const FeatureCard = ({ icon, bgColor, title, description }) => {
 export default function Tax() {
   const features = [
     {
-      icon: <CalculatorIcon />, 
+      icon: <CalculatorIcon />,
       bgColor: 'bg-[#F26419]',
       title: 'Accurate Tax Calculations',
-      description: 'Precise calculations for capital gains, dividend tax, and other investment-related taxes as per latest Indian tax laws.',
+      description: 'Precise calculations for capital gains as per the latest Union Budget.',
     },
     {
-      icon: <DocumentReportIcon />, 
+      icon: <DocumentReportIcon />,
       bgColor: 'bg-[#33658A]',
       title: 'Detailed Tax Reports',
-      description: 'Generate comprehensive tax reports with breakdowns, supporting documents, and filing-ready statements.',
+      description: 'Generate reports of your incurred long-term and short-term gains and losses.',
     },
     {
       icon: <TargetIcon />,
       bgColor: 'bg-[#F6AE2D]',
       title: 'Tax Optimization',
-      description: 'Smart suggestions to minimize your tax liability through legal tax-saving strategies and timing.',
+      description: 'Know the tax due for future transactions for switching, rebalancing and redemptions.',
     },
     {
-      icon: <ChartBarIcon />, 
+      icon: <ChartBarIcon />,
       bgColor: 'bg-[#86BBD8]',
-      title: 'Portfolio Analysis',
-      description: 'Analyze your entire investment portfolio’s tax implications and optimize for better after-tax returns.',
+      title: 'Portfolio Review',
+      description: 'Uncover hidden insights in your portfolio to help understand if you are invested in the best funds. ',
     },
     {
-      icon: <ShieldCheckIcon />, 
+      icon: <ShieldCheckIcon />,
       bgColor: 'bg-[#2F4858]',
-      title: 'Compliance Tracking',
-      description: 'Stay compliant with all tax regulations and get alerts for important filing deadlines and changes.',
+      title: 'Goal Tracking',
+      description: 'Find out if your portfolio is capable of making you reach your financial goals. .',
     },
     {
-      icon: <DeviceTabletIcon />, 
+      icon: <DeviceTabletIcon />,
       bgColor: 'bg-[#F26419]',
       title: 'Multi-Platform Access',
-      description: 'Access your tax calculations and reports from anywhere with our web and mobile applications.',
+      description: 'Access your portfolio insights from any desktop, laptop or mobile.',
     },
   ];
 
   return (
     <div className="bg-slate-50 min-h-screen font-inter">
       <div className="container mx-auto px-4 py-16 sm:py-24">
-        
+
         {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-16 mt-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-[#33658A] mb-4">
-            Complete Tax Management Solution
+            Complete Portfolio Review Solution and Management Solution
           </h1>
-          <p className="text-lg mb-5 text-[#2F4858]">
-            Moneyantra provides comprehensive tax calculation and optimization tools designed specifically for Indian investors and their unique tax requirements.
+          <p className="text-lg mb-5  text-[#2F4858]">
+            Moneyantra provides a comprehensive set of tools and portfolio
+            review/rebalancing/management solutions designed specifically for MF investors and their
+            unique requirements.
           </p>
         </div>
 
