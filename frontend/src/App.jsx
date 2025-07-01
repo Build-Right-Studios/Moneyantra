@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import Homepage from './pages/landing_page/Homepage.jsx'
 import LoginSignup from './pages/Auth/LoginSignup'
 import Login from './pages/Auth/Login'
