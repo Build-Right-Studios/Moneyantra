@@ -10,7 +10,7 @@ function Optimizer() {
                     portfolio, savings on tax and maximizing returns for the same risk.
                 </p>
                 <div className="flex justify-center">
-                    <button className="bg-orange-500 text-white text-lg sm:text-base font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-md hover:bg-orange-600 transition duration-200">
+                    <button className="bg-orange-500  text-white px-4 py-3 rounded-full hover:bg-orange-600 transition font-semibold">
                         Get Started Free
                     </button>
                 </div>

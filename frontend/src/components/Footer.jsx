@@ -8,16 +8,23 @@ function Footer() {
         <footer className="moneyantra-footer">
             <div className="footer-top">
                 <div className="footer-logo-section gap-0">
-                    <img src='media/images/moneyantra.ico' className="h-40 w-40 " alt="image"></img>
-                    <div className="text-justify flex flex-col">
-                        <span>India’s most trusted MF Portfolio</span>
-                        <span>tooling platform. Helping investors and</span>
-                        <span>advisors manage MF portfolios using</span>
-                        <span> our expert guidance and tool sets.</span>
+                    <div className="flex items-center gap-4"> 
+                        <img
+                            src="media/images/moneyantra.png"
+                            className="h-20 w-auto"
+                            alt="image"
+                        />
+                        <h2 className="text-xl font-semibold">MONEYANTRA</h2>
                     </div>
 
-
+                    <div className="text-justify mt-4 max-w-md">
+                        <p>
+                            India’s most trusted MF Portfolio tooling platform. Helping investors and
+                            advisors manage MF portfolios using our expert guidance and tool sets.
+                        </p>
+                    </div>
                 </div>
+
 
                 <div className="footer-links-group">
                     <h4 className="footer-heading">Tax Tools<span className="underline"></span></h4>

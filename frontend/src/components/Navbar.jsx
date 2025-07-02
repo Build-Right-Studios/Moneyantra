@@ -5,7 +5,7 @@ function Navbar() {
     return (
         <div className="nav">
             <div className="name">
-                <img className="image" src='media/images/moneyantra.ico' alt="image"></img>
+                <img className="image" src='media/images/moneyantra.png' alt="image"></img>
                 <h5>
                     <span className="first">MONEY</span>
                     <span className="second">ANTRA</span>
