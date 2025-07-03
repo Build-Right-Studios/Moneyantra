@@ -66,65 +66,60 @@ function PortfolioSection() {
             animate={inView ? "visible" : "hidden"}
             variants={containerVariants}
         >
-            <section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
-                {/* Text Section */}
-<motion.section
-    className="w-full lg:w-1/2 p-6 bg-white"
-    variants={containerVariants}
->
-    <motion.div variants={itemVariants} className="mt-10 mb-4">
-        <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold px-3 py-1 rounded-2xl inline-block">
-            {/* Your content here */}
-        </span>
-    </motion.div>
-</motion.section>
+<section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
+    {/* Text Section */}
+    <motion.section
+        className="w-full lg:w-1/2 p-6 bg-white"
+        variants={containerVariants}
+    >
+        <motion.div variants={itemVariants} className="mt-10 mb-4">
+            <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold px-3 py-1 rounded-2xl inline-block">
+                India’s Most Trusted Mutual Fund Tooling Platform
+            </span>
+        </motion.div>
 
-                            India’s Most Trusted Mutual Fund Tooling Platform
-                        </span>
-                    </motion.div>
+        <motion.h2 variants={itemVariants}>
+            <span className="text-[#f26419] text-4xl sm:text-5xl font-bold">Portfolio Insights</span><br />
+            <span className="text-[#33658a] text-3xl sm:text-4xl font-bold">To Help You Reach Your Dreams</span>
+        </motion.h2>
 
-                    <motion.h2 variants={itemVariants}>
-                        <span className="text-[#f26419] text-4xl sm:text-5xl font-bold">Portfolio Insights</span><br />
-                        <span className="text-[#33658a] text-3xl sm:text-4xl font-bold">To Help You Reach Your Dreams</span>
-                    </motion.h2>
+        <motion.p variants={itemVariants} className="text-base sm:text-lg mt-6 text-gray-700 font-medium">
+            Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
+            change your funds? Are you getting good returns? Moneyantra can help you know.
+        </motion.p>
 
-                    <motion.p variants={itemVariants} className="text-base sm:text-lg mt-6 text-gray-700 font-medium">
-                        Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
-                        change your funds? Are you getting good returns? Moneyantra can help you know.
-                    </motion.p>
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mt-6">
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className="bg-orange-500 text-white px-4 py-2 sm:py-3 rounded-md hover:bg-orange-600 transition font-semibold">
+                Review Now
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className="border border-gray-300 text-gray-800 px-4 py-2 sm:py-3 rounded-md hover:bg-gray-100 transition font-semibold">
+                View Demo
+            </motion.button>
+        </motion.div>
 
-                    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mt-6">
-                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                            className="bg-orange-500 text-white px-4 py-2 sm:py-3 rounded-md hover:bg-orange-600 transition font-semibold">
-                            Review Now
-                        </motion.button>
-                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                            className="border border-gray-300 text-gray-800 px-4 py-2 sm:py-3 rounded-md hover:bg-gray-100 transition font-semibold">
-                            View Demo
-                        </motion.button>
-                    </motion.div>
+        <motion.div variants={itemVariants} className="flex flex-wrap mt-6 gap-4 text-gray-600 text-sm sm:text-base">
+            <div className="flex items-center gap-2">
+                <span className="text-green-600">✔</span>
+                <span>100% Accurate</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <span className="text-blue-600">🔒</span>
+                <span>Secure & Private</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <span className="text-yellow-500">📊</span>
+                <span>Detailed Reports</span>
+            </div>
+        </motion.div>
+    </motion.section>
 
-                    <motion.div variants={itemVariants} className="flex flex-wrap mt-6 gap-4 text-gray-600 text-sm sm:text-base">
-                        <div className="flex items-center gap-2">
-                            <span className="text-green-600">✔</span>
-                            <span>100% Accurate</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-blue-600">🔒</span>
-                            <span>Secure & Private</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-yellow-500">📊</span>
-                            <span>Detailed Reports</span>
-                        </div>
-                    </motion.div>
-                </motion.section>
-
-                {/* PortfolioOverview (Image Section) */}
-                <motion.section className="w-full lg:w-1/2" variants={imageVariants}>
-                    <PortfolioOverview />
-                </motion.section>
-            </section>
+    {/* PortfolioOverview (Image Section) */}
+    <motion.section className="w-full lg:w-1/2" variants={imageVariants}>
+        <PortfolioOverview />
+    </motion.section>
+</section>
         </motion.div>
     );
 }
