@@ -70,7 +70,7 @@ function Login() {
               setError("");
               setLoginPage(!loginPage);
             }}
-            className='border-2 rounded-3xl border-white btn hover:bg-white hover:text-[#33658a] px-6 py-2 text-lg sm:text-base'
+            className='border-2 rounded-3xl text-white border-white btn hover:bg-white hover:text-[#33658a] px-6 py-2 text-lg sm:text-base'
           >
             {loginPage ? "Sign Up" : "Sign In"}
           </button>

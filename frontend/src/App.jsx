@@ -1,6 +1,4 @@
-// import './App.css'
 import Homepage from './pages/landing_page/Homepage.jsx'
-import LoginSignup from './pages/Auth/LoginSignup'
 import Login from './pages/Auth/Login'
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard.jsx'
