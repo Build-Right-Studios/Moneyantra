@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-// PortfolioOverview Component
+// PortfolioOverview Component (kept unchanged)
 function PortfolioOverview() {
     return (
         <div className="w-full p-4">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Portfolio Overview</h2>
                 <div className="bg-green-100 p-2 rounded-full">
@@ -15,7 +14,6 @@ function PortfolioOverview() {
                 </div>
             </div>
 
-            {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                 <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-4 rounded-lg shadow-md">
                     <p className="text-purple-700 text-base sm:text-lg font-semibold mb-2">Total Value</p>
@@ -27,7 +25,6 @@ function PortfolioOverview() {
                 </div>
             </div>
 
-            {/* Progress Bar */}
             <div className="w-full bg-gray-200 rounded-full h-3">
                 <div className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full" style={{ width: '70%' }}></div>
             </div>
@@ -66,22 +63,18 @@ function PortfolioSection() {
             animate={inView ? "visible" : "hidden"}
             variants={containerVariants}
         >
-<section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
-    {/* Text Section */}
-    <motion.section
-        className="w-full lg:w-1/2 p-6 bg-white"
-        variants={containerVariants}
-    >
-        <motion.div variants={itemVariants} className="mt-10 mb-4">
-            <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold px-3 py-1 rounded-2xl inline-block">
-                India’s Most Trusted Mutual Fund Tooling Platform
-            </span>
-        </motion.div>
-
-        <motion.h2 variants={itemVariants}>
-            <span className="text-[#f26419] text-4xl sm:text-5xl font-bold">Portfolio Insights</span><br />
-            <span className="text-[#33658a] text-3xl sm:text-4xl font-bold">To Help You Reach Your Dreams</span>
-        </motion.h2>
+            <section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
+                
+                {/* Text Section */}
+                <motion.section
+                    className="w-full lg:w-1/2 p-6 bg-white"
+                    variants={containerVariants}
+                >
+                    <motion.div variants={itemVariants} className="mt-10 mb-4">
+                        <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold px-3 py-1 rounded-2xl inline-block">
+                            India’s Most Trusted Mutual Fund Tooling Platform
+                        </span>
+                    </motion.div>
 
         <motion.p variants={itemVariants} className="text-base sm:text-lg mt-6 text-gray-700 font-medium">
             Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
@@ -98,28 +91,27 @@ function PortfolioSection() {
                 View Demo
             </motion.button>
         </motion.div>
+                    <motion.div variants={itemVariants} className="flex flex-wrap mt-6 gap-4 text-gray-600 text-sm sm:text-base">
+                        <div className="flex items-center gap-2">
+                            <span className="text-green-600">✔</span>
+                            <span>100% Accurate</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-blue-600">🔒</span>
+                            <span>Secure & Private</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-yellow-500">📊</span>
+                            <span>Detailed Reports</span>
+                        </div>
+                    </motion.div>
+                </motion.section>
 
-        <motion.div variants={itemVariants} className="flex flex-wrap mt-6 gap-4 text-gray-600 text-sm sm:text-base">
-            <div className="flex items-center gap-2">
-                <span className="text-green-600">✔</span>
-                <span>100% Accurate</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <span className="text-blue-600">🔒</span>
-                <span>Secure & Private</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <span className="text-yellow-500">📊</span>
-                <span>Detailed Reports</span>
-            </div>
-        </motion.div>
-    </motion.section>
-
-    {/* PortfolioOverview (Image Section) */}
-    <motion.section className="w-full lg:w-1/2" variants={imageVariants}>
-        <PortfolioOverview />
-    </motion.section>
-</section>
+                {/* Right-side (Portfolio Overview) */}
+                <motion.section className="w-full lg:w-1/2" variants={imageVariants}>
+                    <PortfolioOverview />
+                </motion.section>
+            </section>
         </motion.div>
     );
 }
