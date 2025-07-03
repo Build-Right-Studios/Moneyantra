@@ -1,4 +1,4 @@
-    import React from "react";
+import React from "react";
 
 function Navbar() {
     return (
@@ -11,14 +11,9 @@ function Navbar() {
                 </h5>
             </div>
 
-             <div className="font-bold mr-4 h-auto text-white w-auto rounded-full text-base px-8 py-2 bg-[#33658a] cursor-pointer transition duration-300 hover:bg-white no-underline">
-                <a
-                    href="#login"
-        
-                >
-                    <span>
-                        LOGIN
-                    </span>
+            <div className="font-bold mr-4 h-auto text-white w-auto rounded-full text-base px-8 py-2 bg-[#33658a] hover:underline cursor-pointer transition duration-300">
+                <a href="/login">
+                    <span>LOGIN</span>
                 </a>
             </div>
         </div>

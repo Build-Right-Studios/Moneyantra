@@ -2,6 +2,7 @@
   {
     "name": "Aryansh",
     "email": "aryanshchauhan77@gmail.com",
+<<<<<<< HEAD
     "password": "$2b$10$RF.ZCTR0gemsh9ALo8MkUOUi.bUIms4pvOvjU2WCmyR6G/lueGAn2",
     "cas": {
       "hashedPdfPassword": "123456",
@@ -10590,6 +10591,9 @@
         "file_type": "CAMS"
       }
     }
+=======
+    "password": "$2b$10$RF.ZCTR0gemsh9ALo8MkUOUi.bUIms4pvOvjU2WCmyR6G/lueGAn2"
+>>>>>>> 48c27b6649c91683e2707a1bdb7bd637dc94640e
   },
   {
     "name": "Aryesh",
