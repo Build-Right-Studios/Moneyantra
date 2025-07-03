@@ -40,7 +40,7 @@ function NavbarLogin() {
         <>
             <nav className="bg-gray-100 h-20 sticky top-0 w-full z-50 flex justify-between items-center px-5 shadow-lg md:px-10">
                 <div className="flex items-center gap-2 font-2xl">
-                    <img className="h-10 w-10 mr-2 rounded-4xl" src='/media/images/moneyantra.ico' alt="image"></img> {/* Added / to path */}
+                    <img className="h-10 w-10 mr-2 rounded-4xl" src='/media/images/moneyantra.png' alt="image"></img> {/* Added / to path */}
                     <h5 className="flex text-4xl font-bold">
                         <span className="text-[#33658a]">MONEY</span>
                         <span className="text-[#f26419]">ANTRA</span>
