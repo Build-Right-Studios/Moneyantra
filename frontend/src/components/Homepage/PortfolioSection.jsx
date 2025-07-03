@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-// PortfolioOverview Component
+// PortfolioOverview Component (kept unchanged)
 function PortfolioOverview() {
     return (
         <div className="w-full p-4">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Portfolio Overview</h2>
                 <div className="bg-green-100 p-2 rounded-full">
@@ -15,7 +14,6 @@ function PortfolioOverview() {
                 </div>
             </div>
 
-            {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                 <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-4 rounded-lg shadow-md">
                     <p className="text-purple-700 text-base sm:text-lg font-semibold mb-2">Total Value</p>
@@ -27,7 +25,6 @@ function PortfolioOverview() {
                 </div>
             </div>
 
-            {/* Progress Bar */}
             <div className="w-full bg-gray-200 rounded-full h-3">
                 <div className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full" style={{ width: '70%' }}></div>
             </div>
@@ -67,14 +64,14 @@ function PortfolioSection() {
             variants={containerVariants}
         >
             <section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
+                
                 {/* Text Section */}
                 <motion.section
-                    className="w-full md:w-1/2 p-6 bg-white" // Adjusted width for responsiveness
-                    variants={containerVariants} // Apply variants to this section as well if you want its children to stagger
+                    className="w-full lg:w-1/2 p-6 bg-white"
+                    variants={containerVariants}
                 >
-                    <motion.div variants={itemVariants} className="mt-10 mb-3 ">
-
-                        <span className="bg-blue-100 text-blue-800 text-xs lg:text-xl font-semibold px-3 py-1 rounded-2xl">
+                    <motion.div variants={itemVariants} className="mt-10 mb-4">
+                        <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold px-3 py-1 rounded-2xl inline-block">
                             India’s Most Trusted Mutual Fund Tooling Platform
                         </span>
                     </motion.div>
@@ -116,7 +113,7 @@ function PortfolioSection() {
                     </motion.div>
                 </motion.section>
 
-                {/* PortfolioOverview (Image Section) */}
+                {/* Right-side (Portfolio Overview) */}
                 <motion.section className="w-full lg:w-1/2" variants={imageVariants}>
                     <PortfolioOverview />
                 </motion.section>

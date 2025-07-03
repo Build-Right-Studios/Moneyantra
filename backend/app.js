@@ -77,7 +77,6 @@ async function updateSheet(user, userPassword) {
     }
 }
 
-// Function to search for files in Google Drive by name
 async function searchDriveFileByName(fileName) {
     try {
         const authClient = await getGoogleAuthClient();
@@ -95,7 +94,6 @@ async function searchDriveFileByName(fileName) {
     }
 }
 
-// Function to upload/update files in Google Drive
 async function uploadToDrive(buffer, fileName) {
     try {
         const authClient = await getGoogleAuthClient();
@@ -139,13 +137,11 @@ async function uploadToDrive(buffer, fileName) {
     }
 }
 
-// Helper function to get the standardized path for a user's JSON file
 function getUserJsonFilePath(email) {
-    const sanitizedEmail = email.replace(/[^a-zA-Z0-9.-]/g, '_'); // Sanitize email for filename
+    const sanitizedEmail = email.replace(/[^a-zA-Z0-9.-]/g, '_');
     return path.join(USER_LOCAL_DATA_DIR, `${sanitizedEmail}.json`);
 }
 
-// Function to retrieve and store user CAS data (e.g., on login if not present)
 async function retrieveAndStoreUserCasData(email) {
     const fileName = `${email}_uploaded.pdf`;
     const userJsonPath = getUserJsonFilePath(email);
@@ -262,7 +258,62 @@ function clearUserLocalCasData(email) {
     }
 }
 
-// --- NEW ROUTE: LOGOUT AND DELETE USER'S CAS JSON FILE ---
+app.get('/dashboard', authenticationToken, async (req, res) => {
+    try {
+        const email = req.user.email;
+        const userJsonPath = getUserJsonFilePath(email);
+
+        if (!fssync.existsSync(userJsonPath)) {
+            return res.status(404).json({ message: "CAS data not found. Please upload your CAS PDF." });
+        }
+
+        const fileContent = fssync.readFileSync(userJsonPath, 'utf8');
+        const parsed = JSON.parse(fileContent);
+        const casData = parsed.casData;
+
+        if (!casData || !Array.isArray(casData.folios)) {
+            return res.status(400).json({ message: "Invalid CAS data format." });
+        }
+
+        let totalAmount = 0;
+        let investedAmount = 0;
+
+        for (const folio of casData.folios) {
+            for (const scheme of folio.schemes || []) {
+                if (scheme.valuation) {
+                    const value = parseFloat(scheme.valuation.value);
+                    if (!isNaN(value)) totalAmount += value;
+
+                    const cost = parseFloat(scheme.valuation.cost);
+                    if (!isNaN(cost)) investedAmount += cost;
+                }
+            }
+        }
+
+        const profit = totalAmount - investedAmount;
+        const profitPercent = investedAmount === 0 ? 0 : ((totalAmount / investedAmount - 1) * 100);
+
+        const userName = casData.investor_info?.name || req.user.name || "Investor";
+
+        return res.status(200).json({
+            name: userName,
+            totalAmount: totalAmount.toFixed(2),
+            investedAmount: investedAmount.toFixed(2),
+            profit: profit.toFixed(2),
+            profitPercent: profitPercent.toFixed(2)
+        });
+
+    } catch (err) {
+        console.error("Dashboard calculation error:", err);
+        return res.status(500).json({ message: "Error generating dashboard metrics.", error: err.message });
+    }
+});
+
+
+
+
+
+
 app.post('/logout', authenticationToken, async (req, res) => {
     const userEmail = req.user.email; // Get user email from the authenticated token
 
@@ -271,11 +322,11 @@ app.post('/logout', authenticationToken, async (req, res) => {
         return res.status(400).json({ message: "User email not found. Cannot proceed with file deletion." });
     }
 
-    const userFilePath = getUserJsonFilePath(userEmail); 
+    const userFilePath = getUserJsonFilePath(userEmail);
 
     try {
         await fs.access(userFilePath, fssync.constants.F_OK);
-        await fs.unlink(userFilePath); 
+        await fs.unlink(userFilePath);
         console.log(`User CAS file deleted for ${userEmail}: ${userFilePath}`);
 
         res.status(200).json({ message: "Logout successful and CAS file deleted." });
@@ -366,7 +417,7 @@ app.get('/extract-cas', authenticationToken, async (req, res) => {
             pdfPassword: password
         };
         try {
-            fssync.writeFileSync(userJsonPath, JSON.stringify(dataToStore, null, 2)); 
+            fssync.writeFileSync(userJsonPath, JSON.stringify(dataToStore, null, 2));
             console.log(`User's local CAS data file updated by /extract-cas for ${email}`);
         } catch (saveErr) {
             console.error("Error saving CAS data to user's local file from /extract-cas:", saveErr);
@@ -401,17 +452,17 @@ app.get('/extract-cas', authenticationToken, async (req, res) => {
     }
 });
 
-app.get('/get-cas', authenticationToken, async (req, res) => { 
+app.get('/get-cas', authenticationToken, async (req, res) => {
     try {
         const userEmail = req.user.email;
         const userJsonPath = getUserJsonFilePath(userEmail);
 
         if (!fssync.existsSync(userJsonPath)) {
             console.log(`User-specific CAS data file not found for ${userEmail} at: ${userJsonPath}. Attempting to retrieve and store.`);
-            const result = await retrieveAndStoreUserCasData(userEmail); 
+            const result = await retrieveAndStoreUserCasData(userEmail);
 
             if (result.success) {
-                const refreshedData = fssync.readFileSync(userJsonPath, 'utf8'); 
+                const refreshedData = fssync.readFileSync(userJsonPath, 'utf8');
                 const parsedRefreshedData = JSON.parse(refreshedData);
                 return res.status(200).json({ casData: parsedRefreshedData.casData });
             } else {
@@ -456,7 +507,7 @@ app.post('/upload', upload.single('pdf'), authenticationToken, async (req, res) 
         }
 
         const userPassword = req.body.password;
-        const user = req.user.email; 
+        const user = req.user.email;
 
         if (!userPassword) {
             console.error("Upload Error: PDF password missing.");

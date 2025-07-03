@@ -6,7 +6,11 @@ function Footer() {
         <footer className="w-full bg-[#124e78] text-white pt-10 box-border">
             <div className="flex flex-wrap justify-around px-5 mb-10 md:px-10">
                 <div className="flex flex-col items-start mb-5 min-w-[150px] md:items-center text-center md:text-left">
-                    <img src='.\media\images\moneyantra.ico' className="h-40 w-40 mb-2 items-center" alt="Moneyantra Logo" />
+<div className="flex flex-col items-center justify-center mb-4">
+    <img src="./media/images/moneyantra.png" className="h-24 w-auto mb-2" alt="Moneyantra Logo" />
+    <span className="text-[#F26419] text-3xl font-bold tracking-wide">MONEYANTRA</span>
+</div>
+
                     <div className="text-justify flex flex-col items-center md:items-start">
                         <p className="text-gray-300 text-lg mt-2 w-80 lg:text-justify">
                             India’s most trusted MF Portfolio
@@ -21,7 +25,7 @@ function Footer() {
                         Tax Tools
                         <span className="absolute left-1/2 lg:left-9 -translate-x-1/2 bottom-0 w-3/5 h-1 bg-[#F26419] md:left-0 md:translate-x-0"></span>
                     </h4>
-                    <ul className="list-none p-0 m-0">
+                    <ul className="list-none p-0 m-0 no-underline">
                         <li className="mb-2"><a href="#" className="text-white hover:text-gray-300 text-base transition duration-300 no-underline">Tax Calculator</a></li>
                         <li className="mb-2"><a href="#" className="text-white hover:text-gray-300 text-base transition duration-300 no-underline">Tax Simulator </a></li>
                         <li className="mb-2"><a href="#" className="text-white hover:text-gray-300 text-base transition duration-300 no-underline">Tax harvesting</a></li>
