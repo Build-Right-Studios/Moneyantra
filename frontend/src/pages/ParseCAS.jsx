@@ -5,34 +5,33 @@ import cas2 from "../components/images/CAS2.png";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
 import Footer from "../components/Footer";
-import axiosInstance from "../utils/axiosInstance"; // Ensure this is correctly configured with auth token
-import NavbarLogin from "../components/Navbarlogin"; // Assuming this is your authenticated Navbar
+import axiosInstance from "../utils/axiosInstance"; 
+import NavbarLogin from "../components/Navbarlogin"; 
 
 function ParseCAS() {
   const [file, setFile] = useState(null);
-  const [status, setStatus] = useState(""); // For file selection status
+  const [status, setStatus] = useState(""); 
   const [password, setPassword] = useState("");
-  const [isChecked, setIsChecked] = useState(false); // For disclaimer checkbox
-  const [isLoading, setIsLoading] = useState(false); // For upload/parsing loading state
-  const [showInstructions, setShowInstructions] = useState(false); // For instructions modal
-  const [uploadError, setUploadError] = useState(""); // To display specific upload errors to the user
+  const [isChecked, setIsChecked] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false); 
+  const [showInstructions, setShowInstructions] = useState(false); 
+  const [uploadError, setUploadError] = useState(""); 
 
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
-    setUploadError(""); // Clear previous upload errors when file changes
+    setUploadError(""); 
     if (selected && selected.type === "application/pdf") {
       setFile(selected);
       setStatus(`Selected: ${selected.name}`);
     } else {
       setFile(null);
-      setStatus("Please upload a valid PDF file (.pdf)."); // More specific error message
+      setStatus("Please upload a valid PDF file (.pdf)."); 
     }
   };
 
   const handleUpload = async () => {
-    // Clear any previous error messages before a new attempt
     setUploadError("");
     setStatus("");
 
@@ -49,11 +48,11 @@ function ParseCAS() {
       return;
     }
 
-    setIsLoading(true); // Start loading state
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("pdf", file);
-    formData.append("password", password); // Append the PDF password
+    formData.append("password", password); 
 
     try {
       const res = await axiosInstance.post("/upload", formData, {
@@ -62,21 +61,18 @@ function ParseCAS() {
 
       if (res.status === 201) {
         console.log("Upload success:", res.data.message);
-        // Store the parsed CAS data in localStorage for access on /display-cas
         localStorage.setItem("casData", JSON.stringify(res.data.casData));
-        navigate("/display-cas"); // Navigate to display page on success
+        navigate("/display-cas"); 
       } else {
-        // This block might be reached if axios doesn't throw for non-2xx statuses
         const msg = res.data.message || "Unknown error during upload.";
         setUploadError(`Upload failed: ${msg}`);
       }
     } catch (err) {
-      // Improved error message extraction
       const msg = err.response?.data?.message || err.message || "An unexpected error occurred.";
       setUploadError(`Upload failed: ${msg}`);
-      console.error("Upload error:", err.response?.data || err); // Log full error response for debugging
+      console.error("Upload error:", err.response?.data || err); 
     } finally {
-      setIsLoading(false); // End loading state
+      setIsLoading(false); 
     }
   };
 
@@ -102,20 +98,20 @@ function ParseCAS() {
         {showInstructions && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto p-4"
-            onClick={toggleInstructions} // Close modal when clicking outside
+            onClick={toggleInstructions} 
           >
             <div
               className="bg-white p-4 rounded-lg w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto relative"
-              onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
+              onClick={(e) => e.stopPropagation()} 
             >
               <button
                 onClick={toggleInstructions}
                 className="absolute top-2 right-4 text-4xl text-gray-700 hover:text-black font-bold"
                 aria-label="Close instructions"
               >
-                &times; {/* Using times symbol for better accessibility and common close icon */}
+                &times; 
               </button>
-              <div className="p-4 m-4 max-sm:p-0 max-sm:m-0 ">
+              <div className=" m-4 max-sm:p-0 max-sm:m-0 ">
                 <h2 className="text-[#33658a] text-2xl mb-4 text-center font-semibold">
                   How to Download Your CAS
                 </h2>
@@ -166,14 +162,12 @@ function ParseCAS() {
               <p className="text-[#33658a] font-medium mt-2 text-2xl">
                 {file ? `Selected: ${file.name}` : "Click to Upload PDF"}
               </p>
-              {/* Only show file status if a file is selected and no general upload error */}
               {file && !uploadError && <p className="text-sm text-gray-500 mt-1">{status}</p>}
             </div>
           </label>
 
-          {/* Display specific file type error if no file or wrong type selected */}
+         
           {status && !file && <p className="mt-2 text-sm text-red-500 text-center">{status}</p>}
-          {/* Display general upload errors here */}
           {uploadError && <p className="mt-2 text-sm text-red-500 text-center">{uploadError}</p>}
 
 
@@ -187,7 +181,7 @@ function ParseCAS() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setUploadError(""); // Clear password-related error when typing
+                setUploadError(""); 
               }}
               className="border-2 border-[#f26419] w-full rounded-lg px-2 h-[40px] text-center"
               placeholder="Enter your CAS PDF password"
@@ -201,11 +195,11 @@ function ParseCAS() {
               checked={isChecked}
               onChange={(e) => {
                 setIsChecked(e.target.checked);
-                setUploadError(""); // Clear disclaimer error when checking/unchecking
+                setUploadError(""); 
               }}
               id="disclaimer-checkbox"
             />
-            <label htmlFor="disclaimer-checkbox" className="text-base md:text-lg text-gray-800">
+            <label htmlFor="disclaimer-checkbox" className="text-justify md:text-lg text-gray-800">
               Disclaimer: By uploading your CAS, you allow it to be stored
               temporarily on our servers for parsing and analysis. This data will
               not be shared or reused. Please accept to proceed.
@@ -215,7 +209,7 @@ function ParseCAS() {
           <button
             onClick={handleUpload}
             disabled={!isChecked || !file || !password || isLoading}
-            className={`mt-8 px-8 py-3 rounded-xl text-white text-xl font-semibold transition-colors duration-300 ${
+            className={`mt-4 px-4 py-3 rounded-4xl  text-white text-xl font-semibold transition-colors duration-300 ${
               isChecked && file && password && !isLoading
                 ? "bg-[#33658a] hover:bg-[#2a5171]"
                 : "bg-gray-400 cursor-not-allowed"

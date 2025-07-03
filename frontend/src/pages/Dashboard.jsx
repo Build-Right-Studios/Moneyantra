@@ -1,11 +1,12 @@
 import React from 'react';
 import NavbarLogin from '../components/Navbarlogin'; 
+import Dashboard1 from '../components/Dashboard1.jsx'
 
 function Dashboard() {
   return (
     <div>
       <NavbarLogin/> 
-      <>Dashboard</>
+      <Dashboard1/>
     </div>
   );
 }
