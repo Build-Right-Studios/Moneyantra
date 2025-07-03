@@ -29,7 +29,7 @@ function PortfolioOverview() {
             </div> <br />
 
             {/* Progress Bar Section */}
-            <div className="w-full bg-gray-200 rounded-full h-3 mb-5">
+            <div className="w-full bg-gray-200 rounded-full h-3 ">
                 {/* The inner progress bar with a gradient */}
                 <div
                     className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full "
