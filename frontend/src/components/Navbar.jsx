@@ -11,9 +11,10 @@ function Navbar() {
                 </h5>
             </div>
 
-            <div className="font-bold mr-4 h-auto text-white w-auto rounded-full text-base px-8 py-2 bg-[#33658a] hover:underline cursor-pointer transition duration-300">
-                <a href="/login">
-                    <span>LOGIN</span>
+            <div className="group bg-[#33658A] p-2 px-4 rounded-4xl no-underline">
+                <a href="/login"
+                    className="bg-[#33658A] rounded-4xl text-white font-bold no-underline">
+                    LOGIN
                 </a>
             </div>
         </div>
