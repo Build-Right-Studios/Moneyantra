@@ -16,12 +16,8 @@ function Homepage() {
                 <div className="bg-white">
                     <PortfolioSection />
                     <StatsSection />
-                     <Tax />
+                    <Tax />
                 </div>
-
-
-               
-
                 <Reviews />
                 <Optimizer />
                 <Getintouch />

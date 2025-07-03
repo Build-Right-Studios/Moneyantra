@@ -77,7 +77,7 @@ function PortfolioSection() {
             animate={inView ? "visible" : "hidden"} // Animate based on inView status
             variants={containerVariants} // Apply container variants for staggering
         >
-            <section className="container mx-auto pt-4 flex flex-col md:flex-row items-center justify-between gap-12 max-w-7xl"> {/* Added gap and changed flex-row to flex-col for smaller screens */}
+            <section className="container  pt-4 flex flex-col md:flex-row  justify-between gap-1 max-w-7xl"> {/* Added gap and changed flex-row to flex-col for smaller screens */}
                 {/* Text Section */}
                 <motion.section
                     className="w-full md:w-1/2 p-6 bg-white" // Adjusted width for responsiveness
@@ -90,7 +90,7 @@ function PortfolioSection() {
                     </motion.div>
                     <motion.h2 variants={itemVariants}> {/* Responsive text size */}
                         <span className="text-[#f26419] text-5xl lg:text-6xl font-bold">Portfolio Insights</span><br />
-                        <span className='text-[#33658a] text-4xl lg:text-6xl font-bold'> to Help You Reach <br /> Your Dreams </span>
+                        <span className='text-[#33658a] text-4xl lg:text-6xl font-bold'> To Help You Reach <br /> Your Dreams </span>
                     </motion.h2> <br />
 
                     <motion.div variants={itemVariants} className="text-lg my-6 font-medium">
