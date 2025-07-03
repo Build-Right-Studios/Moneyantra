@@ -6,7 +6,7 @@ function Footer() {
         <footer className="w-full bg-[#124e78] text-white pt-10 box-border">
             <div className="flex flex-wrap justify-around px-5 mb-10 md:px-10">
                 <div className="flex flex-col items-start mb-5 min-w-[150px] md:items-center text-center md:text-left">
-                    <img src='.\media\images\moneyantra.ico' className="h-40 w-40 mb-2 " alt="Moneyantra Logo" />
+                    <img src='.\media\images\moneyantra.ico' className="h-40 w-40 mb-2 items-center" alt="Moneyantra Logo" />
                     <div className="text-justify flex flex-col items-center md:items-start">
                         <p className="text-gray-300 text-lg mt-2 w-80 lg:text-justify">
                             India’s most trusted MF Portfolio

@@ -84,6 +84,7 @@ function PortfolioSection() {
                     variants={containerVariants} // Apply variants to this section as well if you want its children to stagger
                 >
                     <motion.div variants={itemVariants} className="mt-10 mb-3 ">
+
                         <span className="bg-blue-100 text-blue-800 text-xs lg:text-xl font-semibold px-3 py-1 rounded-2xl">
                             India’s Most Trusted Mutual Fund Tooling Platform
                         </span>
