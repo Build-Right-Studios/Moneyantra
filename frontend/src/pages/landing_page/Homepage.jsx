@@ -6,6 +6,7 @@ import Tax from "../../components/Homepage/Tax.jsx";
 import StatsSection from "../../components/Homepage/StatsSection.jsx";
 import Reviews from "../../components/Homepage/Reviews.jsx";
 import Optimizer from "../../components/Homepage/Optimizer.jsx";
+import Dashboard1 from "../../components/Dashboard1.jsx";
 
 
 function Homepage() {
@@ -22,6 +23,7 @@ function Homepage() {
                 <Optimizer />
                 <Getintouch />
                 <Footer />
+                <Dashboard1 />
 
             </div>
         </>

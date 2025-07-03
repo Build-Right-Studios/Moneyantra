@@ -68,9 +68,17 @@ function PortfolioSection() {
         >
             <section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
                 {/* Text Section */}
-                <motion.section className="w-full lg:w-1/2" variants={containerVariants}>
-                    <motion.div variants={itemVariants} className="mb-4 pt-18">
-                        <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg font-semibold px-3 py-1 rounded-2xl inline-block">
+<motion.section
+    className="w-full lg:w-1/2 p-6 bg-white"
+    variants={containerVariants}
+>
+    <motion.div variants={itemVariants} className="mt-10 mb-4">
+        <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold px-3 py-1 rounded-2xl inline-block">
+            {/* Your content here */}
+        </span>
+    </motion.div>
+</motion.section>
+
                             India’s Most Trusted Mutual Fund Tooling Platform
                         </span>
                     </motion.div>
