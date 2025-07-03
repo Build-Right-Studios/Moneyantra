@@ -68,19 +68,9 @@ function PortfolioSection() {
         >
             <section className="w-full max-w-screen-xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
                 {/* Text Section */}
-<<<<<<< HEAD
                 <motion.section className="w-full lg:w-1/2" variants={containerVariants}>
                     <motion.div variants={itemVariants} className="mb-4 pt-18">
                         <span className="bg-blue-100 text-blue-800 text-xs sm:text-sm md:text-base lg:text-lg font-semibold px-3 py-1 rounded-2xl inline-block">
-=======
-                <motion.section
-                    className="w-full md:w-1/2 p-6 bg-white" // Adjusted width for responsiveness
-                    variants={containerVariants} // Apply variants to this section as well if you want its children to stagger
-                >
-                    <motion.div variants={itemVariants} className="mt-10 mb-3 ">
-
-                        <span className="bg-blue-100 text-blue-800 text-xs lg:text-xl font-semibold px-3 py-1 rounded-2xl">
->>>>>>> 48c27b6649c91683e2707a1bdb7bd637dc94640e
                             India’s Most Trusted Mutual Fund Tooling Platform
                         </span>
                     </motion.div>
