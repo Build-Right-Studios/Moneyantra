@@ -59,7 +59,7 @@ function Dashboard1() {
     ];
 
     return (
-        <div className="bg-gray-100 p-8">
+          <div className="min-h-screen bg-gray-100 p-8">
 
         </div>
     )
