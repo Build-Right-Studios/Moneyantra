@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 
+
 const StatCard = ({ icon, title, value, valueColor }) => {
     return (
         <div className="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4">
-            <div className="p-3 rounded-full flex items-center justify-center" style={{ backgroundColor: icon.bgColor }}>
+            <div className="p-4 rounded-full flex items-center justify-center" style={{ backgroundColor: icon.bgColor }}>
                 <i className={`${icon.className} text-xl`} style={{ color: icon.color }}></i>
             </div>
             <div>
@@ -64,7 +65,7 @@ export default function Dashboard1() {
         },
         {
             icon: {
-                className: "fas fa-coins",
+                className: "BsGraphUpArrow",
                 bgColor: "#FEF9C3",
                 color: "#CA8A04"
             },
@@ -86,8 +87,9 @@ export default function Dashboard1() {
 
     return (
         <div className="bg-gray-100 min-h-screen p-6">
-            <h2 className="text-3xl font-bold text-center mb-8">Welcome, {name}</h2>
+            <h2 className="text-3xl font-bold text-center mb-5">Welcome, {name}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <BsGraphUpArrow />
                 {stats.map((stat, index) => (
                     <StatCard key={index} {...stat} />
                 ))}
