@@ -2,14 +2,23 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
+
 const StatCard = ({ icon, title, value, valueColor }) => {
     return (
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center space-y-3">
-            <div
-                className="p-4 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: icon.bgColor }}
-            >
-                <i className={`${icon.className} text-2xl`} style={{ color: icon.color }}></i>
+<div className="bg-white p-6 rounded-xl shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left space-y-3 sm:space-y-0 sm:space-x-4">
+    <div
+        className="p-4 rounded-full flex items-center justify-center"
+        style={{ backgroundColor: icon.bgColor }}
+    >
+        <i className={`${icon.className} text-2xl`} style={{ color: icon.color }}></i>
+    </div>
+    <div>
+        {/* Add your content here */}
+        <h3 className="text-lg font-semibold">Title</h3>
+        <p className="text-gray-600">Description or details go here.</p>
+    </div>
+</div>
+
             </div>
             <div>
                 <p className="text-gray-500 text-sm font-medium">{title}</p>
@@ -68,7 +77,7 @@ export default function Dashboard1() {
         },
         {
             icon: {
-                className: "fas fa-coins",
+                className: "BsGraphUpArrow",
                 bgColor: "#FEF9C3",
                 color: "#CA8A04"
             },
@@ -89,9 +98,16 @@ export default function Dashboard1() {
     ];
 
     return (
-        <div className=" p-8  m-10">
-            <h2 className="text-3xl font-bold text-center m-8">Welcome, {name}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 max-w-6xl mx-auto">
+<div className="bg-gray-100 min-h-screen p-8 m-6">
+    <h2 className="text-3xl font-bold text-center mb-8">Welcome, {name}</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4 max-w-6xl mx-auto">
+        {/* Example card or content */}
+        <div className="bg-white p-4 rounded-lg shadow flex items-center justify-center">
+            <BsGraphUpArrow className="text-2xl text-blue-500" />
+        </div>
+        {/* Add more cards/components here */}
+    </div>
+</div>
                 {stats.map((stat, index) => (
                     <StatCard key={index} {...stat} />
                 ))}
