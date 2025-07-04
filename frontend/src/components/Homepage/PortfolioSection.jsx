@@ -76,27 +76,21 @@ function PortfolioSection() {
                         </span>
                     </motion.div>
 
-                    <motion.h2 variants={itemVariants}>
-                        <span className="text-[#f26419] text-4xl sm:text-5xl font-bold">Portfolio Insights</span><br />
-                        <span className="text-[#33658a] text-3xl sm:text-4xl font-bold">To Help You Reach Your Dreams</span>
-                    </motion.h2>
+        <motion.p variants={itemVariants} className="text-base sm:text-lg mt-6 text-gray-700 font-medium">
+            Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
+            change your funds? Are you getting good returns? Moneyantra can help you know.
+        </motion.p>
 
-                    <motion.p variants={itemVariants} className="text-base sm:text-lg mt-6 text-gray-700 font-medium">
-                        Will your portfolio create long-term wealth? Do you have the right funds? Do you need to
-                        change your funds? Are you getting good returns? Moneyantra can help you know.
-                    </motion.p>
-
-                    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mt-6">
-                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                            className="bg-orange-500 text-white px-4 py-2 sm:py-3 rounded-md hover:bg-orange-600 transition font-semibold">
-                            Review Now
-                        </motion.button>
-                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                            className="border border-gray-300 text-gray-800 px-4 py-2 sm:py-3 rounded-md hover:bg-gray-100 transition font-semibold">
-                            View Demo
-                        </motion.button>
-                    </motion.div>
-
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mt-6">
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className="bg-orange-500 text-white px-4 py-2 sm:py-3 rounded-md hover:bg-orange-600 transition font-semibold">
+                Review Now
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className="border border-gray-300 text-gray-800 px-4 py-2 sm:py-3 rounded-md hover:bg-gray-100 transition font-semibold">
+                View Demo
+            </motion.button>
+        </motion.div>
                     <motion.div variants={itemVariants} className="flex flex-wrap mt-6 gap-4 text-gray-600 text-sm sm:text-base">
                         <div className="flex items-center gap-2">
                             <span className="text-green-600">✔</span>
