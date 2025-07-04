@@ -258,7 +258,9 @@ function clearUserLocalCasData(email) {
     }
 }
 
+
 app.get('/dashboard', authenticationToken, async (req, res) => {
+
     try {
         const email = req.user.email;
         const userJsonPath = getUserJsonFilePath(email);
@@ -284,14 +286,18 @@ app.get('/dashboard', authenticationToken, async (req, res) => {
                     const value = parseFloat(scheme.valuation.value);
                     if (!isNaN(value)) totalAmount += value;
 
+
                     const cost = parseFloat(scheme.valuation.cost);
                     if (!isNaN(cost)) investedAmount += cost;
+
                 }
+
             }
+
         }
 
         const profit = totalAmount - investedAmount;
-        const profitPercent = investedAmount === 0 ? 0 : ((totalAmount / investedAmount - 1) * 100);
+        const profitPercent = ((totalAmount / investedAmount - 1) * 100);
 
         const userName = casData.investor_info?.name || req.user.name || "Investor";
 
@@ -303,16 +309,13 @@ app.get('/dashboard', authenticationToken, async (req, res) => {
             profitPercent: profitPercent.toFixed(2)
         });
 
+
     } catch (err) {
         console.error("Dashboard calculation error:", err);
         return res.status(500).json({ message: "Error generating dashboard metrics.", error: err.message });
     }
+
 });
-
-
-
-
-
 
 app.post('/logout', authenticationToken, async (req, res) => {
     const userEmail = req.user.email; // Get user email from the authenticated token

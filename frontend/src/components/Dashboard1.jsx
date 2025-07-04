@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const StatCard = ({ icon, title, value, valueColor }) => {
     return (
-        <div className="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4">
-            <div className="p-3 rounded-full flex items-center justify-center" style={{ backgroundColor: icon.bgColor }}>
-                <i className={`${icon.className} text-xl`} style={{ color: icon.color }}></i>
+        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center space-y-3">
+            <div
+                className="p-4 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: icon.bgColor }}
+            >
+                <i className={`${icon.className} text-2xl`} style={{ color: icon.color }}></i>
             </div>
             <div>
                 <p className="text-gray-500 text-sm font-medium">{title}</p>
@@ -85,9 +89,9 @@ export default function Dashboard1() {
     ];
 
     return (
-        <div className="bg-gray-100 min-h-screen p-6">
-            <h2 className="text-3xl font-bold text-center mb-8">Welcome, {name}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className=" p-8  m-10">
+            <h2 className="text-3xl font-bold text-center m-8">Welcome, {name}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 max-w-6xl mx-auto">
                 {stats.map((stat, index) => (
                     <StatCard key={index} {...stat} />
                 ))}
