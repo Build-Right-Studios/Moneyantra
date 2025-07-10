@@ -23,8 +23,6 @@ function Homepage() {
                 <Optimizer />
                 <Getintouch />
                 <Footer />
-                <Dashboard1 />
-
             </div>
         </>
     );

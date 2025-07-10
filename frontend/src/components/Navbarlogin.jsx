@@ -32,7 +32,7 @@ function NavbarLogin() {
         } finally {
             localStorage.removeItem("token"); 
             localStorage.removeItem("casData");
-            navigate('/login');
+            navigate('/');
         }
     };
 
