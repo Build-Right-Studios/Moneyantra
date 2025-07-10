@@ -67,7 +67,7 @@ function GetInTouch() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 py-12 px-4 mb-5">
+        <div className="min-h-screen bg-gray-100 py-12 px-4">
             <h1 className="text-3xl p-4 font-semibold text-center mb-8 text-gray-800">
                 Get Expert Guidance
             </h1>
