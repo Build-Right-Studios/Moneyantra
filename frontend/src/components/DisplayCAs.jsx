@@ -7,30 +7,40 @@ export default function DisplayCAs() {
     const [groupedTxns, setGroupedTxns] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [data, setData] = useState(null); // This will hold the 'casData' object from the response
+    const [data, setData] = useState(null);
 
-    // Effect to fetch CAS data from the backend
+    const sendErrorEmail = async (message) => {
+        try {
+            await axiosInstance.post("/send-cas-error-mail", {
+                errorMessage: message,
+            });
+        } catch (err) {
+            console.error("Failed to send error email:", err);
+        }
+    };
+
     useEffect(() => {
         const fetchCasData = async () => {
             setLoading(true);
-
             try {
                 const res = await axiosInstance.get("/get-cas");
-                console.log("Response from /get-cas:", res.data); // Log the full response
-                console.log("Does res.data?.casData exist?", !!res.data?.casData);
+                console.log("Response from /get-cas:", res.data);
 
                 if (res.data && res.data.casData) {
-                    setData(res.data.casData); // Set 'data' state to the 'casData' object directly
+                    setData(res.data.casData);
                     localStorage.setItem("casData", JSON.stringify(res.data.casData));
                     setError("");
                 } else {
-                    setError("No CAS data found for this user from the server or data is empty.");
+                    const msg = "No CAS data found for this user from the server or data is empty.";
+                    setError(msg);
                     setData(null);
+                    await sendErrorEmail(msg);
                 }
             } catch (err) {
                 const errorMessage = err.response?.data?.message || err.message || "Failed to load CAS data from the server.";
                 setError(errorMessage);
                 setData(null);
+                await sendErrorEmail(errorMessage);
                 console.error("Error fetching CAS data:", err.response?.data || err);
             } finally {
                 setLoading(false);
@@ -40,13 +50,9 @@ export default function DisplayCAs() {
         fetchCasData();
     }, []);
 
-    // Effect to process and group transactions when 'data' changes
     useEffect(() => {
         console.log("Data state updated, attempting to group transactions:", data);
 
-        // *** CRITICAL CHANGE HERE ***
-        // Based on your provided JSON, 'folios' is directly under 'data' (which is casData)
-        // NOT under data.data
         if (!data || !data.folios || !Array.isArray(data.folios)) {
             console.warn("Invalid or missing data structure (expected data.folios to be an array). Resetting groupedTxns.", data);
             setGroupedTxns({});
@@ -54,11 +60,15 @@ export default function DisplayCAs() {
         }
 
         const schemeMap = {};
-        // *** CRITICAL CHANGE HERE ***
-        // Iterate directly over data.folios
+        let hasMissingIsin = false;
+
         data.folios.forEach((folio) => {
             if (folio.schemes && Array.isArray(folio.schemes)) {
                 folio.schemes.forEach((scheme) => {
+                    if (!scheme.isin) {
+                        hasMissingIsin = true;
+                    }
+
                     const key = scheme.scheme;
                     if (!schemeMap[key]) {
                         schemeMap[key] = [];
@@ -80,16 +90,17 @@ export default function DisplayCAs() {
                                 dividend_rate: t.dividend_rate,
                             };
 
-                            const isDisplayable = processedTransaction.date && processedTransaction.type;
+                            const isDisplayable =
+                                processedTransaction.date &&
+                                processedTransaction.type &&
+                                processedTransaction.nav !== null;
 
                             if (isDisplayable) {
                                 schemeMap[key].push(processedTransaction);
-                            } else {
-                                console.warn("Skipping transaction due to missing essential fields or invalid numeric values after processing:", t);
-                            }
+                            } 
                         });
                     } else {
-                         console.warn(`Scheme '${scheme.scheme}' in folio '${folio.folio}' has no transactions or transactions is not an array.`, scheme);
+                        console.warn(`Scheme '${scheme.scheme}' in folio '${folio.folio}' has no transactions or transactions is not an array.`, scheme);
                     }
                 });
             } else {
@@ -97,8 +108,17 @@ export default function DisplayCAs() {
             }
         });
 
+        if (hasMissingIsin) {
+            const msg = "An error has occurred and our team is looking into this. You'll get an email once it's resolved.";
+            setError(msg);
+            setGroupedTxns({});
+            sendErrorEmail(msg);
+        } else {
+            setError("");
+            setGroupedTxns(schemeMap);
+        }
+
         console.log("Final grouped transactions:", schemeMap);
-        setGroupedTxns(schemeMap);
     }, [data]);
 
     const formatNumber = (num, decimals = 0) => {
@@ -174,19 +194,19 @@ export default function DisplayCAs() {
                                                         year: "2-digit",
                                                     }) : '-'}
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                     {t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : '-'}
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                     {t.units !== null ? formatNumber(t.units, 4) : '-'}
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                     {t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : '-'}
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                     {t.balance !== null ? formatNumber(t.balance, 4) : '-'}
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-left">
+                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                     {t.type}
                                                 </td>
                                             </tr>
