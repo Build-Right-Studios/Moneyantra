@@ -1,18 +1,21 @@
 steps:
   - name: 'gcr.io/cloud-builders/npm'
-    dir: 'backend'
+    dir: 'backend'  # 👈 adjust if needed
     args: ['install']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    dir: 'backend'
+    args: ['run', 'build']  # If you have a build step. Remove if not needed
 
   - name: 'gcr.io/cloud-builders/gcloud'
     dir: 'backend'
-    args: [
-      'run', 'deploy', 'moneyantra',
-      '--source=.',
-      '--region=us-central1',
-      '--platform=managed',
-      '--allow-unauthenticated'
-    ]
-
-options:
-  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-timeout: '900s'
+    args:
+      [
+        'run', 'deploy', 'moneyantra',
+        '--source=.',                   # Deploy from this folder
+        '--region=us-central1',
+        '--platform=managed',
+        '--allow-unauthenticated',
+        '--runtime=nodejs18',
+        '--timeout=600s'               # Optional: more time for slow startups
+      ]
