@@ -10,8 +10,7 @@ steps:
       '--source=.',
       '--region=us-central1',
       '--platform=managed',
-      '--allow-unauthenticated',
-      '--runtime=nodejs18'  # ✅ Force Node.js
+      '--allow-unauthenticated'
     ]
 
 options:
