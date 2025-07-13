@@ -5,7 +5,7 @@ steps:
 
   - name: 'gcr.io/cloud-builders/npm'
     dir: 'backend'
-    args: ['run', 'build']  # If you have a build step. Remove if not needed
+    args: ['run']  # If you have a build step. Remove if not needed
 
   - name: 'gcr.io/cloud-builders/gcloud'
     dir: 'backend'
