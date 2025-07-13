@@ -19,3 +19,5 @@ steps:
         '--runtime=nodejs18',
         '--timeout=600s'               # Optional: more time for slow startups
       ]
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET 
