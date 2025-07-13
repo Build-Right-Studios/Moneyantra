@@ -4,7 +4,7 @@ options:
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: [
-      'run', 'deploy', 'moneyantra', 
+      'run', 'deploy', 'moneyantra-backend', 
       '--source=.', 
       '--region=us-central1', 
       '--platform=managed', 
