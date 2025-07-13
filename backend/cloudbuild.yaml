@@ -1,7 +1,10 @@
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: [
-      'run', 'deploy', 'moneyantra-backend', 
+      'run', 'deploy', 'moneyantra', 
       '--source=.', 
       '--region=us-central1', 
       '--platform=managed', 
