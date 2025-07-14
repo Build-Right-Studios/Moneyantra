@@ -3,43 +3,12 @@ const fssync = require('fs');
 const { exec } = require("child_process");
 const { google } = require('googleapis');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { JWT, GoogleAuth } = require('google-auth-library');
 
 const getGoogleAuthClient = require('./getGoogleAuthClient.js');
 const searchDriveFileByName = require('./searchDriveFileByName.js');
 const getUserJsonFilePath = require('./getUserJsonFilePath.js');
 
 const SPREADSHEET_ID = '1r4evphV7CeDzGMl8dznIlj0gVt4jBi0eCLEFDuvCdtc';
-
-async function getSheetAuthClient() {
-    const secretPath = '/secrets/drive.json';
-    try {
-        if (fssync.existsSync(secretPath)) {
-            const creds = JSON.parse(fssync.readFileSync(secretPath, 'utf8'));
-            console.log("✅ Loaded credentials from /secrets/drive.json");
-            return new JWT({
-                email: creds.client_email,
-                key: creds.private_key,
-                scopes: [
-                    'https://www.googleapis.com/auth/drive',
-                    'https://www.googleapis.com/auth/spreadsheets',
-                ],
-            });
-        } else {
-            console.warn("⚠️ '/secrets/drive.json' not found. Falling back to ADC.");
-            const auth = new GoogleAuth({
-                scopes: [
-                    'https://www.googleapis.com/auth/drive',
-                    'https://www.googleapis.com/auth/spreadsheets',
-                ],
-            });
-            return await auth.getClient();
-        }
-    } catch (err) {
-        console.error("❌ Failed to get Google Auth client:", err);
-        throw err;
-    }
-}
 
 async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR) {
     const lowerCaseEmail = email.toLowerCase();
@@ -48,10 +17,10 @@ async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR) {
     const tempPdfPath = path.join(TEMP_UPLOADS_DIR, `${lowerCaseEmail}_temp.pdf`);
 
     try {
-        // Get authenticated client for Google Sheets
-        const sheetAuth = await getSheetAuthClient();
-        const doc = new GoogleSpreadsheet(SPREADSHEET_ID, sheetAuth);
+        const authClient = await getGoogleAuthClient();
 
+        // Google Sheets
+        const doc = new GoogleSpreadsheet(SPREADSHEET_ID, authClient);
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
         await sheet.loadHeaderRow();
@@ -79,6 +48,7 @@ async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR) {
             return { success: false, message: "No CAS PDF or password found for this user." };
         }
 
+        // Google Drive
         const files = await searchDriveFileByName(fileName);
         if (files.length === 0) {
             console.warn(`File ${fileName} not found in Google Drive for user ${lowerCaseEmail}.`);
@@ -87,7 +57,6 @@ async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR) {
         }
 
         const fileId = files[0].id;
-        const authClient = await getGoogleAuthClient(); // For Drive API
         const drive = google.drive({ version: 'v3', auth: authClient });
         const dest = fssync.createWriteStream(tempPdfPath);
 
