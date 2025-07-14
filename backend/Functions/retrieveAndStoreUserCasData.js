@@ -4,8 +4,8 @@ const { exec } = require("child_process");
 const { google } = require('googleapis');
 const { JWT } = require('google-auth-library');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-
-const creds = require(path.join(__dirname, '../drive.json'));
+const fs = require('fs');
+const creds = JSON.parse(fs.readFileSync('/secrets/drive.json', 'utf8')); 
 const getGoogleAuthClient = require('./getGoogleAuthClient.js'); 
 const searchDriveFileByName = require('./searchDriveFileByName.js'); 
 const getUserJsonFilePath = require('./getUserJsonFilePath.js'); 
