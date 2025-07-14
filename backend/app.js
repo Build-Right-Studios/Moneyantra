@@ -45,6 +45,10 @@ app.post("/signup", SignupUser);
 app.post('/forgot-password', forgotpassword);
 app.post('/reset-password/:name/:token', resetpassword);
 
+app.get("/", (req, res) => {
+    res.send("🚀 Moneyantra backend is running!");
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
