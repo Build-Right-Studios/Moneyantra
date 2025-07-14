@@ -1,22 +1,22 @@
 steps:
   - name: 'gcr.io/cloud-builders/npm'
-    dir: 'backend'  
+    dir: 'backend'
     args: ['install']
 
   - name: 'gcr.io/cloud-builders/npm'
     dir: 'backend'
-    args: ['run', 'start']  
+    args: ['run', 'start']
 
   - name: 'gcr.io/cloud-builders/gcloud'
     dir: 'backend'
     args:
       [
         'run', 'deploy', 'moneyantra',
-        '--source=.',                 
+        '--source=.',
         '--region=us-central1',
         '--platform=managed',
         '--allow-unauthenticated',
-        '--timeout=600s'             
+        '--set-secrets=drive.json=moneyantra-drive-json:latest'
       ]
 
 options:
