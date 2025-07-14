@@ -5,7 +5,7 @@ const { google } = require('googleapis');
 const { JWT } = require('google-auth-library');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
-const creds = require('../drive.json'); 
+const creds = require(path.join(__dirname, '../drive.json'));
 const getGoogleAuthClient = require('./getGoogleAuthClient.js'); 
 const searchDriveFileByName = require('./searchDriveFileByName.js'); 
 const getUserJsonFilePath = require('./getUserJsonFilePath.js'); 
