@@ -12,7 +12,7 @@ steps:
         '--region=us-central1',
         '--platform=managed',
         '--allow-unauthenticated',
-        '--set-secrets=drive.json=moneyantra-drive-json:latest'
+        '--set-secrets=/secrets/drive.json=drive-secret:latest'
       ]
 
 options:
