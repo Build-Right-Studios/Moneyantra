@@ -1,20 +1,21 @@
 const path = require('path');
-const fssync = require('fs'); 
+const fssync = require('fs');
 const { exec } = require("child_process");
 const { google } = require('googleapis');
 const { JWT } = require('google-auth-library');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const fs = require('fs');
-const creds = JSON.parse(fs.readFileSync('/secrets/drive.json', 'utf8')); 
-const getGoogleAuthClient = require('./getGoogleAuthClient.js'); 
-const searchDriveFileByName = require('./searchDriveFileByName.js'); 
-const getUserJsonFilePath = require('./getUserJsonFilePath.js'); 
+const creds = JSON.parse(fs.readFileSync('/secrets/drive.json', 'utf8')); // ✅ Works with Cloud Run secret mount
+
+const getGoogleAuthClient = require('./getGoogleAuthClient.js');
+const searchDriveFileByName = require('./searchDriveFileByName.js');
+const getUserJsonFilePath = require('./getUserJsonFilePath.js');
 
 const SPREADSHEET_ID = '1r4evphV7CeDzGMl8dznIlj0gVt4jBi0eCLEFDuvCdtc';
 
 async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR) {
-    const lowerCaseEmail = email.toLowerCase(); 
-    const fileName = `${lowerCaseEmail}_uploaded.pdf`; 
+    const lowerCaseEmail = email.toLowerCase();
+    const fileName = `${lowerCaseEmail}_uploaded.pdf`;
     const userJsonPath = getUserJsonFilePath(lowerCaseEmail);
     const tempPdfPath = path.join(TEMP_UPLOADS_DIR, `${lowerCaseEmail}_temp.pdf`);
 
@@ -40,7 +41,7 @@ async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR) {
             const emailCell = sheet.getCell(i, 0);
             if (emailCell.value && String(emailCell.value).toLowerCase() === lowerCaseEmail) {
                 foundRowIndex = i;
-                const passwordCell = sheet.getCell(i, 1); 
+                const passwordCell = sheet.getCell(i, 1);
                 if (passwordCell.value) {
                     pdfPassword = String(passwordCell.value);
                 }
