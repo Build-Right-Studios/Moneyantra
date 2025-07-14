@@ -1,5 +1,4 @@
-const path = require('path');
-const creds = require(path.join(__dirname, '../drive.json'));
+const creds = require('../drive.json'); 
 const SPREADSHEET_ID = '1r4evphV7CeDzGMl8dznIlj0gVt4jBi0eCLEFDuvCdtc';
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library'); 

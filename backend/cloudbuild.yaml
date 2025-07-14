@@ -3,10 +3,6 @@ steps:
     dir: 'backend'
     args: ['install']
 
-  - name: 'gcr.io/cloud-builders/npm'
-    dir: 'backend'
-    args: ['run', 'start']
-
   - name: 'gcr.io/cloud-builders/gcloud'
     dir: 'backend'
     args:
