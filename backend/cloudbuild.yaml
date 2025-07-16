@@ -1,0 +1,19 @@
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    dir: 'backend'
+    args: ['install']
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    dir: 'backend'
+    args:
+      [
+        'run', 'deploy', 'moneyantra',
+        '--source=.',
+        '--region=us-central1',
+        '--platform=managed',
+        '--allow-unauthenticated',
+        '--set-secrets=/secrets/drive.json=drive-secret:latest'
+      ]
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
