@@ -22,10 +22,12 @@ const get = require('./Routes/get-cas.js');
 const upload = require('./Routes/upload.js');
 const dashboard = require('./Routes/dashboard.js');
 const logout = require('./Routes/Logout.js');
+const oauthRoutes = require('./Routes/oauth.js'); // ✅ Keep this
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
 const TEMP_UPLOADS_DIR = path.join(__dirname, 'temp_uploads');
 
+// Ensure required directories exist
 if (!fssync.existsSync(USER_LOCAL_DATA_DIR)) {
     fssync.mkdirSync(USER_LOCAL_DATA_DIR, { recursive: true });
 }
@@ -33,6 +35,8 @@ if (!fssync.existsSync(TEMP_UPLOADS_DIR)) {
     fssync.mkdirSync(TEMP_UPLOADS_DIR, { recursive: true });
 }
 
+// Routes
+app.use('/', oauthRoutes); // ✅ Mount OAuth routes
 app.post("/send-cas-error-mail", SendCasErrorEmail);
 app.post("/sendemail", SendEmail);
 app.post('/extract-cas', extract);

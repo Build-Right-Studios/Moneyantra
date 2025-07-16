@@ -5,33 +5,34 @@ const { JWT, GoogleAuth } = require('google-auth-library');
 
 const SPREADSHEET_ID = '1r4evphV7CeDzGMl8dznIlj0gVt4jBi0eCLEFDuvCdtc';
 
+function getSecretFilePath() {
+    return path.join(__dirname, '..', 'secrets', 'drive.json');
+}
+
 async function getAuthClient() {
-    const secretPath = '/secrets/drive.json';
+    const secretFilePath = getSecretFilePath();
+    const scopes = [
+        'https://www.googleapis.com/auth/drive',
+        'https://www.googleapis.com/auth/spreadsheets',
+    ];
+
     try {
-        if (fs.existsSync(secretPath)) {
-            const creds = JSON.parse(fs.readFileSync(secretPath, 'utf8'));
-            console.log("✅ Loaded credentials from /secrets/drive.json");
+        if (fs.existsSync(secretFilePath)) {
+            console.log(`✅ Using key file from ${secretFilePath} for Google Auth.`);
+            const keyData = JSON.parse(fs.readFileSync(secretFilePath, 'utf8'));
             return new JWT({
-                email: creds.client_email,
-                key: creds.private_key,
-                scopes: [
-                    'https://www.googleapis.com/auth/drive',
-                    'https://www.googleapis.com/auth/spreadsheets'
-                ],
+                email: keyData.client_email,
+                key: keyData.private_key,
+                scopes,
             });
         } else {
-            console.warn("⚠️ '/secrets/drive.json' not found. Falling back to ADC.");
-            const auth = new GoogleAuth({
-                scopes: [
-                    'https://www.googleapis.com/auth/drive',
-                    'https://www.googleapis.com/auth/spreadsheets'
-                ],
-            });
+            console.warn(`⚠️ Key file not found. Falling back to Application Default Credentials (ADC).`);
+            const auth = new GoogleAuth({ scopes });
             return await auth.getClient();
         }
     } catch (err) {
-        console.error("❌ Failed to get Google Auth client:", err);
-        throw err;
+        console.error("❌ Failed to get Google Auth client:", err.message);
+        throw new Error(`Google Authentication failed: ${err.message}`);
     }
 }
 
@@ -43,10 +44,7 @@ async function updateSheet(userEmail, userPassword) {
         const doc = new GoogleSpreadsheet(SPREADSHEET_ID, authClient);
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
-
-        sheet.headerRow = 1;
         await sheet.loadHeaderRow();
-        console.log("Loading cells from Google Sheet for updateSheet...");
         await sheet.loadCells('A:B');
 
         let foundRowIndex = -1;
@@ -67,9 +65,10 @@ async function updateSheet(userEmail, userPassword) {
             await sheet.addRow({ Email: lowerCaseEmail, Password: userPassword });
             console.log("✅ Google Sheet added new user:", lowerCaseEmail);
         }
+
     } catch (err) {
-        console.error("❌ Google Sheet update error:", err);
-        throw err;
+        console.error('❌ Failed to update Google Sheet:', err.message || err);
+        throw new Error(`Failed to update Google Sheet: ${err.message || err}`);
     }
 }
 
