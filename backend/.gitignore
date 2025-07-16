@@ -1,3 +1,4 @@
 node_modules/
-creda.json
-money-463205-d766e1bd1c08.json
+secrets/
+drive.json
+.env

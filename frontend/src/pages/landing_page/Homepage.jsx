@@ -1,22 +1,28 @@
-import React from "react";
 import Navbar from "../../components/Navbar.jsx";
-import Image from "../../components/Image.jsx";
+import PortfolioSection from "../../components/Homepage/PortfolioSection.jsx";
 import Footer from "../../components/Footer.jsx";
-import About from "../../components/About.jsx";
-import Getintouch from "../../components/getintouch.jsx";
-import Uploadpdf from "../Uploadpdf.jsx";
-import ParseCAS from '/src/pages/ParseCAS.jsx'
+import Getintouch from "../../components/Getintouch.jsx";
+import Tax from "../../components/Homepage/Tax.jsx";
+import StatsSection from "../../components/Homepage/StatsSection.jsx";
+import Reviews from "../../components/Homepage/Reviews.jsx";
+import Optimizer from "../../components/Homepage/Optimizer.jsx";
+import Dashboard1 from "../../components/Dashboard1.jsx";
+
 
 function Homepage() {
     return (
         <>
-            <div className="parent">
+            <div>
                 <Navbar />
-                <Image />
-                <About />
-                <Getintouch/>
+                <div className="bg-white">
+                    <PortfolioSection />
+                    <StatsSection />
+                    <Tax />
+                </div>
+                <Reviews />
+                <Optimizer />
+                <Getintouch />
                 <Footer />
-                
             </div>
         </>
     );

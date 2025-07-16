@@ -1,8 +1,18 @@
 [
   {
+    "name": "Aryansh",
+    "email": "aryanshchauhan77@gmail.com",
+    "password": "$2b$10$RF.ZCTR0gemsh9ALo8MkUOUi.bUIms4pvOvjU2WCmyR6G/lueGAn2"
+  },
+  {
     "name": "Aryesh",
     "email": "aryesh@mail",
     "password": "654321"
+  },
+  {
+    "name": "Aryesh",
+    "email": "aryeshsrivastava@gmail.com",
+    "password": "$2b$10$5l9FXBKQvAobyY3s0oeU4eKq8OuRgVmtUt6YTkSPgnEmT076lwPUW"
   },
   {
     "name": "BRS",
@@ -13,15 +23,5 @@
     "name": "BRS NEW",
     "email": "brs@meet.com",
     "password": "$2b$10$Hrbe5MQ3Qs1Fon1/hh2q8.RXm7AloUsmka2h8cEtBRVgzzem.3kHC"
-  },
-  {
-    "name": "Aryansh",
-    "email": "aryanshchauhan77@gmail.com",
-    "password": "$2b$10$RF.ZCTR0gemsh9ALo8MkUOUi.bUIms4pvOvjU2WCmyR6G/lueGAn2"
-  },
-  {
-    "name": "Aryesh",
-    "email": "aryeshsrivastava@gmail.com",
-    "password": "$2b$10$Sk/0bMOMkFh2buEkRa5xIOLVD23anfuSetB70cvlv6mtR3b4VIruW"
   }
 ]
