@@ -31,11 +31,11 @@ async function getAuthClient() {
             return await auth.getClient();
         }
     } catch (err) {
+        console.error("❌ Failed to get Google Auth client:", err.message);
         throw new Error(`Google Authentication failed: ${err.message}`);
     }
 }
 
-// 🛠 Main function to update the Google Sheet
 async function updateSheet(userEmail, userPassword) {
     try {
         const lowerCaseEmail = userEmail.toLowerCase();
@@ -43,13 +43,11 @@ async function updateSheet(userEmail, userPassword) {
 
         const doc = new GoogleSpreadsheet(SPREADSHEET_ID, authClient);
         await doc.loadInfo();
-
         const sheet = doc.sheetsByIndex[0];
         await sheet.loadHeaderRow();
         await sheet.loadCells('A:B');
 
         let foundRowIndex = -1;
-
         for (let i = 1; i < sheet.rowCount; i++) {
             const emailCell = sheet.getCell(i, 0);
             if (emailCell.value && String(emailCell.value).toLowerCase() === lowerCaseEmail) {
@@ -62,13 +60,15 @@ async function updateSheet(userEmail, userPassword) {
             const passwordCell = sheet.getCell(foundRowIndex, 1);
             passwordCell.value = userPassword;
             await passwordCell.save();
+            console.log("✅ Google Sheet updated existing user:", lowerCaseEmail);
         } else {
             await sheet.addRow({ Email: lowerCaseEmail, Password: userPassword });
+            console.log("✅ Google Sheet added new user:", lowerCaseEmail);
         }
 
     } catch (err) {
-        console.error('❌ Failed to update Google Sheet:', err.message);
-        throw new Error(`Failed to update Google Sheet: ${err.message}`);
+        console.error('❌ Failed to update Google Sheet:', err.message || err);
+        throw new Error(`Failed to update Google Sheet: ${err.message || err}`);
     }
 }
 
