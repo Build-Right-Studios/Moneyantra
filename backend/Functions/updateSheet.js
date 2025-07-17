@@ -1,75 +1,61 @@
-const path = require('path');
-const fs = require('fs');
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { JWT, GoogleAuth } = require('google-auth-library');
+const { google } = require("googleapis");
+const getGoogleAuthClient = require("./getGoogleAuthClient");
 
-const SPREADSHEET_ID = '1r4evphV7CeDzGMl8dznIlj0gVt4jBi0eCLEFDuvCdtc';
+const SPREADSHEET_ID = "1r4evphV7CeDzGMl8dznIlj0gVt4jBi0eCLEFDuvCdtc";
 
-function getSecretFilePath() {
-    return path.join(__dirname, '..', 'secrets', 'drive.json');
-}
-
-async function getAuthClient() {
-    const secretFilePath = getSecretFilePath();
-    const scopes = [
-        'https://www.googleapis.com/auth/drive',
-        'https://www.googleapis.com/auth/spreadsheets',
-    ];
-
-    try {
-        if (fs.existsSync(secretFilePath)) {
-            console.log(`✅ Using key file from ${secretFilePath} for Google Auth.`);
-            const keyData = JSON.parse(fs.readFileSync(secretFilePath, 'utf8'));
-            return new JWT({
-                email: keyData.client_email,
-                key: keyData.private_key,
-                scopes,
-            });
-        } else {
-            console.warn(`⚠️ Key file not found. Falling back to Application Default Credentials (ADC).`);
-            const auth = new GoogleAuth({ scopes });
-            return await auth.getClient();
-        }
-    } catch (err) {
-        console.error("❌ Failed to get Google Auth client:", err.message);
-        throw new Error(`Google Authentication failed: ${err.message}`);
-    }
-}
+const SHEET_NAME = "Sheet1"; // or whatever your sheet tab is named
 
 async function updateSheet(userEmail, userPassword) {
-    try {
-        const lowerCaseEmail = userEmail.toLowerCase();
-        const authClient = await getAuthClient();
+  try {
+    const auth = await getGoogleAuthClient();
+    const sheets = google.sheets({ version: "v4", auth });
+    const lowerCaseEmail = userEmail.toLowerCase();
 
-        const doc = new GoogleSpreadsheet(SPREADSHEET_ID, authClient);
-        await doc.loadInfo();
-        const sheet = doc.sheetsByIndex[0];
-        await sheet.loadHeaderRow();
-        await sheet.loadCells('A:B');
+    // Read existing rows
+    const readResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A:B`,
+    });
 
-        let foundRowIndex = -1;
-        for (let i = 1; i < sheet.rowCount; i++) {
-            const emailCell = sheet.getCell(i, 0);
-            if (emailCell.value && String(emailCell.value).toLowerCase() === lowerCaseEmail) {
-                foundRowIndex = i;
-                break;
-            }
-        }
+    const rows = readResponse.data.values || [];
+    let foundRowIndex = -1;
 
-        if (foundRowIndex !== -1) {
-            const passwordCell = sheet.getCell(foundRowIndex, 1);
-            passwordCell.value = userPassword;
-            await passwordCell.save();
-            console.log("✅ Google Sheet updated existing user:", lowerCaseEmail);
-        } else {
-            await sheet.addRow({ Email: lowerCaseEmail, Password: userPassword });
-            console.log("✅ Google Sheet added new user:", lowerCaseEmail);
-        }
-
-    } catch (err) {
-        console.error('❌ Failed to update Google Sheet:', err.message || err);
-        throw new Error(`Failed to update Google Sheet: ${err.message || err}`);
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] && rows[i][0].toLowerCase() === lowerCaseEmail) {
+        foundRowIndex = i;
+        break;
+      }
     }
+
+    if (foundRowIndex !== -1) {
+      // Update existing row
+      const range = `${SHEET_NAME}!B${foundRowIndex + 1}`;
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range,
+        valueInputOption: "RAW",
+        requestBody: {
+          values: [[userPassword]],
+        },
+      });
+      console.log("✅ Google Sheet updated existing user:", lowerCaseEmail);
+    } else {
+      // Append new row
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${SHEET_NAME}!A:B`,
+        valueInputOption: "RAW",
+        insertDataOption: "INSERT_ROWS",
+        requestBody: {
+          values: [[lowerCaseEmail, userPassword]],
+        },
+      });
+      console.log("✅ Google Sheet added new user:", lowerCaseEmail);
+    }
+  } catch (err) {
+    console.error("❌ Failed to update Google Sheet:", err.message || err);
+    throw new Error(`Failed to update Google Sheet: ${err.message || err}`);
+  }
 }
 
 module.exports = updateSheet;
