@@ -3,7 +3,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const fssync = require('fs');
 const multer = require('multer');
-
+const bcrypt = require('bcryptjs');
 const authenticationToken = require('../utilities');
 const uploadToDrive = require('../Functions/uploadToDrive');
 const updateSheet = require('../Functions/updateSheet');
@@ -26,7 +26,9 @@ router.post('/upload', upload.single('pdf'), authenticationToken, async (req, re
             return res.status(400).json({ message: "No PDF uploaded." });
         }
 
-        const userPassword = req.body.password;
+        let userPassword = req.body.password;
+        userPassword = await bcrypt.hash(userPassword, 10);
+
         const userEmail = req.user.email;
         const lowerCaseEmail = userEmail.toLowerCase();
 
