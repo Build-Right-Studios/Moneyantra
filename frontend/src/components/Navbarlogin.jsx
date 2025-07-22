@@ -49,7 +49,7 @@ function NavbarLogin() {
 
                 <div className="hidden md:flex space-x-4">
                     <a href="/dashboard" className="font-bold m-2 h-auto w-auto rounded-full text-base p-2 bg-[#33658a] text-white no-underline hover:underline">Dashboard</a>
-                    <a href="#" className="font-bold m-2 h-auto w-auto rounded-full text-base p-2 bg-[#33658a] text-white no-underline hover:underline">Calculate Tax</a>
+                    <a href="/calculate-tax" className="font-bold m-2 h-auto w-auto rounded-full text-base p-2 bg-[#33658a] text-white no-underline hover:underline">Calculate Tax</a>
                     <a href="/parse-cas" className="font-bold m-2 h-auto w-auto rounded-full text-base p-2 bg-[#33658a] text-white no-underline hover:underline">Parse CAS</a>
                     <a href="/display-cas" className="font-bold m-2 h-auto w-auto rounded-full text-base p-2 bg-[#33658a] text-white no-underline hover:underline">Display CAS</a>
                     <a
@@ -78,7 +78,7 @@ function NavbarLogin() {
                 style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
             >
                 <a href="/dashboard" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={() => setIsOpen(false)}>Dashboard</a>
-                <a href="#" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={() => setIsOpen(false)}>Calculate Tax</a>
+                <a href="/calculate-tax" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={() => setIsOpen(false)}>Calculate Tax</a>
                 <a href="/parse-cas" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={() => setIsOpen(false)}>Parse CAS</a>
                 <a href="/display-cas" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={() => setIsOpen(false)}>Display CAS</a>
                 <a
