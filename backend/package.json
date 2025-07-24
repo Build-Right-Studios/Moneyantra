@@ -13,6 +13,7 @@
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "google-auth-library": "^9.15.1",
@@ -22,6 +23,8 @@
     "multer": "^2.0.1",
     "nodemailer": "^7.0.3",
     "nodemon": "^3.1.10",
+    "open": "^10.2.0",
+    "papaparse": "^5.5.3",
     "pdf-lib": "^1.17.1",
     "punycode": "^2.3.1"
   }

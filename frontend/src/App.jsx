@@ -6,6 +6,7 @@ import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import ParseCAS from './pages/ParseCAS.jsx'
 import DisplayCAs from "./components/DisplayCAs";
+import TaxCalculator from "./pages/TaxCalculator.jsx"; // New import
 
 function App() {
   return (
@@ -18,11 +19,10 @@ function App() {
         <Route path='/reset-password/:name/:token' element={<ResetPassword />} />
         <Route path='/parse-cas' element={<ParseCAS />} />
         <Route path='/display-cas'  element={<DisplayCAs/>} />
+        <Route path='/calculate-tax' element={<TaxCalculator />} /> 
       </Routes>
     </div>
   )
 }
 
 export default App
-
-

@@ -11,11 +11,6 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
-// Google Sheet credentials and folder ID
-const creds = require('./money-463205-d766e1bd1c08.json');
-const google_api_folder = '1-roKtREw4PrQrCjs_RDeMtl_CGRnJh4m';
-=======
 const SendEmail = require('./Controllers/SendEmail.js');
 const SendCasErrorEmail = require('./Controllers/SendCasErrorMail.js');
 const LoginUser = require('./Routes/Login.js');
@@ -27,13 +22,12 @@ const get = require('./Routes/get-cas.js');
 const upload = require('./Routes/upload.js');
 const dashboard = require('./Routes/dashboard.js');
 const logout = require('./Routes/Logout.js');
-const oauthRoutes = require('./Routes/oauth.js'); // ✅ Keep this
->>>>>>> main
+const oauthRoutes = require('./Routes/oauth.js');
+const calculateTaxRoute = require('./Routes/calculateTax.js'); 
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
 const TEMP_UPLOADS_DIR = path.join(__dirname, 'temp_uploads');
 
-// Ensure required directories exist
 if (!fssync.existsSync(USER_LOCAL_DATA_DIR)) {
     fssync.mkdirSync(USER_LOCAL_DATA_DIR, { recursive: true });
 }
@@ -41,8 +35,9 @@ if (!fssync.existsSync(TEMP_UPLOADS_DIR)) {
     fssync.mkdirSync(TEMP_UPLOADS_DIR, { recursive: true });
 }
 
-// Routes
-app.use('/', oauthRoutes); // ✅ Mount OAuth routes
+app.use('/', oauthRoutes);
+app.use('/api', calculateTaxRoute); 
+
 app.post("/send-cas-error-mail", SendCasErrorEmail);
 app.post("/sendemail", SendEmail);
 app.post('/extract-cas', extract);
@@ -61,5 +56,5 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+    console.log(`✅ Server is listening on port ${PORT}`);
 });

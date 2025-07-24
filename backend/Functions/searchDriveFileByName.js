@@ -1,15 +1,15 @@
 const { google } = require('googleapis');
 const getGoogleAuthClient = require('./getGoogleAuthClient'); 
 
-const google_api_folder = '1aFrT3KEIzQzwhKwo_2NRio1H7avI7TpJ';
+const DEFAULT_FOLDER_ID = '1aFrT3KEIzQzwhKwo_2NRio1H7avI7TpJ';
 
-async function searchDriveFileByName(fileName) {
+async function searchDriveFileByName(fileName, folderId = DEFAULT_FOLDER_ID) {
     try {
         const authClient = await getGoogleAuthClient();
         const drive = google.drive({ version: 'v3', auth: authClient });
 
         const response = await drive.files.list({
-            q: `'${google_api_folder}' in parents and name='${fileName}' and trashed=false`,
+            q: `'${folderId}' in parents and name='${fileName}' and trashed=false`,
             fields: 'files(id, name)',
             spaces: 'drive',
         });
