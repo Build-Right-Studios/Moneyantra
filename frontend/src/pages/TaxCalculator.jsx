@@ -13,22 +13,31 @@ export default function TaxCalculator() {
   useEffect(() => {
     const fetchPortfolio = async () => {
       setLoading(true);
+      console.log("Fetching portfolio data...");
+
       try {
-        const token = localStorage.getItem('token'); // Adjust key if needed
+        const token = localStorage.getItem('token');
+        console.log("Token:", token);
+
         const res = await fetch("http://localhost:8080/api/user-portfolio", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
         });
 
         if (!res.ok) {
-          throw new Error("Failed to fetch portfolio data.");
+          const errorText = await res.text();
+          console.error("Fetch failed:", errorText);
+          throw new Error(`Failed to fetch portfolio data: ${res.status} - ${errorText}`);
         }
 
         const data = await res.json();
+        console.log("Fetched portfolio data:", data);
         setPortfolioData(data.portfolio || []);
       } catch (err) {
+        console.error("Portfolio fetch error:", err);
         setErrorDisplay(err.message || "Failed to load portfolio");
       } finally {
         setLoading(false);
@@ -38,26 +47,31 @@ export default function TaxCalculator() {
     fetchPortfolio();
   }, []);
 
-  const getTaxSlabObject = (ratePercent) => ({
-    shortTermEquityRate: 0.15,
-    longTermEquityRate: 0.10,
-    shortTermOtherRate: ratePercent / 100,
-    longTermDebtRate: 0.20,
-    longTermOtherRate: 0.20,
-    ltcgExemptionLimitEquity: 100000
-  });
+  const getTaxSlabObject = (ratePercent) => {
+    return {
+      shortTermEquityRate: 0.15,
+      longTermEquityRate: 0.10,
+      shortTermOtherRate: ratePercent / 100,
+      longTermDebtRate: 0.20,
+      longTermOtherRate: 0.20,
+      ltcgExemptionLimitEquity: 100000
+    };
+  };
 
   const calculateTax = async () => {
+    console.log("Starting tax calculation...");
     setLoading(true);
     setErrorDisplay(null);
     setResults(null);
 
     try {
       if (!financialYear || isNaN(taxRateDisplay) || !portfolioData.length) {
+        console.error("Missing or invalid inputs", { financialYear, taxRateDisplay, portfolioData });
         throw new Error("Please ensure Financial Year, Tax Slab, and Portfolio Data are loaded.");
       }
 
       const currentTaxSlab = getTaxSlabObject(taxRateDisplay);
+      console.log("Sending data to backend:", { financialYear, currentTaxSlab, portfolioData });
 
       const response = await fetch("http://localhost:8080/api/calculate-tax", {
         method: "POST",
@@ -80,8 +94,10 @@ export default function TaxCalculator() {
       }
 
       const data = await response.json();
+      console.log("Tax calculation result:", data);
       setResults(data);
     } catch (error) {
+      console.error("Tax calculation error:", error);
       setErrorDisplay(error.message);
     } finally {
       setLoading(false);
@@ -116,8 +132,12 @@ export default function TaxCalculator() {
               step="1"
               min="0"
               max="100"
-              value={taxRateDisplay}
-              onChange={(e) => setTaxRateDisplay(parseFloat(e.target.value))}
+              value={isNaN(taxRateDisplay) ? '' : taxRateDisplay}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                console.log("Updated tax slab input:", val);
+                setTaxRateDisplay(isNaN(val) ? '' : val);
+              }}
               className="w-full p-2 border border-gray-300 rounded-md"
               placeholder="e.g., 30"
             />
@@ -130,6 +150,10 @@ export default function TaxCalculator() {
           >
             {loading ? "Calculating..." : "Calculate Tax"}
           </button>
+
+          {portfolioData.length === 0 && (
+            <p className="text-sm text-gray-500 mt-2">No portfolio data found. Please upload or check authentication.</p>
+          )}
         </div>
 
         {errorDisplay && (

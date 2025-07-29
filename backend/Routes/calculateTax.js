@@ -26,10 +26,9 @@ router.get('/user-portfolio', async (req, res) => {
   }
 });
 
-// ✅ POST /api/calculate-tax
 router.post('/calculate-tax', async (req, res) => {
   try {
-    const username = "aryanshchauhan77_gmail.com"; // TEMP: hardcoded for testing
+    const username = "aryanshchauhan77_gmail.com"; 
     const portfolioPath = getUserPortfolioPath(username);
 
     if (!fs.existsSync(portfolioPath)) {
