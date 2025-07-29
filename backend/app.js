@@ -23,7 +23,7 @@ const upload = require('./Routes/upload.js');
 const dashboard = require('./Routes/dashboard.js');
 const logout = require('./Routes/Logout.js');
 const oauthRoutes = require('./Routes/oauth.js');
-const calculateTaxRoute = require('./Routes/calculateTax.js'); 
+const calculateTaxRoute = require('./Routes/calculateTax.js');
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
 const TEMP_UPLOADS_DIR = path.join(__dirname, 'temp_uploads');
