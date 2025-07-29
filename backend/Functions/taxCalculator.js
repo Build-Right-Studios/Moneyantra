@@ -2,221 +2,181 @@ const fs = require('fs');
 const path = require('path');
 const Papa = require('papaparse');
 
-// Optionally load CII from file
-function loadLocalCSV(filename) {
-    const filePath = path.join(__dirname, 'data', filename);
-    try {
-        const file = fs.readFileSync(filePath, 'utf8');
-        const parsedData = Papa.parse(file, { header: true, skipEmptyLines: true }).data;
-        return parsedData;
-    } catch (error) {
-        return [];
+const loadUserCSV = (username, fileName) => {
+  const filePath = path.join(__dirname, '..', 'user_data_files', username, fileName);
+  const csvData = fs.readFileSync(filePath, 'utf8');
+  return Papa.parse(csvData, { header: true, skipEmptyLines: true }).data;
+};
+
+
+// FIFO Logic
+function applyFIFO(portfolio) {
+  for (let i = 0; i < portfolio.length; i++) {
+    const row = portfolio[i];
+    if (parseFloat(row.amount) < 0) {
+      let tempQty = Math.abs(parseFloat(row.units));
+      let matches = portfolio.filter(p =>
+        p.folio === row.folio &&
+        p.isin === row.isin &&
+        parseFloat(p.amount) > 0 &&
+        parseFloat(p.outstanding_quantity) > 0 &&
+        new Date(p.transaction_date) <= new Date(row.transaction_date)
+      ).sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+
+      for (let match of matches) {
+        const availQty = parseFloat(match.outstanding_quantity);
+        if (tempQty <= 0) break;
+
+        const usedQty = Math.min(availQty, tempQty);
+        match.outstanding_quantity -= usedQty;
+
+        row.purchase_date = match.transaction_date;
+        row.purchase_nav = match.nav;
+        row.outstanding_quantity = usedQty;
+        tempQty -= usedQty;
+      }
     }
+  }
+  return portfolio;
 }
 
-function getCiiValue(ciiData, date) {
-    if (!ciiData || ciiData.length === 0) {
-        return null;
+// Enrich Portfolio
+function enrichPortfolio(portfolio, username) {
+  const latestNAV = loadUserCSV(username, 'latest-nav.csv');
+  const nav2018 = loadUserCSV(username, 'nav31jan2018.csv');
+  const taxType = loadUserCSV(username, 'tax-type-fy202425.csv');
+  const ciiData = loadUserCSV(username, 'CII.csv');
+  const budget = loadUserCSV(username, 'budget.csv');
+  const exceptions = loadUserCSV(username, 'tax-exceptions.csv');
+
+  for (let row of portfolio) {
+    const matchNAV = latestNAV.find(n => n.ISINDivPayoutISINGrowth === row.isin);
+    if (matchNAV) {
+      row.NetAssetValue = matchNAV.NetAssetValue;
+      row.Category = matchNAV.Category;
+      row.SchemeCode = matchNAV.SchemeCode;
     }
-    const year = date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
-    const fy = `${year}-${(year + 1).toString().slice(-2)}`;
-    const row = ciiData.find(r => r['Financial Year'] === fy);
-    return row ? parseFloat(row['CII']) : null;
+
+    const matchNav2018 = nav2018.find(n => n.ticker === row.SchemeCode);
+    row.nav2018 = matchNav2018 ? parseFloat(matchNav2018.nav2018 || 0) : 0;
+
+    const exception = exceptions.find(e => e.ticker === row.SchemeCode);
+    row['sub-category'] = exception ? exception['sub-category'] : 'no-subcategory';
+
+    const tax = taxType.find(t =>
+      t.category === row.Category && t['sub-category'] === row['sub-category']
+    );
+
+    if (tax) {
+      row.ltcg_rate = tax.ltcg_rate === 'slab' ? 'slab' : parseFloat(tax.ltcg_rate);
+      row.stcg_rate = tax.stcg_rate === 'slab' ? 'slab' : parseFloat(tax.stcg_rate);
+      row.exemption = parseFloat(tax.exemption || 0);
+      row.stcg_date = parseInt(tax.stcg_date || 365);
+      row.ltcg_indexation = tax.ltcg_indexation || 'no';
+      row.equity_gf_31jan2018 = tax.equity_gf_31jan2018 || 'no';
+    }
+  }
+
+  return { portfolio, ciiData, budget };
 }
 
-// Stub for enrichment (in real app, you’ll enhance data here)
-function enrichPortfolioData(portfolio, taxSlab, financialYear) {
-    return portfolio;
+
+function getCII(ciiData, date) {
+  const fy = date.getMonth() >= 3 ? `${date.getFullYear()}-${String(date.getFullYear() + 1).slice(2)}` : `${date.getFullYear() - 1}-${String(date.getFullYear()).slice(2)}`;
+  const match = ciiData.find(c => c['Financial Year'] === fy);
+  return match ? parseFloat(match.CII) : null;
 }
 
-function calculateCapitalGains(portfolio, financialYear, taxSlab) {
-    // Use hardcoded dummy CII data for indexation testing
-    const cii = [
-        { 'Financial Year': '2020-21', CII: '301' },
-        { 'Financial Year': '2021-22', CII: '317' },
-        { 'Financial Year': '2022-23', CII: '331' },
-        { 'Financial Year': '2023-24', CII: '348' },
-        { 'Financial Year': '2024-25', CII: '360' },
-    ];
+function calculateTax(portfolio, ciiData, budget, financialYear, taxSlab) {
+  const fyStart = new Date(financialYear === 'FY-2024-25' ? '2024-04-01' : '2023-04-01');
+  const fyEnd = new Date(financialYear === 'FY-2024-25' ? '2025-03-31' : '2024-03-31');
 
-    const fyStart = financialYear === 'FY-2024-25' ? new Date('2024-04-01') : new Date('2023-04-01');
-    const fyEnd = financialYear === 'FY-2024-25' ? new Date('2025-03-31') : new Date('2024-03-31');
+  for (let row of portfolio) {
+    row.STCG = 0;
+    row.LTCG = 0;
+    const txnDate = new Date(row.transaction_date);
+    const purDate = new Date(row.purchase_date);
 
-    let totalLTCGTax = 0;
-    let totalSTCGTax = 0;
-    const ltcgDetails = [];
-    const stcgDetails = [];
+    if (parseFloat(row.amount) < 0 && row.purchase_date) {
+      const daysHeld = Math.floor((txnDate - purDate) / (1000 * 60 * 60 * 24));
+      const units = parseFloat(row.outstanding_quantity || 0);
+      const nav = parseFloat(row.nav || 0);
+      const purNav = parseFloat(row.purchase_nav || 0);
+      const nav2018 = parseFloat(row.nav2018 || 0);
 
-    portfolio.forEach(row => {
-        const txDate = new Date(row.transaction_date);
-        const purchaseDate = new Date(row.purchase_date);
-
-        if (isNaN(txDate.getTime()) || isNaN(purchaseDate.getTime())) {
-            return;
+      if (daysHeld <= row.stcg_date) {
+        row.STCG = (nav - purNav) * units;
+      } else {
+        if (row.equity_gf_31jan2018 === 'yes') {
+          if (txnDate > new Date('2018-01-31')) {
+            const minVal = Math.min(nav2018, purNav);
+            const maxVal = Math.max(nav2018, purNav);
+            row.LTCG = (nav <= minVal ? nav - minVal : nav - maxVal) * units;
+          } else {
+            row.LTCG = (nav - purNav) * units;
+          }
+        } else if (row.ltcg_indexation === 'yes' && purDate < new Date('2023-04-01')) {
+          const ciiPur = getCII(ciiData, purDate);
+          const ciiSale = getCII(ciiData, txnDate);
+          if (ciiPur && ciiSale) {
+            const indexedPur = purNav * (ciiSale / ciiPur);
+            row.LTCG = (nav - indexedPur) * units;
+          } else {
+            row.LTCG = (nav - purNav) * units;
+          }
+        } else {
+          row.LTCG = (nav - purNav) * units;
         }
-
-        const daysHeld = (txDate - purchaseDate) / (1000 * 60 * 60 * 24);
-        const units = parseFloat(row.outstanding_quantity || 0);
-        const nav = parseFloat(row.nav);
-        const purchaseNav = parseFloat(row.purchase_nav);
-        const amount = parseFloat(row.amount || 0);
-
-        if (amount < 0 && !isNaN(nav) && !isNaN(purchaseNav) && !isNaN(units) && units > 0) {
-            let gain = 0;
-            let finalGainType = '';
-
-            const applicableSTCGDate = row.stcg_date || 365;
-
-            if (daysHeld <= applicableSTCGDate) {
-                gain = (nav - purchaseNav) * units;
-                finalGainType = 'STCG';
-            } else {
-                const gf = (row.equity_gf_31jan2018 || '').toLowerCase();
-                const indexation = (row.ltcg_indexation || '').toLowerCase();
-                let indexedPurchase = purchaseNav;
-                finalGainType = 'LTCG';
-
-                if (gf === 'yes' && row.assetType === 'equity' && purchaseDate < new Date('2018-02-01') && !isNaN(row.nav2018)) {
-                    const nav2018 = parseFloat(row.nav2018);
-                    const refPrice = Math.max(nav2018, purchaseNav);
-                    gain = (nav - refPrice) * units;
-                } else if (indexation === 'yes' && (row.assetType === 'debt' || row.assetType === 'mutual_fund_debt')) {
-                    const ciiPurchase = getCiiValue(cii, purchaseDate);
-                    const ciiSale = getCiiValue(cii, txDate);
-
-                    if (ciiPurchase && ciiSale && ciiPurchase > 0) {
-                        indexedPurchase = purchaseNav * (ciiSale / ciiPurchase);
-                    }
-                    gain = (nav - indexedPurchase) * units;
-                } else {
-                    gain = (nav - purchaseNav) * units;
-                }
-            }
-
-            if (gain > 0) {
-                let applicableRate = 0;
-                let applicableExemptionForCalculation = 0; // Exemption value used for calculation (e.g., 100000 or 0)
-                let taxableAmount = gain;
-
-                if (finalGainType === 'STCG') {
-                    if (row.assetType === 'equity') {
-                        applicableRate = taxSlab.shortTermEquityRate;
-                    } else {
-                        applicableRate = taxSlab.shortTermOtherRate;
-                    }
-                    taxableAmount = gain; // No general exemption for STCG
-                    
-                    stcgDetails.push({
-                        assetName: row.assetName,
-                        gainType: 'STCG',
-                        gainAmount: gain,
-                        taxRateApplied: applicableRate,
-                        taxAmount: taxableAmount * applicableRate
-                    });
-
-                } else if (finalGainType === 'LTCG') {
-                    if (row.assetType === 'equity') {
-                        applicableRate = taxSlab.longTermEquityRate;
-                        applicableExemptionForCalculation = taxSlab.ltcgExemptionLimitEquity;
-                    } else if (row.assetType === 'debt' || row.assetType === 'mutual_fund_debt') {
-                        applicableRate = taxSlab.longTermDebtRate;
-                        applicableExemptionForCalculation = 0; // Debt funds generally don't have this specific exemption
-                    } else {
-                        applicableRate = taxSlab.longTermOtherRate;
-                        applicableExemptionForCalculation = 0;
-                    }
-
-                    if (row.assetType === 'equity') {
-                        if (gain > applicableExemptionForCalculation) {
-                            taxableAmount = gain - applicableExemptionForCalculation;
-                        } else {
-                            taxableAmount = 0;
-                        }
-                    }
-
-                    const taxAmountForItem = taxableAmount * applicableRate;
-
-                    ltcgDetails.push({
-                        assetName: row.assetName,
-                        gainType: 'LTCG',
-                        gainAmount: gain,
-                        taxRateApplied: applicableRate,
-                        // This exemption should reflect the *portion of the gain that was actually exempt* for the item.
-                        // For display in the summary, we'll use the 'groupKeyExemption' later.
-                        exemptionAppliedForItem: (row.assetType === 'equity' && gain > 0) ? Math.min(gain, applicableExemptionForCalculation) : 0,
-                        taxAmount: taxAmountForItem
-                    });
-                }
-            }
-        }
-    });
-
-    const finalLtcgDetails = [];
-    const ltcgGroups = {};
-    ltcgDetails.forEach(item => {
-        // Determine the exemption limit that defines the group (e.g., 100000 for equity, 0 for debt)
-        let groupKeyExemptionValue = 0;
-        if (item.taxRateApplied === taxSlab.longTermEquityRate) {
-            groupKeyExemptionValue = taxSlab.ltcgExemptionLimitEquity;
-        } else if (item.taxRateApplied === taxSlab.longTermDebtRate) {
-            groupKeyExemptionValue = 0;
-        }
-        // Add more conditions if you have other LTCG rates with different exemption rules
-
-        const key = `${item.taxRateApplied}|${groupKeyExemptionValue}`;
-        ltcgGroups[key] = (ltcgGroups[key] || { totalGain: 0, totalTax: 0, totalExemption: 0 });
-        ltcgGroups[key].totalGain += item.gainAmount;
-        ltcgGroups[key].totalTax += item.taxAmount;
-        ltcgGroups[key].totalExemption += item.exemptionAppliedForItem; // Sum the actual exemption applied per item
-    });
-
-    for (let key in ltcgGroups) {
-        const [rate, exemptionLimit] = key.split('|').map(parseFloat); // 'exemptionLimit' here is the group's defining limit (100k or 0)
-        const group = ltcgGroups[key];
-        totalLTCGTax += group.totalTax;
-        finalLtcgDetails.push({
-            Total: group.totalGain,
-            Rate: rate,
-            Exemption: group.totalExemption, // Display the *sum* of actual exemptions applied for the group
-            Tax: group.totalTax
-        });
+      }
     }
+  }
 
-    const finalStcgDetails = [];
-    const stcgGroups = {};
-    stcgDetails.forEach(item => {
-        const rate = item.taxRateApplied;
-        stcgGroups[rate] = (stcgGroups[rate] || { totalGain: 0, totalTax: 0 });
-        stcgGroups[rate].totalGain += item.gainAmount;
-        stcgGroups[rate].totalTax += item.taxAmount;
-    });
+  const fyTxns = portfolio.filter(txn => {
+    const d = new Date(txn.transaction_date);
+    return d >= fyStart && d <= fyEnd;
+  });
 
-    for (let rateStr in stcgGroups) {
-        const rate = parseFloat(rateStr);
-        const group = stcgGroups[rateStr];
-        totalSTCGTax += group.totalTax;
-        finalStcgDetails.push({
-            Total: group.totalGain,
-            Rate: rate,
-            Tax: group.totalTax
-        });
-    }
+  let ltcgDetails = [], stcgDetails = [];
+  let totalLtcgTax = 0, totalStcgTax = 0;
 
-    const formattedTotalLTCGTax = parseFloat(totalLTCGTax.toFixed(2));
-    const formattedTotalSTCGTax = parseFloat(totalSTCGTax.toFixed(2));
+  const ltcgGroups = {};
+  const stcgGroups = {};
 
-    return {
-        portfolio,
-        ltcgDetails: finalLtcgDetails,
-        totalLTCGTax: formattedTotalLTCGTax,
-        stcgDetails: finalStcgDetails,
-        totalSTCGTax: formattedTotalSTCGTax
-    };
+  fyTxns.forEach(row => {
+    const rate = row.ltcg_rate;
+    const exemption = row.exemption;
+    const key = `${rate}_${exemption}`;
+    ltcgGroups[key] = (ltcgGroups[key] || 0) + parseFloat(row.LTCG || 0);
+  });
+
+  for (let key in ltcgGroups) {
+    const [rate, exemption] = key.split('_').map(Number);
+    const gain = ltcgGroups[key];
+    const taxable = Math.max(0, gain - exemption);
+    const tax = taxable * rate;
+    totalLtcgTax += tax;
+    ltcgDetails.push({ rate, exemption, gain, tax });
+  }
+
+  fyTxns.forEach(row => {
+    const rate = row.stcg_rate;
+    const key = `${rate}`;
+    stcgGroups[key] = (stcgGroups[key] || 0) + parseFloat(row.STCG || 0);
+  });
+
+  for (let key in stcgGroups) {
+    const gain = stcgGroups[key];
+    const rate = key === 'slab' ? taxSlab : parseFloat(key);
+    const tax = gain * rate;
+    totalStcgTax += tax;
+    stcgDetails.push({ rate, gain, tax });
+  }
+
+  return { portfolio, ltcgDetails, totalLtcgTax, stcgDetails, totalStcgTax };
 }
 
 module.exports = {
-    loadLocalCSV,
-    getCiiValue,
-    enrichPortfolioData,
-    calculateCapitalGains,
+  applyFIFO,
+  enrichPortfolio,
+  calculateTax
 };

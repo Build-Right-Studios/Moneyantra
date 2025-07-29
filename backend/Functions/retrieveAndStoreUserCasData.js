@@ -41,13 +41,11 @@ async function retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR = DEFAULT_TEM
         throw new Error(`Invalid JSON retrieved from Drive for ${lowerCaseEmail}`);
       }
 
-      // Robust normalization: unwrap nested casData.casData recursively
       while (parsedData?.casData?.casData) {
         console.warn("⚠️ Normalizing nested casData.casData structure");
         parsedData.casData = parsedData.casData.casData;
       }
 
-      // Save normalized JSON to user's JSON file (no full logging)
       fssync.writeFileSync(userJsonPath, JSON.stringify(parsedData, null, 2));
 
       return {
