@@ -2,3 +2,4 @@ node_modules/
 secrets/
 drive.json
 .env
+user_data_files/

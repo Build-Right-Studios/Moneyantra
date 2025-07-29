@@ -49,6 +49,7 @@ export default function TaxCalculator() {
 
   const calculateTax = async () => {
     setLoading(true);
+    alert("Button Clicked")
     setErrorDisplay(null);
     setResults(null);
 
@@ -125,10 +126,11 @@ export default function TaxCalculator() {
 
           <button
             onClick={calculateTax}
-            disabled={loading || !portfolioData.length}
-            className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50"
+            // disabled={loading || !portfolioData.length}
+            className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700"
           >
-            {loading ? "Calculating..." : "Calculate Tax"}
+            {/* {loading ? "Calculating..." : "Calculate Tax"} */}
+            Calculate Tax
           </button>
         </div>
 
