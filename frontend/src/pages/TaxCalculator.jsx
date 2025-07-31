@@ -39,50 +39,53 @@ export default function TaxCalculator() {
     fetchPortfolio();
   }, []);
 
-  const calculateTax = async () => {
-    alert("Button Clicked");
-    setLoading(true);
-    setErrorDisplay(null);
-    setResults(null);
+const calculateTax = async () => {
+  setLoading(true);
+  setErrorDisplay(null);
+  setResults(null);
 
-    try {
-      if (!financialYear || isNaN(taxRateDisplay) || !portfolioData.length) {
-        throw new Error("Please ensure Financial Year, Tax Slab, and Portfolio Data are loaded.");
-      }
-
-      const currentTaxSlab = {
-        shortTermEquityRate: 0.15,
-        longTermEquityRate: 0.1,
-        shortTermOtherRate: taxRateDisplay / 100,
-        longTermDebtRate: 0.2,
-        longTermOtherRate: 0.2,
-        ltcgExemptionLimitEquity: 100000,
-      };
-
-      const response = await axios.post(
-        "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
-        {
-          portfolio: portfolioData,
-          financialYear,
-          taxSlab: currentTaxSlab,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setResults(response.data);
-    } catch (error) {
-      console.error("Tax calculation error:", error);
-      setErrorDisplay(
-        error.response?.data?.error || error.message || "Failed to calculate tax"
-      );
-    } finally {
-      setLoading(false);
+  try {
+    if (!financialYear || isNaN(taxRateDisplay)) {
+      throw new Error("Please ensure Financial Year and Tax Slab are valid.");
     }
-  };
+
+    let parsed = portfolioData[0];  // ✅ Access the first CAS object
+
+    if (!parsed || typeof parsed !== "object") {
+      throw new Error("Invalid portfolio structure.");
+    }
+
+    if (!parsed?.folios || !Array.isArray(parsed.folios) || parsed.folios.length === 0) {
+      throw new Error("No folios found inside portfolio data.");
+    }
+
+    const response = await axios.post(
+      "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
+      {
+        casData: parsed,
+        financial_year: financialYear,
+        tax_slab: taxRateDisplay / 100,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const summary = response.data?.tax_summary || response.data;
+    setResults(summary);
+  } catch (error) {
+    console.error("Tax calculation error:", error);
+    setErrorDisplay(
+      error?.response?.data?.error || error.message || "Failed to calculate tax"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <>
@@ -129,8 +132,9 @@ export default function TaxCalculator() {
           <button
             onClick={calculateTax}
             className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700"
+            disabled={loading}
           >
-            Calculate Tax
+            {loading ? "Calculating..." : "Calculate Tax"}
           </button>
 
           {portfolioData.length === 0 && (
@@ -149,7 +153,6 @@ export default function TaxCalculator() {
 
         {results && (
           <div className="space-y-6">
-            {/* LTCG Table */}
             <div className="bg-white rounded shadow p-4">
               <h3 className="text-xl font-bold mb-3">LTCG Details</h3>
               <table className="w-full border-collapse text-left">
@@ -185,7 +188,6 @@ export default function TaxCalculator() {
               </p>
             </div>
 
-            {/* STCG Table */}
             <div className="bg-white rounded shadow p-4">
               <h3 className="text-xl font-bold mb-3">STCG Details</h3>
               <table className="w-full border-collapse text-left">

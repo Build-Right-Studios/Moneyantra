@@ -2,7 +2,7 @@
   "casData": {
     "statement_period": {
       "from": "01-Apr-2025",
-      "to": "04-Jul-2025"
+      "to": "10-Jul-2025"
     },
     "folios": [
       {
@@ -22,13 +22,13 @@
             "amfi": "101762",
             "nominees": [],
             "open": "0.000",
-            "close": "1.181",
-            "close_calculated": "1.181",
+            "close": "2.185",
+            "close_calculated": "2.185",
             "valuation": {
-              "date": "2025-07-03",
-              "nav": "1987.532",
-              "cost": "2302.00",
-              "value": "2347.28"
+              "date": "2025-07-09",
+              "nav": "1994.384",
+              "cost": "4302.00",
+              "value": "4357.73"
             },
             "transactions": [
               {
@@ -130,6 +130,26 @@
                 "balance": null,
                 "type": "STAMP_DUTY_TAX",
                 "dividend_rate": null
+              },
+              {
+                "date": "2025-07-07",
+                "description": "Purchase - via MFUTILITY",
+                "amount": "1999.90",
+                "units": "1.004",
+                "nav": "1992.429",
+                "balance": "2.185",
+                "type": "PURCHASE",
+                "dividend_rate": null
+              },
+              {
+                "date": "2025-07-07",
+                "description": "*** Stamp Duty ***",
+                "amount": "0.10",
+                "units": null,
+                "nav": null,
+                "balance": null,
+                "type": "STAMP_DUTY_TAX",
+                "dividend_rate": null
               }
             ]
           }
@@ -152,13 +172,13 @@
             "amfi": "101762",
             "nominees": [],
             "open": "0.000",
-            "close": "1.449",
-            "close_calculated": "1.449",
+            "close": "1.553",
+            "close_calculated": "1.553",
             "valuation": {
-              "date": "2025-07-03",
-              "nav": "1987.532",
-              "cost": "2814.44",
-              "value": "2879.93"
+              "date": "2025-07-09",
+              "nav": "1994.384",
+              "cost": "3018.44",
+              "value": "3097.28"
             },
             "transactions": [
               {
@@ -750,6 +770,46 @@
                 "balance": "1.449",
                 "type": "PURCHASE_SIP",
                 "dividend_rate": null
+              },
+              {
+                "date": "2025-07-04",
+                "description": "SIP Purchase Instalment No - 60/7826 - via MFUTILITY",
+                "amount": "51.00",
+                "units": "0.026",
+                "nav": "1992.616",
+                "balance": "1.475",
+                "type": "PURCHASE_SIP",
+                "dividend_rate": null
+              },
+              {
+                "date": "2025-07-07",
+                "description": "SIP Purchase Instalment No - 61/7826 - via MFUTILITY",
+                "amount": "51.00",
+                "units": "0.026",
+                "nav": "1992.429",
+                "balance": "1.501",
+                "type": "PURCHASE_SIP",
+                "dividend_rate": null
+              },
+              {
+                "date": "2025-07-08",
+                "description": "SIP Purchase Instalment No - 62/7826 - via MFUTILITY",
+                "amount": "51.00",
+                "units": "0.026",
+                "nav": "1992.900",
+                "balance": "1.527",
+                "type": "PURCHASE_SIP",
+                "dividend_rate": null
+              },
+              {
+                "date": "2025-07-09",
+                "description": "SIP Purchase Instalment No - 63/7826 - via MFUTILITY",
+                "amount": "51.00",
+                "units": "0.026",
+                "nav": "1994.384",
+                "balance": "1.553",
+                "type": "PURCHASE_SIP",
+                "dividend_rate": null
               }
             ]
           }
@@ -775,10 +835,10 @@
             "close": "0.232",
             "close_calculated": "0.232",
             "valuation": {
-              "date": "2025-07-03",
-              "nav": "2172.303",
+              "date": "2025-07-09",
+              "nav": "2180.029",
               "cost": "500.00",
-              "value": "503.97"
+              "value": "505.77"
             },
             "transactions": [
               {
@@ -835,5 +895,5 @@
     "cas_type": "DETAILED",
     "file_type": "CAMS"
   },
-  "pdfPassword": "$2b$10$XHll..N8XPWIFq5IQ.lJa.lTYV8ngZxl9xbu9ecM5.a1CZ6sQ0doa"
+  "pdfPassword": "$2b$10$qrfINdMN6fnWa/urazaEh.nKIAhP.Ao/ki63kYYNN4GvDydwkJ18S"
 }
