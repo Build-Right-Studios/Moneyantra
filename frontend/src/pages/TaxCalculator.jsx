@@ -39,52 +39,69 @@ export default function TaxCalculator() {
     fetchPortfolio();
   }, []);
 
-const calculateTax = async () => {
-  setLoading(true);
-  setErrorDisplay(null);
-  setResults(null);
+  const calculateTax = async () => {
+    setLoading(true);
+    setErrorDisplay(null);
+    setResults(null);
 
-  try {
-    if (!financialYear || isNaN(taxRateDisplay)) {
-      throw new Error("Please ensure Financial Year and Tax Slab are valid.");
-    }
-
-    let parsed = portfolioData[0];  // ✅ Access the first CAS object
-
-    if (!parsed || typeof parsed !== "object") {
-      throw new Error("Invalid portfolio structure.");
-    }
-
-    if (!parsed?.folios || !Array.isArray(parsed.folios) || parsed.folios.length === 0) {
-      throw new Error("No folios found inside portfolio data.");
-    }
-
-    const response = await axios.post(
-      "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
-      {
-        casData: parsed,
-        financial_year: financialYear,
-        tax_slab: taxRateDisplay / 100,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      if (!financialYear || isNaN(taxRateDisplay)) {
+        throw new Error("Please ensure Financial Year and Tax Slab are valid.");
       }
-    );
 
-    const summary = response.data?.tax_summary || response.data;
-    setResults(summary);
-  } catch (error) {
-    console.error("Tax calculation error:", error);
-    setErrorDisplay(
-      error?.response?.data?.error || error.message || "Failed to calculate tax"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+      const parsed = portfolioData[0];
 
+      if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.folios)) {
+        throw new Error("Invalid portfolio structure.");
+      }
+
+      const response = await axios.post(
+        "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
+        {
+          cas_json: parsed,
+          financial_year: financialYear,
+          tax_slab: taxRateDisplay / 100,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const taxSummary = response.data?.tax_summary;
+
+      // Normalize to expected structure
+      const ltcgDetails = (taxSummary?.ltcg?.details || []).map((item) => ({
+        rate: (item["LTCG Rate"] || 0) * 100,
+        exemption: item["Exemption"] || 0,
+        gain: item["Total LTCG"] || 0,
+        tax: item["LTCG Tax"] || 0,
+      }));
+
+      const stcgDetails = (taxSummary?.stcg?.details || []).map((item) => ({
+        rate: (item["STCG Rate"] || 0) * 100,
+        gain: item["Total STCG"] || 0,
+        tax: item["STCG Tax"] || 0,
+      }));
+
+      setResults({
+        ltcgDetails,
+        totalLtcgTax: taxSummary?.ltcg?.total || 0,
+        stcgDetails,
+        totalStcgTax: taxSummary?.stcg?.total || 0,
+      });
+
+      console.log("Full response from backend:", taxSummary);
+    } catch (error) {
+      console.error("Tax calculation error:", error);
+      setErrorDisplay(
+        error?.response?.data?.error || error.message || "Failed to calculate tax"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -131,7 +148,7 @@ const calculateTax = async () => {
 
           <button
             onClick={calculateTax}
-            className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700"
+            className="bg-[#124e78] text-white px-6 py-2 rounded-full hover:bg-[#F26419]"
             disabled={loading}
           >
             {loading ? "Calculating..." : "Calculate Tax"}
@@ -153,73 +170,67 @@ const calculateTax = async () => {
 
         {results && (
           <div className="space-y-6">
-            <div className="bg-white rounded shadow p-4">
-              <h3 className="text-xl font-bold mb-3">LTCG Details</h3>
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr>
-                    <th className="p-2 font-bold">Rate</th>
-                    <th className="p-2 font-bold">Exemption</th>
-                    <th className="p-2 font-bold">Gain</th>
-                    <th className="p-2 font-bold">Tax</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.ltcgDetails?.length ? (
-                    results.ltcgDetails.map((row, idx) => (
+            {/* LTCG Section */}
+            {results.totalLtcgTax > 0 && (
+              <div className="bg-white rounded shadow p-4">
+                <h3 className="text-xl font-bold mb-3">LTCG Details</h3>
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr>
+                      <th className="p-2 font-bold">Rate</th>
+                      <th className="p-2 font-bold">Exemption</th>
+                      <th className="p-2 font-bold">Gain</th>
+                      <th className="p-2 font-bold">Tax</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.ltcgDetails.map((row, idx) => (
                       <tr key={idx} className="border-t">
                         <td className="p-2">{row.rate}%</td>
                         <td className="p-2">₹{(row.exemption || 0).toFixed(2)}</td>
                         <td className="p-2">₹{(row.gain || 0).toFixed(2)}</td>
                         <td className="p-2">₹{(row.tax || 0).toFixed(2)}</td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4" className="p-2 text-center text-gray-500">
-                        No LTCG details available.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-              <p className="mt-4 font-semibold">
-                Total LTCG Tax: ₹{(results.totalLtcgTax || 0).toFixed(2)}
-              </p>
-            </div>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="mt-4 font-semibold">
+                  Total LTCG Tax: ₹{(results.totalLtcgTax || 0).toFixed(2)}
+                </p>
+              </div>
+            )}
 
-            <div className="bg-white rounded shadow p-4">
-              <h3 className="text-xl font-bold mb-3">STCG Details</h3>
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr>
-                    <th className="p-2 font-bold">Rate</th>
-                    <th className="p-2 font-bold">Gain</th>
-                    <th className="p-2 font-bold">Tax</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.stcgDetails?.length ? (
-                    results.stcgDetails.map((row, idx) => (
+
+
+            {/* STCG Section */}
+            {results.totalStcgTax > 0 && (
+              <div className="bg-white rounded shadow p-4">
+                <h3 className="text-xl font-bold mb-3">STCG Details</h3>
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr>
+                      <th className="p-2 font-bold">Rate</th>
+                      <th className="p-2 font-bold">Gain</th>
+                      <th className="p-2 font-bold">Tax</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.stcgDetails.map((row, idx) => (
                       <tr key={idx} className="border-t">
                         <td className="p-2">{row.rate}%</td>
                         <td className="p-2">₹{(row.gain || 0).toFixed(2)}</td>
                         <td className="p-2">₹{(row.tax || 0).toFixed(2)}</td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="3" className="p-2 text-center text-gray-500">
-                        No STCG details available.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-              <p className="mt-4 font-semibold">
-                Total STCG Tax: ₹{(results.totalStcgTax || 0).toFixed(2)}
-              </p>
-            </div>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="mt-4 font-semibold">
+                  Total STCG Tax: ₹{(results.totalStcgTax || 0).toFixed(2)}
+                </p>
+              </div>
+            )}
+
+
           </div>
         )}
       </div>
