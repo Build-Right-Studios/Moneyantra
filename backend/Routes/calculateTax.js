@@ -9,7 +9,7 @@ const getUserPortfolioPath = (username) =>
 
 router.get('/user-portfolio', async (req, res) => {
   try {
-    const username = "aryanshchauhan77_gmail.com"; // TEMP: hardcoded for testing
+    const username = "aryanshchauhan77_gmail.com"; 
     const portfolioPath = getUserPortfolioPath(username);
     console.log('Resolved path:', portfolioPath);
     if (!fs.existsSync(portfolioPath)) {
