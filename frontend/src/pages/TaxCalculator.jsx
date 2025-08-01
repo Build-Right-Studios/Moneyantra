@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import NavbarLogin from '../components/Navbarlogin';
-import Footer from '../components/Footer.jsx';
+import axios from "axios";
+import NavbarLogin from "../components/Navbarlogin";
+import Footer from "../components/Footer.jsx";
 
 export default function TaxCalculator() {
   const [financialYear, setFinancialYear] = useState("FY-2023-24");
@@ -14,22 +15,22 @@ export default function TaxCalculator() {
     const fetchPortfolio = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token'); // Adjust key if needed
-        const res = await fetch("http://localhost:8080/api/user-portfolio", {
-          method: "GET",
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/user-portfolio", {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch portfolio data.");
-        }
-
-        const data = await res.json();
-        setPortfolioData(data.portfolio || []);
+        const data = response.data;
+        const portfolioArray = Array.isArray(data.portfolio)
+          ? data.portfolio
+          : Object.values(data.portfolio || {});
+        setPortfolioData(portfolioArray);
       } catch (err) {
-        setErrorDisplay(err.message || "Failed to load portfolio");
+        console.error("Portfolio fetch error:", err);
+        setErrorDisplay(err.response?.data?.error || "Failed to load portfolio");
       } finally {
         setLoading(false);
       }
@@ -38,56 +39,53 @@ export default function TaxCalculator() {
     fetchPortfolio();
   }, []);
 
-  const getTaxSlabObject = (ratePercent) => ({
-    shortTermEquityRate: 0.15,
-    longTermEquityRate: 0.10,
-    shortTermOtherRate: ratePercent / 100,
-    longTermDebtRate: 0.20,
-    longTermOtherRate: 0.20,
-    ltcgExemptionLimitEquity: 100000
-  });
+const calculateTax = async () => {
+  setLoading(true);
+  setErrorDisplay(null);
+  setResults(null);
 
-  const calculateTax = async () => {
-    setLoading(true);
-    alert("Button Clicked")
-    setErrorDisplay(null);
-    setResults(null);
-
-    try {
-      if (!financialYear || isNaN(taxRateDisplay) || !portfolioData.length) {
-        throw new Error("Please ensure Financial Year, Tax Slab, and Portfolio Data are loaded.");
-      }
-
-      const currentTaxSlab = getTaxSlabObject(taxRateDisplay);
-
-      const response = await fetch("http://localhost:8080/api/calculate-tax", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          portfolio: portfolioData,
-          financialYear,
-          taxSlab: currentTaxSlab
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        try {
-          const errorJson = JSON.parse(errorText);
-          throw new Error(`API Error (${response.status}): ${errorJson.error || errorText}`);
-        } catch {
-          throw new Error(`API Error (${response.status}): ${errorText}`);
-        }
-      }
-
-      const data = await response.json();
-      setResults(data);
-    } catch (error) {
-      setErrorDisplay(error.message);
-    } finally {
-      setLoading(false);
+  try {
+    if (!financialYear || isNaN(taxRateDisplay)) {
+      throw new Error("Please ensure Financial Year and Tax Slab are valid.");
     }
-  };
+
+    let parsed = portfolioData[0];  // ✅ Access the first CAS object
+
+    if (!parsed || typeof parsed !== "object") {
+      throw new Error("Invalid portfolio structure.");
+    }
+
+    if (!parsed?.folios || !Array.isArray(parsed.folios) || parsed.folios.length === 0) {
+      throw new Error("No folios found inside portfolio data.");
+    }
+
+    const response = await axios.post(
+      "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
+      {
+        casData: parsed,
+        financial_year: financialYear,
+        tax_slab: taxRateDisplay / 100,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const summary = response.data?.tax_summary || response.data;
+    setResults(summary);
+  } catch (error) {
+    console.error("Tax calculation error:", error);
+    setErrorDisplay(
+      error?.response?.data?.error || error.message || "Failed to calculate tax"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <>
@@ -97,7 +95,9 @@ export default function TaxCalculator() {
           <h2 className="text-xl font-bold">Calculate Tax for Current Financial Year</h2>
 
           <div className="space-y-2">
-            <label htmlFor="financialYear" className="block font-medium">Select Financial Year:</label>
+            <label htmlFor="financialYear" className="block font-medium">
+              Select Financial Year:
+            </label>
             <select
               id="financialYear"
               value={financialYear}
@@ -110,15 +110,20 @@ export default function TaxCalculator() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="taxSlab" className="block font-medium">Enter Other STCG Rate (%):</label>
+            <label htmlFor="taxSlab" className="block font-medium">
+              Enter Other STCG Rate (%):
+            </label>
             <input
               id="taxSlab"
               type="number"
               step="1"
               min="0"
               max="100"
-              value={taxRateDisplay}
-              onChange={(e) => setTaxRateDisplay(parseFloat(e.target.value))}
+              value={isNaN(taxRateDisplay) ? "" : taxRateDisplay}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                setTaxRateDisplay(isNaN(val) ? "" : val);
+              }}
               className="w-full p-2 border border-gray-300 rounded-md"
               placeholder="e.g., 30"
             />
@@ -126,23 +131,28 @@ export default function TaxCalculator() {
 
           <button
             onClick={calculateTax}
-            // disabled={loading || !portfolioData.length}
             className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700"
+            disabled={loading}
           >
-            {/* {loading ? "Calculating..." : "Calculate Tax"} */}
-            Calculate Tax
+            {loading ? "Calculating..." : "Calculate Tax"}
           </button>
+
+          {portfolioData.length === 0 && (
+            <p className="text-sm text-gray-500 mt-2">
+              No portfolio data found. Please upload or check authentication.
+            </p>
+          )}
         </div>
 
         {errorDisplay && (
           <div className="bg-red-100 text-red-700 px-4 py-3 rounded">
-            <strong className="font-bold">Error: </strong>{errorDisplay}
+            <strong className="font-bold">Error: </strong>
+            {errorDisplay}
           </div>
         )}
 
         {results && (
           <div className="space-y-6">
-            {/* LTCG Table */}
             <div className="bg-white rounded shadow p-4">
               <h3 className="text-xl font-bold mb-3">LTCG Details</h3>
               <table className="w-full border-collapse text-left">
@@ -155,22 +165,29 @@ export default function TaxCalculator() {
                   </tr>
                 </thead>
                 <tbody>
-                  {results.ltcgDetails?.length ? results.ltcgDetails.map((row, idx) => (
-                    <tr key={idx} className="border-t">
-                      <td className="p-2">{row.rate}%</td>
-                      <td className="p-2">₹{(row.exemption || 0).toFixed(2)}</td>
-                      <td className="p-2">₹{(row.gain || 0).toFixed(2)}</td>
-                      <td className="p-2">₹{(row.tax || 0).toFixed(2)}</td>
+                  {results.ltcgDetails?.length ? (
+                    results.ltcgDetails.map((row, idx) => (
+                      <tr key={idx} className="border-t">
+                        <td className="p-2">{row.rate}%</td>
+                        <td className="p-2">₹{(row.exemption || 0).toFixed(2)}</td>
+                        <td className="p-2">₹{(row.gain || 0).toFixed(2)}</td>
+                        <td className="p-2">₹{(row.tax || 0).toFixed(2)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="p-2 text-center text-gray-500">
+                        No LTCG details available.
+                      </td>
                     </tr>
-                  )) : (
-                    <tr><td colSpan="4" className="p-2 text-center text-gray-500">No LTCG details available.</td></tr>
                   )}
                 </tbody>
               </table>
-              <p className="mt-4 font-semibold">Total LTCG Tax: ₹{(results.totalLtcgTax || 0).toFixed(2)}</p>
+              <p className="mt-4 font-semibold">
+                Total LTCG Tax: ₹{(results.totalLtcgTax || 0).toFixed(2)}
+              </p>
             </div>
 
-            {/* STCG Table */}
             <div className="bg-white rounded shadow p-4">
               <h3 className="text-xl font-bold mb-3">STCG Details</h3>
               <table className="w-full border-collapse text-left">
@@ -182,18 +199,26 @@ export default function TaxCalculator() {
                   </tr>
                 </thead>
                 <tbody>
-                  {results.stcgDetails?.length ? results.stcgDetails.map((row, idx) => (
-                    <tr key={idx} className="border-t">
-                      <td className="p-2">{row.rate}%</td>
-                      <td className="p-2">₹{(row.gain || 0).toFixed(2)}</td>
-                      <td className="p-2">₹{(row.tax || 0).toFixed(2)}</td>
+                  {results.stcgDetails?.length ? (
+                    results.stcgDetails.map((row, idx) => (
+                      <tr key={idx} className="border-t">
+                        <td className="p-2">{row.rate}%</td>
+                        <td className="p-2">₹{(row.gain || 0).toFixed(2)}</td>
+                        <td className="p-2">₹{(row.tax || 0).toFixed(2)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="p-2 text-center text-gray-500">
+                        No STCG details available.
+                      </td>
                     </tr>
-                  )) : (
-                    <tr><td colSpan="3" className="p-2 text-center text-gray-500">No STCG details available.</td></tr>
                   )}
                 </tbody>
               </table>
-              <p className="mt-4 font-semibold">Total STCG Tax: ₹{(results.totalStcgTax || 0).toFixed(2)}</p>
+              <p className="mt-4 font-semibold">
+                Total STCG Tax: ₹{(results.totalStcgTax || 0).toFixed(2)}
+              </p>
             </div>
           </div>
         )}
