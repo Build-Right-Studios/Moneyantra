@@ -23,7 +23,8 @@ const upload = require('./Routes/upload.js');
 const dashboard = require('./Routes/dashboard.js');
 const logout = require('./Routes/Logout.js');
 const oauthRoutes = require('./Routes/oauth.js');
-const calculateTaxRoute = require('./Routes/calculateTax.js');
+const userPortfolioRoute = require('./Routes/userPortfolio.js'); 
+
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
 const TEMP_UPLOADS_DIR = path.join(__dirname, 'temp_uploads');
@@ -36,7 +37,7 @@ if (!fssync.existsSync(TEMP_UPLOADS_DIR)) {
 }
 
 app.use('/', oauthRoutes);
-app.use('/api', calculateTaxRoute); 
+app.use('/api', userPortfolioRoute);
 
 app.post("/send-cas-error-mail", SendCasErrorEmail);
 app.post("/sendemail", SendEmail);
