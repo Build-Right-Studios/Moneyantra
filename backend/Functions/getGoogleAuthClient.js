@@ -3,10 +3,23 @@ const path = require("path");
 const { google } = require("googleapis");
 const http = require("http");
 const open = require("open").default;
-const url = require("url");
+const { SecretManagerServiceClient } = require("@google-cloud/secret-manager");
 
 const TOKEN_PATH = path.join(__dirname, "..", "secrets", "token.json");
-const CREDENTIALS_PATH = path.join(__dirname, "..", "secrets", "drive3.json");
+const SECRET_NAME = "drive-3"; 
+const PROJECT_ID = "moneyantra-465713"; 
+
+// Fetch secret from Google Secret Manager
+async function getCredentialsFromSecretManager() {
+  const client = new SecretManagerServiceClient();
+
+  const [version] = await client.accessSecretVersion({
+    name: `projects/${PROJECT_ID}/secrets/${SECRET_NAME}/versions/latest`,
+  });
+
+  const payload = version.payload.data.toString("utf8");
+  return JSON.parse(payload);
+}
 
 async function getGoogleAuthClient() {
   const scopes = [
@@ -14,11 +27,7 @@ async function getGoogleAuthClient() {
     "https://www.googleapis.com/auth/spreadsheets",
   ];
 
-  if (!fs.existsSync(CREDENTIALS_PATH)) {
-    throw new Error(`OAuth2 credentials not found at ${CREDENTIALS_PATH}`);
-  }
-
-  const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH));
+  const credentials = await getCredentialsFromSecretManager();
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const redirectUri = redirect_uris[0];
 
@@ -28,6 +37,7 @@ async function getGoogleAuthClient() {
     redirectUri
   );
 
+  // Use saved token if exists
   if (fs.existsSync(TOKEN_PATH)) {
     const token = JSON.parse(fs.readFileSync(TOKEN_PATH));
     oAuth2Client.setCredentials(token);
@@ -35,13 +45,13 @@ async function getGoogleAuthClient() {
     return oAuth2Client;
   }
 
+  // Otherwise, get new token interactively
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
   });
 
   console.log(`🔐 Opening browser to authenticate...`);
-  console.log("typeof open:", typeof open);
   await open(authUrl);
 
   const code = await new Promise((resolve, reject) => {
@@ -63,6 +73,9 @@ async function getGoogleAuthClient() {
 
   const { tokens } = await oAuth2Client.getToken(code);
   oAuth2Client.setCredentials(tokens);
+
+  // Save token locally
+  fs.mkdirSync(path.dirname(TOKEN_PATH), { recursive: true });
   fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
   console.log(`✅ Token saved to ${TOKEN_PATH}`);
 
