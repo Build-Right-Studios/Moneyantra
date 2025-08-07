@@ -55,9 +55,14 @@ app.get("/", (req, res) => {
     res.send("🚀 Moneyantra backend is running!");
 });
 
-const PORT = process.env.PORT || 8080;
-console.log(PORT);
-app.listen(PORT, '0.0.0.0', () => {
+try {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server is listening on port ${PORT}`);
-});
+  });
+} catch (err) {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
+}
+
 
