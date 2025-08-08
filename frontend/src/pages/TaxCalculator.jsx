@@ -4,7 +4,7 @@ import NavbarLogin from "../components/Navbarlogin";
 import Footer from "../components/Footer.jsx";
 
 export default function TaxCalculator() {
-  const [financialYear, setFinancialYear] = useState("FY-2023-24");
+  const [financialYear, setFinancialYear] = useState("FY-2024-25");
   const [taxRateDisplay, setTaxRateDisplay] = useState(30);
   const [portfolioData, setPortfolioData] = useState(null);
   const [results, setResults] = useState(null);
@@ -33,7 +33,7 @@ export default function TaxCalculator() {
           : Object.values(data.portfolio || {});
 
         if (portfolioArray.length === 0) {
-          setPortfolioData(data); // fallback
+          setPortfolioData(data);
         } else {
           setPortfolioData(portfolioArray[0]);
         }
@@ -78,7 +78,6 @@ export default function TaxCalculator() {
       );
 
       const taxSummary = response.data?.tax_summary;
-
       if (!taxSummary) {
         throw new Error("Invalid response from tax calculation API.");
       }
@@ -87,7 +86,6 @@ export default function TaxCalculator() {
         folio: item.Folio || "N/A",
         isin: item.ISIN || "N/A",
         schemeName: item.SchemeName || "N/A",
-        rate: (item["STCG Rate"] || 0) * 100,
         gain: item["Total STCG"] || 0,
         tax: item["STCG Tax"] || 0,
       }));
@@ -96,7 +94,6 @@ export default function TaxCalculator() {
         folio: item.Folio || "N/A",
         isin: item.ISIN || "N/A",
         schemeName: item.SchemeName || "N/A",
-        rate: (item["LTCG Rate"] || 0) * 100,
         gain: item["Total LTCG"] || 0,
         tax: item["LTCG Tax"] || 0,
       }));
@@ -137,7 +134,6 @@ export default function TaxCalculator() {
                 className="w-full p-2 border border-gray-300 rounded-md"
               >
                 <option value="FY-2024-25">FY-2024-25</option>
-                <option value="FY-2023-24">FY-2023-24</option>
               </select>
             </div>
 
@@ -199,14 +195,15 @@ export default function TaxCalculator() {
         {results && results.totalStcgTax > 0 && (
           <div className="bg-white rounded shadow p-6">
             <h3 className="text-xl font-bold mb-3">STCG Calculation Summary</h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse text-left">
+
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                  <tr className="bg-gray-100 text-gray-600 uppercase text-sm">
                     <th className="py-3 px-4 font-bold">Scheme Name</th>
                     <th className="py-3 px-4 font-bold">Folio</th>
                     <th className="py-3 px-4 font-bold">ISIN</th>
-                    <th className="py-3 px-4 font-bold text-right">Rate</th>
                     <th className="py-3 px-4 font-bold text-right">Gain</th>
                     <th className="py-3 px-4 font-bold text-right">Tax</th>
                   </tr>
@@ -214,10 +211,9 @@ export default function TaxCalculator() {
                 <tbody className="text-gray-600 text-sm font-light">
                   {results.stcgDetails.map((row, idx) => (
                     <tr key={idx} className="border-t border-gray-200 hover:bg-gray-50">
-                      <td className="py-3 px-4 whitespace-nowrap">{row.schemeName}</td>
+                      <td className="py-3 px-4">{row.schemeName}</td>
                       <td className="py-3 px-4">{row.folio}</td>
                       <td className="py-3 px-4">{row.isin}</td>
-                      <td className="py-3 px-4 text-right">{row.rate}%</td>
                       <td className="py-3 px-4 text-right">₹{row.gain.toFixed(2)}</td>
                       <td className="py-3 px-4 text-right">₹{row.tax.toFixed(2)}</td>
                     </tr>
@@ -225,43 +221,22 @@ export default function TaxCalculator() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Card View */}
+            <div className="space-y-4 md:hidden">
+              {results.stcgDetails.map((row, idx) => (
+                <div key={idx} className="border p-4 rounded shadow-sm">
+                  <p className="font-bold">{row.schemeName}</p>
+                  <p>Folio: {row.folio}</p>
+                  <p>ISIN: {row.isin}</p>
+                  <p>Gain: ₹{row.gain.toFixed(2)}</p>
+                  <p>Tax: ₹{row.tax.toFixed(2)}</p>
+                </div>
+              ))}
+            </div>
+
             <p className="mt-6 font-bold text-lg text-right">
               Total STCG Tax: ₹{results.totalStcgTax.toFixed(2)}
-            </p>
-          </div>
-        )}
-
-        {results && results.totalLtcgTax > 0 && (
-          <div className="bg-white rounded shadow p-6">
-            <h3 className="text-xl font-bold mb-3">LTCG Calculation Summary</h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse text-left">
-                <thead>
-                  <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                    <th className="py-3 px-4 font-bold">Scheme Name</th>
-                    <th className="py-3 px-4 font-bold">Folio</th>
-                    <th className="py-3 px-4 font-bold">ISIN</th>
-                    <th className="py-3 px-4 font-bold text-right">Rate</th>
-                    <th className="py-3 px-4 font-bold text-right">Gain</th>
-                    <th className="py-3 px-4 font-bold text-right">Tax</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-600 text-sm font-light">
-                  {results.ltcgDetails.map((row, idx) => (
-                    <tr key={idx} className="border-t border-gray-200 hover:bg-gray-50">
-                      <td className="py-3 px-4 whitespace-nowrap">{row.schemeName}</td>
-                      <td className="py-3 px-4">{row.folio}</td>
-                      <td className="py-3 px-4">{row.isin}</td>
-                      <td className="py-3 px-4 text-right">{row.rate}%</td>
-                      <td className="py-3 px-4 text-right">₹{row.gain.toFixed(2)}</td>
-                      <td className="py-3 px-4 text-right">₹{row.tax.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-6 font-bold text-lg text-right">
-              Total LTCG Tax: ₹{results.totalLtcgTax.toFixed(2)}
             </p>
           </div>
         )}
