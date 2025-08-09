@@ -23,7 +23,8 @@ const upload = require('./Routes/upload.js');
 const dashboard = require('./Routes/dashboard.js');
 const logout = require('./Routes/Logout.js');
 const oauthRoutes = require('./Routes/oauth.js');
-const calculateTaxRoute = require('./Routes/calculateTax.js');
+const userPortfolioRoute = require('./Routes/userPortfolio.js'); 
+
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
 const TEMP_UPLOADS_DIR = path.join(__dirname, 'temp_uploads');
@@ -36,7 +37,7 @@ if (!fssync.existsSync(TEMP_UPLOADS_DIR)) {
 }
 
 app.use('/', oauthRoutes);
-app.use('/api', calculateTaxRoute); 
+app.use('/api', userPortfolioRoute);
 
 app.post("/send-cas-error-mail", SendCasErrorEmail);
 app.post("/sendemail", SendEmail);
@@ -54,7 +55,14 @@ app.get("/", (req, res) => {
     res.send("🚀 Moneyantra backend is running!");
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+try {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server is listening on port ${PORT}`);
-});
+  });
+} catch (err) {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
+}
+
+

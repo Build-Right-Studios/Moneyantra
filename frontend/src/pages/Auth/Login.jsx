@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MdAbc } from "react-icons/md";
 import { IoMailOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
+import { RxCross2 } from "react-icons/rx"; // Cross icon
 import '../../App.css';
 import axiosInstance from '../../utils/axiosInstance';
 
@@ -56,7 +57,16 @@ function Login() {
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-0'>
+    <div className='flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-0 relative'>
+      
+      {/* Cross Button */}
+      <button
+        onClick={() => navigate('/')}
+        className="absolute top-8 right-10 text-gray-600 hover:text-[#33658a] transition-colors"
+      >
+        <RxCross2 size={40} />
+      </button>
+
       <div className='flex flex-col sm:flex-row bg-white shadow-lg w-full sm:w-3/4 h-auto sm:h-[575px] border rounded-2xl border-transparent overflow-hidden'>
 
         {/* Left Panel */}
