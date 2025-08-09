@@ -214,7 +214,7 @@ function GetInTouch() {
                 <div className="bg-white p-4 rounded-xl shadow-md flex-1">
                     <h2 className="text-2xl font-semibold mb-4 text-gray-800">Contact Information</h2>
                     <p className="text-gray-600 mb-6">Our tax experts are available to help you navigate complex investment tax scenarios. Get personalized guidance from certified professionals.</p>
-                    
+
                     <div className="flex items-start mb-4">
                         <div className="text-white bg-blue-500 p-3 rounded-lg mr-4"><MdEmail size={16} /></div>
                         <div className="px-3">
@@ -235,7 +235,9 @@ function GetInTouch() {
                         <div className="text-white bg-sky-500 p-3 rounded-lg mr-4"><MdAccessTime size={16} /></div>
                         <div className="px-3">
                             <h4 className="text-lg font-medium text-gray-800">Expert Consultation</h4>
-                            <p className="text-gray-600">Book appointment link from arthgyaan</p>
+                            <p className="text-gray-600">Book appointment link from  
+                                <a href="https://arthgyaan.com/"> arthgyaan</a>
+                            </p>
                             <p className="text-gray-600">or similar for moneyantra</p>
                         </div>
                     </div>
