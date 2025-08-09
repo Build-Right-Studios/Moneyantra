@@ -7,9 +7,10 @@ const authenticationToken = require('../utilities');
 const getUserPortfolioPath = (username) =>
   path.join(__dirname, '../user_data_files', `${username}.json`);
 
-router.get('/user-portfolio', async (req, res) => {
+router.get('/user-portfolio', authenticationToken, async (req, res) => {
   try {
-    const username = "aryanshchauhan77_gmail.com"; // TEMP: hardcoded for testing
+    const username = "aryeshsrivastava_gmail.com"; // TEMP: hardcoded for testing
+    console.log(req.user.email)
     const portfolioPath = getUserPortfolioPath(username);
     console.log('Resolved path:', portfolioPath);
     if (!fs.existsSync(portfolioPath)) {

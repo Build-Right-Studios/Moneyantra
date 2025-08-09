@@ -28,6 +28,7 @@ export default function TaxCalculator() {
           ? data.portfolio
           : Object.values(data.portfolio || {});
         setPortfolioData(portfolioArray);
+        console.log(portfolioArray[0])
       } catch (err) {
         console.error("Portfolio fetch error:", err);
         setErrorDisplay(err.response?.data?.error || "Failed to load portfolio");
@@ -62,7 +63,7 @@ const calculateTax = async () => {
     const response = await axios.post(
       "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
       {
-        casData: parsed,
+        cas_json: parsed.folios,
         financial_year: financialYear,
         tax_slab: taxRateDisplay / 100,
       },
