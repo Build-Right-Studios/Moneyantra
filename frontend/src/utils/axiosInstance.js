@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const backendUrl = 'https://moneyantra-186659791698.us-central1.run.app';
+// const backendUrl = 'https://moneyantra-186659791698.us-central1.run.app';
+const backendUrl = 'http://localhost:8080/'
 
 const axiosInstance = axios.create({
     baseURL: backendUrl,
