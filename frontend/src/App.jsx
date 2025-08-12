@@ -6,7 +6,7 @@ import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import ParseCAS from './pages/ParseCAS.jsx'
 import DisplayCAs from "./components/DisplayCAs";
-import TaxCalculator from "./pages/TaxCalculator.jsx"; // New import
+import TaxCalculator from "./pages/TaxCalculator.jsx";
 
 function App() {
   return (

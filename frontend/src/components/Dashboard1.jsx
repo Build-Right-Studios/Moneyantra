@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { BsGraphUpArrow } from "react-icons/bs";
@@ -10,7 +11,6 @@ const StatCard = ({ icon, title, value, valueColor }) => {
                 className="p-4 rounded-full flex items-center justify-center"
                 style={{ backgroundColor: icon.bgColor }}
             >
-                {/* Font Awesome or React Icon */}
                 {icon.className.startsWith("fas") ? (
                     <i className={`${icon.className} text-2xl`} style={{ color: icon.color }}></i>
                 ) : (
@@ -28,7 +28,7 @@ const StatCard = ({ icon, title, value, valueColor }) => {
 export default function Dashboard1() {
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -37,17 +37,19 @@ export default function Dashboard1() {
                 setDashboardData(response.data);
             } catch (err) {
                 console.error("Error fetching dashboard data:", err);
-                setError(err?.response?.data?.message || "Failed to load dashboard data.");
+                // Redirect to parsecas page if error
+                navigate("/parse-cas");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchDashboardData();
-    }, []);
+    }, [navigate]);
 
     if (loading) return <p className="text-center mt-10">Loading dashboard...</p>;
-    if (error) return <p className="text-red-600 text-center mt-10">{error}</p>;
+
+    if (!dashboardData) return null;
 
     const { name, totalAmount, investedAmount, profit, profitPercent } = dashboardData;
 
@@ -74,7 +76,7 @@ export default function Dashboard1() {
         },
         {
             icon: {
-                className: "BsGraphUpArrow", // We'll check this in the render
+                className: "BsGraphUpArrow",
                 bgColor: "#FEF9C3",
                 color: "#CA8A04"
             },
