@@ -44,7 +44,7 @@ function Footer() {
                             onClick={(e) => {
                                 e.preventDefault();
                                 window.scrollTo({
-                                    top: window.scrollY - 740, 
+                                    top: window.scrollY - 600, 
                                     behavior: "smooth"
                                 });
                             }}
