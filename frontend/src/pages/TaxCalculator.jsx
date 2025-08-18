@@ -133,7 +133,9 @@ export default function TaxCalculator() {
                 onChange={(e) => setFinancialYear(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
               >
+                <option value="FY-2025-26">FY-2025-26</option>
                 <option value="FY-2024-25">FY-2024-25</option>
+                <option value="FY-2023-24">FY-2023-24</option>
               </select>
             </div>
 
@@ -160,7 +162,7 @@ export default function TaxCalculator() {
 
           <button
             onClick={calculateTax}
-            className="bg-[#124e78] text-white px-6 py-2 rounded-full hover:bg-[#F26419]"
+            className="bg-[#124e78] text-white px-6 py-2 rounded hover:bg-[#F26419]"
             disabled={loading || !portfolioData}
           >
             {loading ? "Calculating..." : "Calculate Tax"}

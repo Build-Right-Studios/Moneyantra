@@ -11,19 +11,19 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const SendEmail = require('./Controllers/SendEmail.js');
-const SendCasErrorEmail = require('./Controllers/SendCasErrorMail.js');
-const LoginUser = require('./Routes/Login.js');
-const SignupUser = require('./Routes/Signup.js');
-const extract = require('./Routes/extract-cas.js');
-const forgotpassword = require('./Routes/Forgot-password.js');
-const resetpassword = require('./Routes/Reset-password.js');
-const get = require('./Routes/get-cas.js');
-const upload = require('./Routes/upload.js');
-const dashboard = require('./Routes/dashboard.js');
-const logout = require('./Routes/Logout.js');
-const oauthRoutes = require('./Routes/oauth.js');
-const userPortfolioRoute = require('./Routes/userPortfolio.js'); 
+const SendEmail = require('./controllers/SendEmail.js');
+const SendCasErrorEmail = require('./controllers/SendCasErrorMail.js');
+const LoginUser = require('./routes/Login.js');
+const SignupUser = require('./routes/Signup.js');
+const extract = require('./routes/extract-cas.js');
+const forgotpassword = require('./routes/Forgot-password.js');
+const resetpassword = require('./routes/Reset-password.js');
+const get = require('./routes/get-cas.js');
+const upload = require('./routes/upload.js');
+const dashboard = require('./routes/dashboard.js');
+const logout = require('./routes/Logout.js');
+const oauthRoutes = require('./routes/oauth.js');
+const userPortfolioRoute = require('./routes/userPortfolio.js'); 
 
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
