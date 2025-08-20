@@ -1,33 +1,34 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import cas1 from "../components/images/CAS1.png";
 import cas2 from "../components/images/CAS2.png";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { TbLockPassword } from "react-icons/tb";
 import Footer from "../components/Footer";
-import axiosInstance from "../utils/axiosInstance"; 
-import NavbarLogin from "../components/Navbarlogin"; 
+import axiosInstance from "../utils/axiosInstance";
+import NavbarLogin from "../components/Navbarlogin";
 
 function ParseCAS() {
   const [file, setFile] = useState(null);
-  const [status, setStatus] = useState(""); 
+  const [status, setStatus] = useState("");
   const [password, setPassword] = useState("");
-  const [isChecked, setIsChecked] = useState(false); 
-  const [isLoading, setIsLoading] = useState(false); 
-  const [showInstructions, setShowInstructions] = useState(false); 
-  const [uploadError, setUploadError] = useState(""); 
+  const [currentDate, setCurrentDate] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
-    setUploadError(""); 
+    setUploadError("");
     if (selected && selected.type === "application/pdf") {
       setFile(selected);
       setStatus(`Selected: ${selected.name}`);
     } else {
       setFile(null);
-      setStatus("Please upload a valid PDF file (.pdf)."); 
+      setStatus("Please upload a valid PDF file (.pdf).");
     }
   };
 
@@ -52,7 +53,7 @@ function ParseCAS() {
 
     const formData = new FormData();
     formData.append("pdf", file);
-    formData.append("password", password); 
+    formData.append("password", password);
 
     try {
       const res = await axiosInstance.post("/upload", formData, {
@@ -62,7 +63,7 @@ function ParseCAS() {
       if (res.status === 201) {
         console.log("Upload success:", res.data.message);
         localStorage.setItem("casData", JSON.stringify(res.data.casData));
-        navigate("/display-cas"); 
+        navigate("/display-cas");
       } else {
         const msg = res.data.message || "Unknown error during upload.";
         setUploadError(`Upload failed: ${msg}`);
@@ -70,15 +71,22 @@ function ParseCAS() {
     } catch (err) {
       const msg = err.response?.data?.message || err.message || "An unexpected error occurred.";
       setUploadError(`Upload failed: ${msg}`);
-      console.error("Upload error:", err.response?.data || err); 
+      console.error("Upload error:", err.response?.data || err);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   const toggleInstructions = () => {
     setShowInstructions(!showInstructions);
   };
+
+  useEffect(() => {
+    const today = new Date();
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    const formattedDate = today.toLocaleDateString('en-GB', options);
+    setCurrentDate(formattedDate);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -98,18 +106,18 @@ function ParseCAS() {
         {showInstructions && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto p-4"
-            onClick={toggleInstructions} 
+            onClick={toggleInstructions}
           >
             <div
               className="bg-white p-4 rounded-lg w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto relative"
-              onClick={(e) => e.stopPropagation()} 
+              onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={toggleInstructions}
                 className="absolute top-2 right-4 text-4xl text-gray-700 hover:text-black font-bold"
                 aria-label="Close instructions"
               >
-                &times; 
+                &times;
               </button>
               <div className=" m-4 max-sm:p-0 max-sm:m-0 ">
                 <h2 className="text-[#33658a] text-2xl mb-4 text-center font-semibold">
@@ -127,10 +135,10 @@ function ParseCAS() {
                       CAMS
                     </a>
                   </li>
-                  <li>Select Statement Type – Detailed</li>
-                  <li>Select Period – Start date to current date</li>
+                  <li>Select Statement Type : Detailed</li>
+                  <li>Select Period : From Date - 01-Apr-2001 To Date - {currentDate}</li>
                   <li>
-                    Select Folio Listing as – Transacted folios and folios with
+                    Select Folio Listing as : Transacted folios and folios with
                     Balances
                   </li>
                   <li>Enter your email and password</li>
@@ -166,7 +174,7 @@ function ParseCAS() {
             </div>
           </label>
 
-         
+
           {status && !file && <p className="mt-2 text-sm text-red-500 text-center">{status}</p>}
           {uploadError && <p className="mt-2 text-sm text-red-500 text-center">{uploadError}</p>}
 
@@ -181,7 +189,7 @@ function ParseCAS() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setUploadError(""); 
+                setUploadError("");
               }}
               className="border-2 border-[#f26419] w-full rounded-lg px-2 h-[40px] text-center"
               placeholder="Enter your CAS PDF password"
@@ -195,7 +203,7 @@ function ParseCAS() {
               checked={isChecked}
               onChange={(e) => {
                 setIsChecked(e.target.checked);
-                setUploadError(""); 
+                setUploadError("");
               }}
               id="disclaimer-checkbox"
             />
@@ -209,11 +217,10 @@ function ParseCAS() {
           <button
             onClick={handleUpload}
             disabled={!isChecked || !file || !password || isLoading}
-            className={`mt-4 px-4 py-3 rounded-4xl  text-white text-xl font-semibold transition-colors duration-300 ${
-              isChecked && file && password && !isLoading
-                ? "bg-[#33658a] hover:bg-[#2a5171]"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
+            className={`mt-4 px-4 py-3 rounded-4xl  text-white text-xl font-semibold transition-colors duration-300 ${isChecked && file && password && !isLoading
+              ? "bg-[#33658a] hover:bg-[#2a5171]"
+              : "bg-gray-400 cursor-not-allowed"
+              }`}
           >
             {isLoading ? "Uploading & Parsing..." : "Upload CAS"}
           </button>
