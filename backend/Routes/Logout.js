@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 const fssync = require('fs');
 
 const authenticationToken = require('../utilities');
-const getUserJsonFilePath = require('../Functions/getUserJsonFilePath');
+const getUserJsonFilePath = require('../functions/getUserJsonFilePath');
 
 const router = express.Router();
 

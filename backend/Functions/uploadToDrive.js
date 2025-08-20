@@ -9,7 +9,7 @@ async function uploadToDrive({ jsonBuffer, pdfBuffer, email, pdfFileName }) {
   const authClient = await getGoogleAuthClient();
   const drive = google.drive({ version: "v3", auth: authClient });
 
-  const jsonFileName = `${email.toLowerCase()}.json`;
+  const jsonFileName = `${email.toLowerCase()}.json`; // Base64 encoded JSON file
 
   // 🔄 Upload or Overwrite File in a Folder
   const uploadOrUpdateFile = async (buffer, fileName, mimeType, folderId) => {
@@ -18,7 +18,7 @@ async function uploadToDrive({ jsonBuffer, pdfBuffer, email, pdfFileName }) {
 
     const existing = await drive.files.list({
       q: `'${folderId}' in parents and name='${fileName}' and trashed = false`,
-      fields: 'files(id)',
+      fields: "files(id)",
     });
 
     if (existing.data.files.length > 0) {
@@ -37,24 +37,41 @@ async function uploadToDrive({ jsonBuffer, pdfBuffer, email, pdfFileName }) {
           parents: [folderId],
         },
         media: { mimeType, body: bufferStream },
-        fields: 'id',
+        fields: "id",
       });
       console.log(`📤 Uploaded: ${fileName}`);
       return res.data.id;
     }
   };
 
-  // Upload PDF
-  const pdfFileId = pdfBuffer && pdfFileName
-    ? await uploadOrUpdateFile(pdfBuffer, pdfFileName, 'application/pdf', PDF_UPLOAD_PARENT)
-    : null;
+  // Upload PDF (no change)
+  const pdfFileId =
+    pdfBuffer && pdfFileName
+      ? await uploadOrUpdateFile(
+          pdfBuffer,
+          pdfFileName,
+          "application/pdf",
+          PDF_UPLOAD_PARENT
+        )
+      : null;
 
-  // Upload JSON
+  // Upload JSON (Base64 encode before upload)
   const jsonFileId = jsonBuffer
-    ? await uploadOrUpdateFile(jsonBuffer, jsonFileName, 'application/json', PARSED_JSON_PARENT)
+    ? await uploadOrUpdateFile(
+        Buffer.from(jsonBuffer.toString("base64")), // encode JSON as Base64
+        jsonFileName,
+        "application/json",
+        PARSED_JSON_PARENT
+      )
     : null;
 
   return { pdfFileId, jsonFileId };
 }
 
-module.exports = uploadToDrive;
+// ------------------- 📥 Decode Base64 JSON after download -------------------
+function decodeBase64Json(base64String) {
+  const decoded = Buffer.from(base64String, "base64").toString();
+  return JSON.parse(decoded);
+}
+
+module.exports = { uploadToDrive, decodeBase64Json };

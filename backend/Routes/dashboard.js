@@ -2,8 +2,8 @@ const express = require('express');
 const fssync = require('fs');
 const path = require('path');
 const authenticationToken = require('../utilities');
-const getUserJsonFilePath = require('../Functions/getUserJsonFilePath');
-const retrieveAndStoreUserCasData = require('../Functions/retrieveAndStoreUserCasData');
+const getUserJsonFilePath = require('../functions/getUserJsonFilePath');
+const retrieveAndStoreUserCasData = require('../functions/retrieveAndStoreUserCasData');
 
 const router = express.Router();
 const TEMP_UPLOADS_DIR = path.join(__dirname, '../temp_uploads');

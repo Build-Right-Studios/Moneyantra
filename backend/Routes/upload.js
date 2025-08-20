@@ -6,9 +6,9 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 
 const authenticationToken = require('../utilities');
-const uploadToDrive = require('../Functions/uploadToDrive');
-const updateSheet = require('../Functions/updateSheet');
-const getUserJsonFilePath = require('../Functions/getUserJsonFilePath');
+const { uploadToDrive } = require("../functions/uploadToDrive");
+const updateSheet = require('../functions/updateSheet');
+const getUserJsonFilePath = require('../functions/getUserJsonFilePath');
 
 const router = express.Router();
 const upload = multer();

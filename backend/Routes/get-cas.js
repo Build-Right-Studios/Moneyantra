@@ -4,8 +4,8 @@ const fssync = require('fs');
 const path = require('path');
 
 const authenticationToken = require('../utilities.js');
-const getUserJsonFilePath = require('../Functions/getUserJsonFilePath.js');
-const retrieveAndStoreUserCasData = require('../Functions/retrieveAndStoreUserCasData.js');
+const getUserJsonFilePath = require('../functions/getUserJsonFilePath.js');
+const retrieveAndStoreUserCasData = require('../functions/retrieveAndStoreUserCasData.js');
 const TEMP_UPLOADS_DIR = path.join(__dirname, '../temp_uploads');
 
 router.get('/get-cas', authenticationToken, async (req, res) => {

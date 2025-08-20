@@ -1,6 +1,6 @@
 const express = require("express");
-const retrieveAndStoreUserCasData = require('../Functions/retrieveAndStoreUserCasData.js');
-const getUserJsonFilePath = require('../Functions/getUserJsonFilePath.js');
+const retrieveAndStoreUserCasData = require('../functions/retrieveAndStoreUserCasData.js');
+const getUserJsonFilePath = require('../functions/getUserJsonFilePath.js');
 const router = express.Router();
 const authenticationToken = require('../utilities.js');
 
