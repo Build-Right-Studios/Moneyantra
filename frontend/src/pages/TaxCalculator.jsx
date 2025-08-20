@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";   // ✅ Import navigate
 import NavbarLogin from "../components/Navbarlogin";
 import Footer from "../components/Footer.jsx";
 
@@ -11,6 +12,8 @@ export default function TaxCalculator() {
   const [loading, setLoading] = useState(false);
   const [errorDisplay, setErrorDisplay] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
+
+  const navigate = useNavigate();  // ✅ initialize navigate
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -28,17 +31,16 @@ export default function TaxCalculator() {
         });
 
         const data = response.data;
-        const portfolioArray = Array.isArray(data.portfolio)
-          ? data.portfolio
-          : Object.values(data.portfolio || {});
 
-        if (portfolioArray.length === 0) {
-          setPortfolioData(data);
+        // ✅ Correct check
+        if (data.casData && Array.isArray(data.casData.folios) && data.casData.folios.length > 0) {
+          setPortfolioData(data); // store full data for calculation
+          setStatusMessage("Portfolio loaded successfully.");
         } else {
-          setPortfolioData(portfolioArray[0]);
+          setPortfolioData(null);
+          setStatusMessage("No portfolio data found. Please upload CAS first.");
         }
 
-        setStatusMessage("Portfolio loaded successfully.");
       } catch (err) {
         setErrorDisplay(err.response?.data?.error || "Failed to load portfolio");
         setStatusMessage("Failed to load portfolio.");
@@ -110,6 +112,7 @@ export default function TaxCalculator() {
     } catch (error) {
       setErrorDisplay(error.message || "Failed to calculate tax");
       setStatusMessage("Tax calculation failed.");
+      navigate("/parse-cas");
     } finally {
       setLoading(false);
     }
@@ -133,7 +136,9 @@ export default function TaxCalculator() {
                 onChange={(e) => setFinancialYear(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
               >
+                <option value="FY-2025-26">FY-2025-26</option>
                 <option value="FY-2024-25">FY-2024-25</option>
+                <option value="FY-2023-24">FY-2023-24</option>
               </select>
             </div>
 
@@ -160,7 +165,7 @@ export default function TaxCalculator() {
 
           <button
             onClick={calculateTax}
-            className="bg-[#124e78] text-white px-6 py-2 rounded-full hover:bg-[#F26419]"
+            className="bg-[#124e78] text-white px-6 py-2 rounded hover:bg-[#F26419]"
             disabled={loading || !portfolioData}
           >
             {loading ? "Calculating..." : "Calculate Tax"}
@@ -168,20 +173,13 @@ export default function TaxCalculator() {
 
           {statusMessage && (
             <div
-              className={`text-sm p-2 rounded mt-3 ${
-                errorDisplay
-                  ? "text-red-700 bg-red-100"
-                  : "text-green-700 bg-green-100"
-              }`}
+              className={`text-sm p-2 rounded mt-3 ${errorDisplay
+                ? "text-red-700 bg-red-100"
+                : "text-green-700 bg-green-100"
+                }`}
             >
               {statusMessage}
             </div>
-          )}
-
-          {!portfolioData && !loading && (
-            <p className="text-sm text-gray-500 mt-2">
-              No portfolio data found. Please upload or check authentication.
-            </p>
           )}
         </div>
 

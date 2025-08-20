@@ -3,3 +3,4 @@ secrets/
 drive.json
 .env
 user_data_files/
+money.json/

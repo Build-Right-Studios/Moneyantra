@@ -23,9 +23,10 @@ async function getCredentialsFromSecretManager() {
 
 async function getGoogleAuthClient() {
   const scopes = [
-    "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/spreadsheets",
-  ];
+  "https://www.googleapis.com/auth/drive",
+  "https://www.googleapis.com/auth/spreadsheets",
+];
+
 
   const credentials = await getCredentialsFromSecretManager();
   const { client_secret, client_id, redirect_uris } = credentials.installed;

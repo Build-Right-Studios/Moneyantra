@@ -37,7 +37,6 @@ export default function Dashboard1() {
                 setDashboardData(response.data);
             } catch (err) {
                 console.error("Error fetching dashboard data:", err);
-                // Redirect to parsecas page if error
                 navigate("/parse-cas");
             } finally {
                 setLoading(false);

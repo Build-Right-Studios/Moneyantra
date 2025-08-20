@@ -37,6 +37,7 @@ export default function DisplayCAs() {
                     await sendErrorEmail(msg);
                 }
             } catch (err) {
+                navigate("/parse-cas");
                 const errorMessage = err.response?.data?.message || err.message || "Failed to load CAS data from the server.";
                 setError(errorMessage);
                 setData(null);
@@ -97,7 +98,7 @@ export default function DisplayCAs() {
 
                             if (isDisplayable) {
                                 schemeMap[key].push(processedTransaction);
-                            } 
+                            }
                         });
                     } else {
                         console.warn(`Scheme '${scheme.scheme}' in folio '${folio.folio}' has no transactions or transactions is not an array.`, scheme);
