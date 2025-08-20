@@ -7,6 +7,7 @@ import ResetPassword from './pages/ResetPassword.jsx'
 import ParseCAS from './pages/ParseCAS.jsx'
 import DisplayCAs from "./components/DisplayCAs";
 import TaxCalculator from "./pages/TaxCalculator.jsx";
+import Simulate_tax from './pages/Simulate_tax.jsx';
 
 function App() {
   const ProtectedRoute = ({ children }) => {
@@ -46,6 +47,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DisplayCAs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/simulate-tax'
+          element={
+            <ProtectedRoute>
+              <Simulate_tax/>
             </ProtectedRoute>
           }
         />

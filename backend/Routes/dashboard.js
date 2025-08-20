@@ -3,10 +3,9 @@ const fssync = require('fs');
 const path = require('path');
 const authenticationToken = require('../utilities');
 const getUserJsonFilePath = require('../functions/getUserJsonFilePath');
-const retrieveAndStoreUserCasData = require('../functions/retrieveAndStoreUserCasData');
 
 const router = express.Router();
-const TEMP_UPLOADS_DIR = path.join(__dirname, '../temp_uploads');
+const TEMP_UPLOADS_DIR = path.join(__dirname, '../temp_uploads'); 
 
 router.get('/dashboard', authenticationToken, async (req, res) => {
     try {
@@ -14,22 +13,15 @@ router.get('/dashboard', authenticationToken, async (req, res) => {
         const userJsonPath = getUserJsonFilePath(email);
 
         if (!fssync.existsSync(userJsonPath)) {
-            console.log(`Dashboard: User JSON file not found for ${email}. Attempting to retrieve and store.`);
-            const result = await retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR);
-
-            if (!result.success) {
-                console.warn(`Dashboard: Failed to retrieve CAS data for ${email}.`);
-                return res.status(404).json({ message: result.message || "CAS data not found. Please upload your CAS PDF." });
-            }
+            console.warn(`Dashboard: User JSON file not found for ${email}. Please upload or log in again.`);
+            return res.status(404).json({ message: "CAS data not found. Please upload your CAS PDF or log in to fetch it." });
         }
 
-        // Read and parse the JSON file
         let fileContent = fssync.readFileSync(userJsonPath, 'utf8');
         let parsed;
         try {
-            parsed = typeof fileContent === 'string' ? JSON.parse(fileContent) : fileContent;
+            parsed = JSON.parse(fileContent);
 
-            // ✅ Normalize if double-wrapped like { casData: { casData: {...} } }
             if (parsed.casData?.casData) {
                 parsed.casData = parsed.casData.casData;
             }
@@ -38,33 +30,11 @@ router.get('/dashboard', authenticationToken, async (req, res) => {
             return res.status(400).json({ message: "Failed to parse CAS JSON file." });
         }
 
-        // Validate structure
         if (!parsed || typeof parsed !== 'object' || !parsed.casData || !Array.isArray(parsed.casData.folios)) {
-            console.warn("⚠️ Invalid or malformed structure. Attempting re-retrieval.");
-            const result = await retrieveAndStoreUserCasData(email, TEMP_UPLOADS_DIR);
-            if (!result.success) {
-                return res.status(400).json({ message: "Invalid CAS format and re-fetch failed." });
-            }
-
-            // Try again after re-downloading
-            fileContent = fssync.readFileSync(userJsonPath, 'utf8');
-            try {
-                parsed = typeof fileContent === 'string' ? JSON.parse(fileContent) : fileContent;
-
-                // ✅ Normalize again after re-download
-                if (parsed.casData?.casData) {
-                    parsed.casData = parsed.casData.casData;
-                }
-            } catch (jsonErr2) {
-                return res.status(400).json({ message: "Still unable to parse downloaded CAS JSON." });
-            }
-
-            if (!parsed || !parsed.casData || !Array.isArray(parsed.casData.folios)) {
-                return res.status(400).json({ message: "Re-downloaded CAS data is still invalid." });
-            }
+            console.error("No data found");
+            return res.status(400).json({ message: "Invalid CAS data format." });
         }
 
-        // Compute totals
         let totalAmount = 0;
         let investedAmount = 0;
 

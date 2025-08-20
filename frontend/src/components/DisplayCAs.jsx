@@ -37,7 +37,9 @@ export default function DisplayCAs() {
                     await sendErrorEmail(msg);
                 }
             } catch (err) {
-                navigate("/parse-cas");
+                // Assuming `Maps` is available from a hook like `useNavigate`
+                // const navigate = useNavigate();
+                // navigate("/parse-cas");
                 const errorMessage = err.response?.data?.message || err.message || "Failed to load CAS data from the server.";
                 setError(errorMessage);
                 setData(null);
@@ -81,6 +83,7 @@ export default function DisplayCAs() {
                                 folio: folio.folio,
                                 amc: folio.amc,
                                 scheme: scheme.scheme,
+                                isin: scheme.isin,
                                 date: t.date,
                                 description: t.description,
                                 amount: (t.amount !== null && !isNaN(parseFloat(t.amount))) ? parseFloat(t.amount) : null,
@@ -142,6 +145,14 @@ export default function DisplayCAs() {
 
         return isNegative ? `-${result}` : result;
     };
+    
+    // Helper function to render a single detail line for cards
+    const renderDetail = (label, value) => (
+        <div className="flex justify-between items-center py-1">
+            <span className="text-gray-600 text-sm">{label}:</span>
+            <span className="font-medium text-gray-800 text-sm">{value}</span>
+        </div>
+    );
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -173,48 +184,79 @@ export default function DisplayCAs() {
                                 {schemeName}
                                 {txns[0]?.amc && <span className="text-lg text-gray-600 ml-3">({txns[0].amc})</span>}
                             </h2>
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md">
-                                    <thead className="bg-blue-900 text-white">
-                                        <tr>
-                                            <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider rounded-tl-md">Date</th>
-                                            <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Amount (₹)</th>
-                                            <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Units</th>
-                                            <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">NAV (₹)</th>
-                                            <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Balance Units</th>
-                                            <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider rounded-tr-md">Type</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {txns.map((t, i) => (
-                                            <tr key={i} className={i % 2 ? "bg-gray-50" : "bg-white"}>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                    {t.date ? new Date(t.date).toLocaleDateString("en-GB", {
-                                                        day: "2-digit",
-                                                        month: "2-digit",
-                                                        year: "2-digit",
-                                                    }) : '-'}
-                                                </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                    {t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : '-'}
-                                                </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                    {t.units !== null ? formatNumber(t.units, 4) : '-'}
-                                                </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                    {t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : '-'}
-                                                </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                    {t.balance !== null ? formatNumber(t.balance, 4) : '-'}
-                                                </td>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                    {t.type}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+
+                            {/* Mobile View: Cards */}
+                            <div className="md:hidden">
+                                <div className="grid grid-cols-1 gap-4">
+                                    {txns.map((t, i) => (
+                                        <div key={i} className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
+                                            <div className="text-center font-bold text-lg mb-2 text-blue-900">
+                                                {t.type}
+                                            </div>
+                                            <div className="space-y-1">
+                                                {renderDetail("Date", t.date ? new Date(t.date).toLocaleDateString("en-GB", {
+                                                    day: "2-digit",
+                                                    month: "2-digit",
+                                                    year: "2-digit",
+                                                }) : '-')}
+                                                {renderDetail("Folio No", t.folio)}
+                                                {t.isin && renderDetail("ISIN", t.isin)}
+                                                {renderDetail("Amount (₹)", t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : '-')}
+                                                {renderDetail("Units", t.units !== null ? formatNumber(t.units, 4) : '-')}
+                                                {renderDetail("NAV (₹)", t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : '-')}
+                                                {renderDetail("Balance Units", t.balance !== null ? formatNumber(t.balance, 4) : '-')}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
+
+                            {/* Desktop View: Table */}
+                            <div className="hidden md:block">
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md">
+                                        <thead className="bg-blue-900 text-white">
+                                            <tr>
+                                                <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider rounded-tl-md">Date</th>
+                                                <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Amount (₹)</th>
+                                                <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Units</th>
+                                                <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">NAV (₹)</th>
+                                                <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Balance Units</th>
+                                                <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider rounded-tr-md">Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {txns.map((t, i) => (
+                                                <tr key={i} className={i % 2 ? "bg-gray-50" : "bg-white"}>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                        {t.date ? new Date(t.date).toLocaleDateString("en-GB", {
+                                                            day: "2-digit",
+                                                            month: "2-digit",
+                                                            year: "2-digit",
+                                                        }) : '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                        {t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                        {t.units !== null ? formatNumber(t.units, 4) : '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                        {t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                        {t.balance !== null ? formatNumber(t.balance, 4) : '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                        {t.type}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     ))
                 )}
