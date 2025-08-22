@@ -42,6 +42,7 @@ export default function TaxCalculator() {
         }
 
       } catch (err) {
+        navigate("/parse-cas")
         setErrorDisplay(err.response?.data?.error || "Failed to load portfolio");
         setStatusMessage("Failed to load portfolio.");
       } finally {
