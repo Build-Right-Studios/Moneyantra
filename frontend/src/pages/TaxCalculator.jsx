@@ -69,7 +69,7 @@ export default function TaxCalculator() {
       }
 
       const response = await axios.post(
-        "https://asia-south1-moneyantra-465713.cloudfunctions.net/calculate_tax_http",
+        "https://asia-south1-moneyantra-test.cloudfunctions.net/calc-tax",
         {
           cas_json: portfolioData.casData,
           financial_year: financialYear,

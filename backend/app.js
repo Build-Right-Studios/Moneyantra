@@ -24,7 +24,7 @@ const dashboard = require('./routes/dashboard.js');
 const logout = require('./routes/Logout.js');
 const oauthRoutes = require('./routes/oauth.js');
 const userPortfolioRoute = require('./routes/userPortfolio.js'); 
-
+const navRoutes = require('./routes/nav.js'); 
 
 const USER_LOCAL_DATA_DIR = path.join(__dirname, 'user_data_files');
 const TEMP_UPLOADS_DIR = path.join(__dirname, 'temp_uploads');
@@ -38,6 +38,9 @@ if (!fssync.existsSync(TEMP_UPLOADS_DIR)) {
 
 app.use('/', oauthRoutes);
 app.use('/api', userPortfolioRoute);
+app.use('/api/nav', navRoutes);
+console.log("✅ NAV routes registered");
+
 
 app.post("/send-cas-error-mail", SendCasErrorEmail);
 app.post("/sendemail", SendEmail);
@@ -50,6 +53,7 @@ app.post("/login", LoginUser);
 app.post("/signup", SignupUser);
 app.post('/forgot-password', forgotpassword);
 app.post('/reset-password/:name/:token', resetpassword);
+
 
 app.get("/", (req, res) => {
     res.send("🚀 Moneyantra backend is running!");
