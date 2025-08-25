@@ -133,6 +133,13 @@ function NavbarLogin() {
                 <a href="/simulate-tax" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={toggleMobileMenu}>Simulate Tax</a>
                 <a href="/parse-cas" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={toggleMobileMenu}>Parse CAS</a>
                 <a href="/display-cas" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={toggleMobileMenu}>Display CAS</a>
+                <a
+                        href="#"
+                        onClick={handleLogout}
+                        className=" text-white text-2xl hover:text-blue-400 transition duration-300e"
+                    >
+                        Logout
+                    </a>
             </div>
         </>
     );
