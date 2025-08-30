@@ -60,7 +60,7 @@ export default function Dashboard1() {
                 color: "#2563EB"
             },
             title: "Total Portfolio",
-            value: `₹ ${Number(totalAmount).toLocaleString("en-IN")}`,
+            "value": `₹ ${Math.round(totalAmount).toLocaleString("en-IN")}`,
             valueColor: "text-gray-800"
         },
         {
@@ -80,7 +80,7 @@ export default function Dashboard1() {
                 color: "#CA8A04"
             },
             title: "Total Profit",
-            value: `₹ ${Number(profit).toLocaleString("en-IN")}`,
+            "value": `₹ ${Math.round(profit).toLocaleString("en-IN")}`,
             valueColor: profit >= 0 ? "text-green-600" : "text-red-600"
         },
         {

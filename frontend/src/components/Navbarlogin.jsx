@@ -65,14 +65,22 @@ function NavbarLogin() {
                     </h5>
                 </div>
 
-                {/* Desktop Menu */}
-                <div className="hidden md:flex space-x-4">
-                    <a href="/dashboard" className="font-bold m-2 mx-3 text-base p-2 bg-[#33658a] text-white no-underline hover:underline">Dashboard</a>
+                <div className="hidden md:flex space-x-4 items-center">
+                    <a
+                        href="/dashboard"
+                        className="font-bold rounded-full text-base px-4 py-2 bg-[#33658a] text-white no-underline hover:underline"
+                    >
+                        Dashboard
+                    </a>
 
-                    <div className="relative" onMouseEnter={() => setIsTaxOpen(true)} onMouseLeave={() => setIsTaxOpen(false)}>
-                        <button className="font-bold m-2  text-base px-8 py-2 bg-[#33658a] text-white no-underline">
+                    <div
+                        className="relative"
+                        onMouseEnter={() => setIsTaxOpen(true)}
+                        onMouseLeave={() => setIsTaxOpen(false)}
+                    >
+                        <a className="font-bold rounded-full text-base px-10 py-2 bg-[#33658a] text-white no-underline cursor-pointer">
                             Tax
-                        </button>
+                        </a>
                         {isTaxOpen && (
                             <div className="absolute top-full left-0 bg-white border rounded-md shadow-lg z-10 w-48">
                                 <a href="/calculate-tax" className="block p-2 text-sm text-[#33658a] hover:bg-gray-100 no-underline">
@@ -85,12 +93,16 @@ function NavbarLogin() {
                         )}
                     </div>
 
-                    <div className="relative" onMouseEnter={() => setIsCasOpen(true)} onMouseLeave={() => setIsCasOpen(false)}>
-                        <button className="font-bold mt-2 mb-2  text-base px-3 py-2 bg-[#33658a] text-white no-underline">
+                    <div
+                        className="relative"
+                        onMouseEnter={() => setIsCasOpen(true)}
+                        onMouseLeave={() => setIsCasOpen(false)}
+                    >
+                        <a className="font-bold rounded-full text-base px-4 py-2 bg-[#33658a] text-white no-underline cursor-pointer">
                             Parse CAS
-                        </button>
+                        </a>
                         {isCasOpen && (
-                            <div className="absolute top-full left-0  bg-white border rounded-md shadow-lg z-10 w-48">
+                            <div className="absolute top-full left-0 bg-white border rounded-md shadow-lg z-10 w-48">
                                 <a href="/parse-cas" className="block p-2 text-sm text-[#33658a] hover:bg-gray-100 no-underline">
                                     Parse CAS
                                 </a>
@@ -104,13 +116,12 @@ function NavbarLogin() {
                     <a
                         href="#"
                         onClick={handleLogout}
-                        className="font-bold m-2 text-base p-2 bg-[#33658a] text-white no-underline hover:underline"
+                        className="font-bold rounded-full text-base px-4 py-2 bg-[#33658a] text-white no-underline hover:underline"
                     >
                         Logout
                     </a>
                 </div>
 
-                {/* Mobile Menu Button */}
                 <div className="md:hidden">
                     <button onClick={toggleMobileMenu} className="text-black focus:outline-none">
                         {isMobileMenuOpen ? <IoMdClose className='text-4xl text-black' /> : <RiMenu3Fill className='text-3xl' />}
@@ -118,7 +129,6 @@ function NavbarLogin() {
                 </div>
             </nav>
 
-            {/* Mobile Menu */}
             <div
                 className={`
                     fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-95 z-40 md:hidden 
@@ -134,12 +144,12 @@ function NavbarLogin() {
                 <a href="/parse-cas" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={toggleMobileMenu}>Parse CAS</a>
                 <a href="/display-cas" className="text-white text-2xl hover:text-blue-400 transition duration-300" onClick={toggleMobileMenu}>Display CAS</a>
                 <a
-                        href="#"
-                        onClick={handleLogout}
-                        className=" text-white text-2xl hover:text-blue-400 transition duration-300e"
-                    >
-                        Logout
-                    </a>
+                    href="#"
+                    onClick={handleLogout}
+                    className=" text-white text-2xl hover:text-blue-400 transition duration-300e"
+                >
+                    Logout
+                </a>
             </div>
         </>
     );
