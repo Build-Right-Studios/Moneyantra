@@ -24,7 +24,6 @@ export default function DisplayCAs() {
             setLoading(true);
             try {
                 const res = await axiosInstance.get("/get-cas");
-                console.log("Response from /get-cas:", res.data);
 
                 if (res.data && res.data.casData) {
                     setData(res.data.casData);
@@ -37,9 +36,8 @@ export default function DisplayCAs() {
                     await sendErrorEmail(msg);
                 }
             } catch (err) {
-                // Assuming `Maps` is available from a hook like `useNavigate`
-                // const navigate = useNavigate();
-                // navigate("/parse-cas");
+                const navigate = useNavigate();
+                navigate("/parse-cas");
                 const errorMessage = err.response?.data?.message || err.message || "Failed to load CAS data from the server.";
                 setError(errorMessage);
                 setData(null);
@@ -121,8 +119,6 @@ export default function DisplayCAs() {
             setError("");
             setGroupedTxns(schemeMap);
         }
-
-        console.log("Final grouped transactions:", schemeMap);
     }, [data]);
 
     const formatNumber = (num, decimals = 0) => {
@@ -145,8 +141,7 @@ export default function DisplayCAs() {
 
         return isNegative ? `-${result}` : result;
     };
-    
-    // Helper function to render a single detail line for cards
+
     const renderDetail = (label, value) => (
         <div className="flex justify-between items-center py-1">
             <span className="text-gray-600 text-sm">{label}:</span>
@@ -179,43 +174,95 @@ export default function DisplayCAs() {
                     </div>
                 ) : (
                     Object.entries(groupedTxns).map(([schemeName, txns], index) => (
-                        <div key={index} className="mb-12 border rounded-lg shadow-md p-4 bg-white">
-                            <h2 className="text-2xl font-semibold mb-4 text-blue-800 border-b pb-2">
-                                {schemeName}
-                                {txns[0]?.amc && <span className="text-lg text-gray-600 ml-3">({txns[0].amc})</span>}
-                            </h2>
-
-                            {/* Mobile View: Cards */}
+                        <div key={index} className="mb-12 md:border rounded-lg md:shadow-md md:p-4 bg-white">
+                            {/* Mobile View */}
                             <div className="md:hidden">
-                                <div className="grid grid-cols-1 gap-4">
-                                    {txns.map((t, i) => (
-                                        <div key={i} className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
-                                            <div className="text-center font-bold text-lg mb-2 text-blue-900">
-                                                {t.type}
-                                            </div>
-                                            <div className="space-y-1">
-                                                {renderDetail("Date", t.date ? new Date(t.date).toLocaleDateString("en-GB", {
-                                                    day: "2-digit",
-                                                    month: "2-digit",
-                                                    year: "2-digit",
-                                                }) : '-')}
-                                                {renderDetail("Folio No", t.folio)}
-                                                {t.isin && renderDetail("ISIN", t.isin)}
-                                                {renderDetail("Amount (₹)", t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : '-')}
-                                                {renderDetail("Units", t.units !== null ? formatNumber(t.units, 4) : '-')}
-                                                {renderDetail("NAV (₹)", t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : '-')}
-                                                {renderDetail("Balance Units", t.balance !== null ? formatNumber(t.balance, 4) : '-')}
-                                            </div>
+                                <div className="mb-6 border rounded-xl shadow-md p-4 bg-white">
+                                    {/* AMC Card */}
+                                    <p className=" font-bold text-center">
+                                        AMC : {txns[0]?.amc}
+                                    </p>
+
+                                    {/* Fund Card */}
+                                    <div className="border rounded-lg shadow-sm p-3 mb-4 bg-gray-50">
+                                        <p className="text-base font-semibold text-gray-800 mb-2">
+                                            {schemeName}{" "}
+                                            {txns[0]?.isin && (
+                                                <span className="text-xs text-gray-500">({txns[0].isin})</span>
+                                            )}
+                                        </p>
+
+                                        {/* Transactions */}
+                                        <div className="grid gap-2">
+                                            {txns.map((t, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={`rounded-lg border p-3 shadow-sm ${["purchase", "purchase_sip"].includes(t.type?.toLowerCase())
+                                                        ? "border-green-400 bg-green-50"
+                                                        : t.type?.toLowerCase() === "redemption"
+                                                            ? "border-red-400 bg-red-50"
+                                                            : "border-gray-300 bg-gray-50"
+                                                        }`}
+                                                >
+
+
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className="text-xs text-gray-500">
+                                                            {t.date
+                                                                ? new Date(t.date).toLocaleDateString("en-GB", {
+                                                                    day: "2-digit",
+                                                                    month: "2-digit",
+                                                                    year: "2-digit",
+                                                                })
+                                                                : "-"}
+                                                        </span>
+                                                        <span
+                                                            className={`font-bold text-xs ${["purchase", "purchase_sip"].includes(t.type?.toLowerCase())
+                                                                    ? "text-green-700"
+                                                                    : t.type?.toLowerCase() === "redemption"
+                                                                        ? "text-red-700"
+                                                                        : "text-gray-600"
+                                                                }`}
+                                                        >
+                                                            {t.type}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-x-3 text-xs p-2 text-gray-700">
+                                                        <p>
+                                                            <span className="font-medium">Amount:</span>{" "}
+                                                            {t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : "-"}
+                                                        </p>
+                                                        <p>
+                                                            <span className="font-medium">Units:</span>{" "}
+                                                            {t.units !== null ? formatNumber(t.units, 4) : "-"}
+                                                        </p>
+                                                        <p>
+                                                            <span className="font-medium">NAV:</span>{" "}
+                                                            {t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : "-"}
+                                                        </p>
+                                                        <p>
+                                                            <span className="font-medium">Balance:</span>{" "}
+                                                            {t.balance !== null ? formatNumber(t.balance, 4) : "-"}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Desktop View: Table */}
+
+
                             <div className="hidden md:block">
+                                <h2 className=" sm text-2xl font-semibold mb-4 text-blue-800 border-b pb-2">
+                                    {schemeName}
+                                    {txns[0]?.amc && <span className="text-lg text-gray-600 ml-3">({txns[0].amc})</span>}
+                                </h2>
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md">
-                                        <thead className="bg-blue-900 text-white">
+                                        <thead className="bg-[#33658a] text-white">
                                             <tr>
                                                 <th className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider rounded-tl-md">Date</th>
                                                 <th className="px-4 py-3 text-right text-sm font-medium uppercase tracking-wider">Amount (₹)</th>
@@ -236,13 +283,13 @@ export default function DisplayCAs() {
                                                         }) : '-'}
                                                     </td>
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                        {t.amount !== null ? `₹${formatNumber(t.amount, 0)}` : '-'}
+                                                        {t.amount !== null ? `${formatNumber(t.amount, 0)}` : '-'}
                                                     </td>
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                         {t.units !== null ? formatNumber(t.units, 4) : '-'}
                                                     </td>
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                        {t.nav !== null ? `₹${formatNumber(t.nav, 2)}` : '-'}
+                                                        {t.nav !== null ? `${formatNumber(t.nav, 2)}` : '-'}
                                                     </td>
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                         {t.balance !== null ? formatNumber(t.balance, 4) : '-'}
